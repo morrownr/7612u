@@ -2,6 +2,6 @@
 
 -----
 
-### 87612u :rocket:
+### 7612u :rocket:
 
 Linux Support for USB WiFi Adapters that use the MT7612U Chipset
