@@ -9,7 +9,7 @@ This document is for WiFi adapters based on the following chipset
 ```
 mt7612u
 ```
-2021-02-07
+2021-02-08
 
 ##### Tested Setup
 
@@ -207,7 +207,7 @@ rsn_pairwise=CCMP
 ieee80211n=1
 #
 # mt7612u
-ht_capab=[LDPC][HT40+][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][MAX-AMSDU-3839]
+ht_capab=[LDPC][HT40+][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 
 
 # IEEE 802.11ac
@@ -217,13 +217,11 @@ ieee80211ac=1
 vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 #
 # The below line, vht_oper_chwidth=1, is required for 80 MHz width channel operation.
-# It currently causes problems on my test setup so it remains inactive. This limits
-# AP capability to 40 MHz channel width and 400 Mb/s, however, it is very solid.
 #
-#vht_oper_chwidth=1
+vht_oper_chwidth=1
 #
 # if channel 36 is used, this line must be active if vht_oper_chwidth=1 is active
-#vht_oper_centr_freq_seg0_idx=42
+vht_oper_centr_freq_seg0_idx=42
 #
 # if channel 149 is used, this line must be active if vht_oper_chwidth=1 is active
 # vht_oper_centr_freq_seg0_idx=155
@@ -304,26 +302,3 @@ $ sudo reboot
 14. Enjoy!
 
 -----
-
-$ iperf3 -c 192.168.1.40
-Connecting to host 192.168.1.40, port 5201
-local 192.168.1.83 port 42806 connected to 192.168.1.40 port 5201
-Interval           Transfer     Bitrate         Retr  Cwnd
-0.00-1.00   sec  25.1 MBytes   210 Mbits/sec    0    773 KBytes       
-1.00-2.00   sec  22.5 MBytes   189 Mbits/sec    0   1022 KBytes       
-2.00-3.00   sec  23.8 MBytes   199 Mbits/sec    0   1022 KBytes       
-3.00-4.00   sec  23.8 MBytes   199 Mbits/sec    0   1.13 MBytes       
-4.00-5.00   sec  25.0 MBytes   210 Mbits/sec    0   1.13 MBytes       
-5.00-6.00   sec  22.5 MBytes   189 Mbits/sec    0   1.22 MBytes       
-6.00-7.00   sec  25.0 MBytes   210 Mbits/sec    0   1.22 MBytes       
-7.00-8.00   sec  22.5 MBytes   189 Mbits/sec    0   1.40 MBytes       
-8.00-9.00   sec  23.8 MBytes   199 Mbits/sec    0   1.40 MBytes       
-9.00-10.00  sec  25.0 MBytes   210 Mbits/sec    0   1.52 MBytes       
-- - - - - - - - - - - - - - - - - - - - - - - - -
-Interval           Transfer     Bitrate         Retr
-0.00-10.00  sec   239 MBytes   200 Mbits/sec    0             sender
-0.00-10.02  sec   235 MBytes   197 Mbits/sec                  receiver
-
-iperf Done.
-
-
