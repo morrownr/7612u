@@ -9,7 +9,7 @@ This document is for WiFi adapters based on the following chipset
 ```
 mt7612u
 ```
-2021-02-08
+2021-02-12
 
 ##### Tested Setup
 
@@ -177,8 +177,8 @@ auth_algs=1
 country_code=US
 #
 # activate to enable DFS channels
-ieee80211d=1
-ieee80211h=1
+#ieee80211d=1
+#ieee80211h=1
 
 
 macaddr_acl=0
@@ -211,17 +211,16 @@ ht_capab=[LDPC][HT40+][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 
 
 # IEEE 802.11ac
-ieee80211ac=1
+#ieee80211ac=1
 #
 # mt7612u
-vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+#vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 #
 # The below line, vht_oper_chwidth=1, is required for 80 MHz width channel operation.
-#
-vht_oper_chwidth=1
+#vht_oper_chwidth=1
 #
 # if channel 36 is used, this line must be active if vht_oper_chwidth=1 is active
-vht_oper_centr_freq_seg0_idx=42
+#vht_oper_centr_freq_seg0_idx=42
 #
 # if channel 149 is used, this line must be active if vht_oper_chwidth=1 is active
 # vht_oper_centr_freq_seg0_idx=155
