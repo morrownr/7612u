@@ -1,15 +1,20 @@
 ## Bridged Wireless Access Point
 
-A bridged wireless access point setup works within an existing
+A bridged wireless access point works within an existing
 ethernet network to extend the network to WiFi capable computers
 and devices in areas where the WiFi signal is weak or otherwise
 does not meet expectations.
 
-This document is for WiFi adapters based on the following chipset
+Known issues:
+
+- WPA3-SAE operation is not testing good at this time and is disabled.
+
+
+This document is for WiFi adapters based on the following chipsets
 ```
 mt7612u
 ```
-2021-02-12
+2021-02-20
 
 ##### Tested Setup
 
@@ -140,24 +145,29 @@ $ sudo nano /etc/hostapd/hostapd.conf
 ```
 File contents
 ```
-# hostapd.conf
+# /etc/hostapd/hostapd.conf
 # https://w1.fi/hostapd/
-# Supports: 2g, 5g, 80211n, 80211ac, WPA2-AES, WPA3-SAE
+# 2g, 5g, a/b/g/n/ac
+# 2021-02-20
 
-# change the interface name to match your system, if necessary
+# Needs to match your system
 interface=wlan0
-#
+
 bridge=br0
 driver=nl80211
 ctrl_interface=/var/run/hostapd
-ctrl_interface_group=0
+#ctrl_interface_group=0
 
-
-# IEEE 802.11
-#
-# change as desired
+# Change as desired
 ssid=pi
-#
+
+# Change as required
+country_code=US
+
+# Enable DFS channels
+#ieee80211d=1
+#ieee80211h=1
+
 # 2g (b/g/n)
 #hw_mode=g
 #channel=6
@@ -165,118 +175,110 @@ ssid=pi
 # 5g (a/n/ac)
 hw_mode=a
 channel=36
-#channel=149
-#
-max_num_sta=128
-auth_algs=1
+# channel=149
 
-
-# DFS
-#
-# change as required by law
-country_code=US
-#
-# activate to enable DFS channels
-#ieee80211d=1
-#ieee80211h=1
-
-
+beacon_int=100
+dtim_period=1
+max_num_sta=32
 macaddr_acl=0
 ignore_broadcast_ssid=0
+rts_threshold=2347
+fragm_threshold=2346
+send_probe_response=1
 
-
-# IEEE 802.11i
+# Security
+auth_algs=1
+ignore_broadcast_ssid=0
 wpa=2
-#
-# WPA-2 AES only
-wpa_key_mgmt=WPA-PSK
-#
-# WPA-2 AES and WPA-3 SAE
-#wpa_key_mgmt=WPA-PSK SAE
-#
-# change as desired
+wpa_pairwise=CCMP
+# Change as desired
 wpa_passphrase=raspberry
-#
+# WPA-2 AES
+wpa_key_mgmt=WPA-PSK WPA-PSK-SHA256
+# WPA-3 SAE
+#wpa_key_mgmt=SAE
+wpa_group_rekey=1800
 rsn_pairwise=CCMP
-#
-# required for WPA-3 SAE
+# ieee80211w=2 is required for WPA-3 SAE
 #ieee80211w=2
-
+# If parameter is not set, 19 is the default value.
+#sae_groups=19 20 21 25 26
+#sae_require_mfp=1
+# If parameter is not 9 set, 5 is the default value.
+#sae_anti_clogging_threshold=10
 
 # IEEE 802.11n
+# 2g and 5g
 ieee80211n=1
 #
 # mt7612u
-ht_capab=[LDPC][HT40+][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
+ht_capab=[LDPC][HT40+][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][MAX-AMSDU-3839]
 
 
 # IEEE 802.11ac
-#ieee80211ac=1
+# 5g
+ieee80211ac=1
 #
 # mt7612u
-#vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTER$
 #
-# The below line, vht_oper_chwidth=1, is required for 80 MHz width channel operation.
-#vht_oper_chwidth=1
+# Required for 80 MHz width channel operation
+vht_oper_chwidth=1
 #
-# if channel 36 is used, this line must be active if vht_oper_chwidth=1 is active
-#vht_oper_centr_freq_seg0_idx=42
+# Use the next line with channel 36
+vht_oper_centr_freq_seg0_idx=42
 #
-# if channel 149 is used, this line must be active if vht_oper_chwidth=1 is active
-# vht_oper_centr_freq_seg0_idx=155
+# Use the next with channel 149
+#vht_oper_centr_freq_seg0_idx=155
 
-
-# hostapd event logger
-logger_syslog=-1
-logger_syslog_level=2
-logger_stdout=-1
-logger_stdout_level=2
-
+# Event logger
+#logger_syslog=-1
+#logger_syslog_level=2
+#logger_stdout=-1
+#logger_stdout_level=2
 
 # WMM
 wmm_enabled=1
-uapsd_advertisement_enabled=1
-wmm_ac_bk_cwmin=4
-wmm_ac_bk_cwmax=10
-wmm_ac_bk_aifs=7
-wmm_ac_bk_txop_limit=0
-wmm_ac_bk_acm=0
-wmm_ac_be_aifs=3
-wmm_ac_be_cwmin=4
-wmm_ac_be_cwmax=10
-wmm_ac_be_txop_limit=0
-wmm_ac_be_acm=0
-wmm_ac_vi_aifs=2
-wmm_ac_vi_cwmin=3
-wmm_ac_vi_cwmax=4
-wmm_ac_vi_txop_limit=94
-wmm_ac_vi_acm=0
-wmm_ac_vo_aifs=2
-wmm_ac_vo_cwmin=2
-wmm_ac_vo_cwmax=3
-wmm_ac_vo_txop_limit=47
-wmm_ac_vo_acm=0
-
+#uapsd_advertisement_enabled=1
+#wmm_ac_bk_cwmin=4
+#wmm_ac_bk_cwmax=10
+#wmm_ac_bk_aifs=7
+#wmm_ac_bk_txop_limit=0
+#wmm_ac_bk_acm=0
+#wmm_ac_be_aifs=3
+#wmm_ac_be_cwmin=4
+#wmm_ac_be_cwmax=10
+#wmm_ac_be_txop_limit=0
+#wmm_ac_be_acm=0
+#wmm_ac_vi_aifs=2
+#wmm_ac_vi_cwmin=3
+#wmm_ac_vi_cwmax=4
+#wmm_ac_vi_txop_limit=94
+#wmm_ac_vi_acm=0
+#wmm_ac_vo_aifs=2
+#wmm_ac_vo_cwmin=2
+#wmm_ac_vo_cwmax=3
+#wmm_ac_vo_txop_limit=47
+#wmm_ac_vo_acm=0
 
 # TX queue parameters
-tx_queue_data3_aifs=7
-tx_queue_data3_cwmin=15
-tx_queue_data3_cwmax=1023
-tx_queue_data3_burst=0
-tx_queue_data2_aifs=3
-tx_queue_data2_cwmin=15
-tx_queue_data2_cwmax=63
-tx_queue_data2_burst=0
-tx_queue_data1_aifs=1
-tx_queue_data1_cwmin=7
-tx_queue_data1_cwmax=15
-tx_queue_data1_burst=3.0
-tx_queue_data0_aifs=1
-tx_queue_data0_cwmin=3
-tx_queue_data0_cwmax=7
-tx_queue_data0_burst=1.5
+#tx_queue_data3_aifs=7
+#tx_queue_data3_cwmin=15
+#tx_queue_data3_cwmax=1023
+#tx_queue_data3_burst=0
+#tx_queue_data2_aifs=3
+#tx_queue_data2_cwmin=15
+#tx_queue_data2_cwmax=63
+#tx_queue_data2_burst=0
+#tx_queue_data1_aifs=1
+#tx_queue_data1_cwmin=7
+#tx_queue_data1_cwmax=15
+#tx_queue_data1_burst=3.0
+#tx_queue_data0_aifs=1
+#tx_queue_data0_cwmin=3
+#tx_queue_data0_cwmax=7
+#tx_queue_data0_burst=1.5
 
-#
 # end of hostapd.conf
 ```
 -----
