@@ -165,7 +165,7 @@ File contents
 # /etc/hostapd/hostapd.conf
 # https://w1.fi/hostapd/
 # 2g, 5g, a/b/g/n/ac
-# 2021-02-20
+# 2021-02-24
 
 # Needs to match your system
 interface=wlan0
@@ -211,10 +211,10 @@ wpa_pairwise=CCMP
 # Change as desired
 wpa_passphrase=raspberry
 # WPA-2 AES
-wpa_key_mgmt=WPA-PSK WPA-PSK-SHA256
+wpa_key_mgmt=WPA-PSK
 # WPA-3 SAE
 #wpa_key_mgmt=SAE
-wpa_group_rekey=1800
+#wpa_group_rekey=1800
 rsn_pairwise=CCMP
 # ieee80211w=2 is required for WPA-3 SAE
 #ieee80211w=2
@@ -227,23 +227,26 @@ rsn_pairwise=CCMP
 # IEEE 802.11n
 # 2g and 5g
 ieee80211n=1
+wmm_enabled=1
 #
 # mt7612u
-ht_capab=[LDPC][HT40+][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][MAX-AMSDU-3839]
-
+# 20 MHz channel width for band 1 - 2g
+#ht_capab=[LDPC][SHORT-GI-20][TX-STBC]
+# 40 MHz channel width for band 2 - 5g
+ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 
 # IEEE 802.11ac
 # 5g
 ieee80211ac=1
 #
 # mt7612u
-vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTER$
+vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 #
 # Required for 80 MHz width channel operation
-vht_oper_chwidth=1
+#vht_oper_chwidth=1
 #
 # Use the next line with channel 36
-vht_oper_centr_freq_seg0_idx=42
+#vht_oper_centr_freq_seg0_idx=42
 #
 # Use the next with channel 149
 #vht_oper_centr_freq_seg0_idx=155
@@ -253,48 +256,6 @@ vht_oper_centr_freq_seg0_idx=42
 #logger_syslog_level=2
 #logger_stdout=-1
 #logger_stdout_level=2
-
-# WMM
-wmm_enabled=1
-#uapsd_advertisement_enabled=1
-#wmm_ac_bk_cwmin=4
-#wmm_ac_bk_cwmax=10
-#wmm_ac_bk_aifs=7
-#wmm_ac_bk_txop_limit=0
-#wmm_ac_bk_acm=0
-#wmm_ac_be_aifs=3
-#wmm_ac_be_cwmin=4
-#wmm_ac_be_cwmax=10
-#wmm_ac_be_txop_limit=0
-#wmm_ac_be_acm=0
-#wmm_ac_vi_aifs=2
-#wmm_ac_vi_cwmin=3
-#wmm_ac_vi_cwmax=4
-#wmm_ac_vi_txop_limit=94
-#wmm_ac_vi_acm=0
-#wmm_ac_vo_aifs=2
-#wmm_ac_vo_cwmin=2
-#wmm_ac_vo_cwmax=3
-#wmm_ac_vo_txop_limit=47
-#wmm_ac_vo_acm=0
-
-# TX queue parameters
-#tx_queue_data3_aifs=7
-#tx_queue_data3_cwmin=15
-#tx_queue_data3_cwmax=1023
-#tx_queue_data3_burst=0
-#tx_queue_data2_aifs=3
-#tx_queue_data2_cwmin=15
-#tx_queue_data2_cwmax=63
-#tx_queue_data2_burst=0
-#tx_queue_data1_aifs=1
-#tx_queue_data1_cwmin=7
-#tx_queue_data1_cwmax=15
-#tx_queue_data1_burst=3.0
-#tx_queue_data0_aifs=1
-#tx_queue_data0_cwmin=3
-#tx_queue_data0_cwmax=7
-#tx_queue_data0_burst=1.5
 
 # end of hostapd.conf
 ```
