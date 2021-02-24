@@ -14,7 +14,7 @@ This document is for WiFi adapters based on the following chipsets
 ```
 mt7612u
 ```
-2021-02-20
+2021-02-24
 
 ##### Tested Setup
 
@@ -30,31 +30,33 @@ mt7612u
 
 - Ethernet connection providing internet
 	- Ethernet cables are CAT 6
-	- Internet is Fiber-optic at 1 Gbps up and 1 Gbps down
+	- Internet is fiber-optic at 1 Gbps up and 1 Gbps down
+
 
 ##### Steps
 
-1. Disable Raspberry Pi onboard WiFi.
 
-Note: Disregard this step if not installing to Raspberry Pi hardware.
+1. Update system.
+```
+$ sudo apt update
+
+$ sudo apt dist-upgrade
+```
+
+2. Disable Raspberry Pi onboard WiFi and Overclock the CPU.
+
+Note: This step is specific to Raspberry Pi 4B hardware.
 ```
 $ sudo nano /boot/config.txt
 ```
 Add
 ```
 dtoverlay=disable-wifi
+over_voltage=2
+arm_freq=1750
 ```
 -----
 
-2. Update system.
-```
-$ sudo apt update
-
-$ sudo apt full-upgrade
-
-$ sudo reboot
-```
------
 
 3. Install needed package.
 ```
@@ -62,7 +64,14 @@ $ sudo apt install hostapd
 ```
 -----
 
-4. Enable the wireless access point service and set it to start
+
+4. Reboot system.
+```
+$ sudo reboot
+```
+
+
+5. Enable the wireless access point service and set it to start
    when your Raspberry Pi boots.
 ```
 $ sudo systemctl unmask hostapd
@@ -71,7 +80,8 @@ $ sudo systemctl enable hostapd
 ```
 -----
 
-5. Add a bridge network device named br0 by creating a file using
+
+6. Add a bridge network device named br0 by creating a file using
    the following command, with the contents below.
 ```
 $ sudo nano /etc/systemd/network/bridge-br0.netdev
@@ -84,7 +94,8 @@ Kind=bridge
 ```
 -----
 
-6. Determine the names of the network interfaces.
+
+7. Determine the names of the network interfaces.
 ```
 $ ip link show
 ```
@@ -94,7 +105,8 @@ and wlan0 during the remainder of this document.
 
 -----
 
-7. Bridge the Ethernet network with the wireless network, first
+
+8. Bridge the Ethernet network with the wireless network, first
    add the built-in Ethernet interface ( eth0 ) as a bridge
    member by creating the following file.
 ```
@@ -110,14 +122,16 @@ Bridge=br0
 ```
 -----
 
-8. Enable the systemd-networkd service to create and populate
+
+9. Enable the systemd-networkd service to create and populate
     the bridge when your Raspberry Pi boots.
 ```
 $ sudo systemctl enable systemd-networkd
 ```
 -----
 
-9. Block the eth0 and wlan0 interfaces from being
+
+10. Block the eth0 and wlan0 interfaces from being
     processed, and let dhcpcd configure only br0 via DHCP.
 ```
 $ sudo nano /etc/dhcpcd.conf
@@ -132,14 +146,16 @@ interface br0
 ```
 -----
 
-10. To ensure WiFi radio is not blocked on your Raspberry Pi,
+
+11. To ensure WiFi radio is not blocked on your Raspberry Pi,
     execute the following command.
 ```
 $ sudo rfkill unblock wlan
 ```
 -----
 
-11. Create the hostapd configuration file.
+
+12. Create the hostapd configuration file.
 ```
 $ sudo nano /etc/hostapd/hostapd.conf
 ```
@@ -283,7 +299,8 @@ wmm_enabled=1
 ```
 -----
 
-12. Establish conf file and log file locations.
+
+13. Establish conf file and log file locations.
 ```
 $ sudo nano /etc/default/hostapd
 ```
@@ -294,12 +311,13 @@ DAEMON_OPTS="-d -K -f /home/pi/hostapd.log"
 ```
 -----
 
-13. Reboot the system.
+
+14. Reboot system.
 
 $ sudo reboot
 
 -----
 
-14. Enjoy!
+15. Enjoy!
 
 -----
