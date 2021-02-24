@@ -69,6 +69,7 @@ $ sudo apt install hostapd
 ```
 $ sudo reboot
 ```
+-----
 
 
 5. Enable the wireless access point service and set it to start
@@ -97,9 +98,9 @@ Kind=bridge
 
 7. Determine the names of the network interfaces.
 ```
-$ ip link show
+$ ip link
 ```
-Note: If the interface names are not eth0 and wlan0, then the
+Note: If the interface names are not ```eth0``` and ```wlan0```, then the
 interface names used in your system will have to replace eth0
 and wlan0 during the remainder of this document.
 
@@ -136,7 +137,7 @@ $ sudo systemctl enable systemd-networkd
 ```
 $ sudo nano /etc/dhcpcd.conf
 ```
-Add the following line above the first interface xxx line, if any
+Add the following line above the first ```interface xxx line```, if any
 ```
 denyinterfaces wlan0 eth0
 ```
