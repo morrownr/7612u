@@ -42,9 +42,9 @@ https://github.com/morrownr/USB-WiFi
 
 
 #### Steps
+-----
 
-
-1. Update system.
+Update system.
 
 ```
 $ sudo apt update
@@ -53,7 +53,7 @@ $ sudo apt dist-upgrade
 ```
 -----
 
-2. Disable Raspberry Pi onboard WiFi and Overclock the CPU.
+Disable Raspberry Pi onboard WiFi and Overclock the CPU.
 
 Note: This step is specific to Raspberry Pi 4B hardware.
 ```
@@ -67,7 +67,7 @@ arm_freq=1750
 ```
 -----
 
-3. Install needed package.
+Install needed package.
 ```
 $ sudo apt install hostapd
 ```
