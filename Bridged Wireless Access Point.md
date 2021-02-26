@@ -5,49 +5,54 @@ ethernet network to extend the network to WiFi capable computers
 and devices in areas where the WiFi signal is weak or otherwise
 does not meet expectations.
 
-Known issues:
+Known issues
 
-- WPA3-SAE operation is not testing good at this time and is disabled.
+	WPA3-SAE operation is not testing good at this time and is disabled.
 
 
 This document is for WiFi adapters based on the following chipsets
+
 ```
 mt7612u
 ```
-Note: Links to adapters that are based on this chipset can be found at this site:
+
+Note: Links to adapters that are based on this chipset can be found at this site
+
 ```
-[https://github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
+https://github.com/morrownr/USB-WiFi
 ```
 
 2021-02-24
 
-##### Tested Setup
+#### Tested Setup
 
-- Raspberry Pi 4B (4gb)
+	Raspberry Pi 4B (4gb)
 
-- Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
+	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
 
-- Raspberry Pi Onboard WiFi disabled
+	Raspberry Pi Onboard WiFi disabled
 
-- USB WiFi Adapter based on the mt7612u chipset
+	USB WiFi Adapter based on the mt7612u chipset
 
-- WiFi Adapter Driver - the driver is in the kernel (PnP)
+	WiFi Adapter Driver - the driver is in the kernel (PnP)
 
-- Ethernet connection providing internet
-	- Ethernet cables are CAT 6
-	- Internet is fiber-optic at 1 Gbps up and 1 Gbps down
+	Ethernet connection providing internet
+		Ethernet cables are CAT 6
+		Internet is fiber-optic at 1 Gbps up and 1 Gbps down
 
 
-##### Steps
+#### Steps
 
 
 1. Update system.
+
 ```
 $ sudo apt update
 
 $ sudo apt dist-upgrade
 ```
 -----
+
 2. Disable Raspberry Pi onboard WiFi and Overclock the CPU.
 
 Note: This step is specific to Raspberry Pi 4B hardware.
@@ -62,20 +67,17 @@ arm_freq=1750
 ```
 -----
 
-
 3. Install needed package.
 ```
 $ sudo apt install hostapd
 ```
 -----
 
-
 4. Reboot system.
 ```
 $ sudo reboot
 ```
 -----
-
 
 5. Enable the wireless access point service and set it to start
    when your Raspberry Pi boots.
@@ -85,7 +87,6 @@ $ sudo systemctl unmask hostapd
 $ sudo systemctl enable hostapd
 ```
 -----
-
 
 6. Add a bridge network device named br0 by creating a file using
    the following command, with the contents below.
@@ -100,7 +101,6 @@ Kind=bridge
 ```
 -----
 
-
 7. Determine the names of the network interfaces.
 ```
 $ ip link
@@ -110,7 +110,6 @@ interface names used in your system will have to replace eth0
 and wlan0 during the remainder of this document.
 
 -----
-
 
 8. Bridge the Ethernet network with the wireless network, first
    add the built-in Ethernet interface ( eth0 ) as a bridge
@@ -128,14 +127,12 @@ Bridge=br0
 ```
 -----
 
-
 9. Enable the systemd-networkd service to create and populate
     the bridge when your Raspberry Pi boots.
 ```
 $ sudo systemctl enable systemd-networkd
 ```
 -----
-
 
 10. Block the eth0 and wlan0 interfaces from being
     processed, and let dhcpcd configure only br0 via DHCP.
@@ -152,14 +149,12 @@ interface br0
 ```
 -----
 
-
 11. To ensure WiFi radio is not blocked on your Raspberry Pi,
     execute the following command.
 ```
 $ sudo rfkill unblock wlan
 ```
 -----
-
 
 12. Create the hostapd configuration file.
 ```
@@ -266,7 +261,6 @@ vht_oper_centr_freq_seg0_idx=42
 ```
 -----
 
-
 13. Establish conf file and log file locations.
 ```
 $ sudo nano /etc/default/hostapd
@@ -277,7 +271,6 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 DAEMON_OPTS="-d -K -f /home/pi/hostapd.log"
 ```
 -----
-
 
 14. Reboot system.
 
