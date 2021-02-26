@@ -12,11 +12,5 @@ fi
 
 echo "Copying ${OPTIONS_FILE} to: /etc/modprobe.d"
 cp -r ${OPTIONS_FILE} /etc/modprobe.d
+echo "${OPTIONS_FILE} was installed successfully."
 
-if [[ "$RESULT" != "0" ]]; then
-	echo "An error occurred : ${RESULT}"
-	exit $RESULT
-else
-	echo "${OPTIONS_FILE} was installed successfully."
-	exit 0
-fi
