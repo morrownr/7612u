@@ -18,9 +18,9 @@ mt7612u
 
 Links to adapters that are based on this chipset can be found at this site
 
-```
+
 [https://github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
-```
+
 
 2021-02-26
 
@@ -53,9 +53,7 @@ $ sudo apt dist-upgrade
 ```
 -----
 
-Disable Raspberry Pi onboard WiFi and Overclock the CPU.
-
-Note: This step is specific to Raspberry Pi 4B hardware.
+Disable Raspberry Pi onboard WiFi and Overclock the CPU. (Specific to Raspberry Pi 4B hardware.)
 ```
 $ sudo nano /boot/config.txt
 ```
@@ -67,7 +65,7 @@ arm_freq=1750
 ```
 -----
 
-Install needed package.
+Install needed package. ( https://w1.fi/hostapd/ )
 ```
 $ sudo apt install hostapd
 ```
@@ -163,7 +161,7 @@ $ sudo nano /etc/hostapd/hostapd.conf
 File contents
 ```
 # /etc/hostapd/hostapd.conf
-# https://w1.fi/hostapd/
+# https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
 # 2g, 5g, a/b/g/n/ac
 # 2021-02-24
 
@@ -282,25 +280,25 @@ Enjoy!
 
 -----
 
-iperf3
+iperf3 test
 ```
 $ iperf3 -c 192.168.1.40
 Connecting to host 192.168.1.40, port 5201
-[  5] local 192.168.1.36 port 51418 connected to 192.168.1.40 port 5201
+[  5] local 192.168.1.83 port 43192 connected to 192.168.1.40 port 5201
 [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-[  5]   0.00-1.00   sec  44.0 MBytes   369 Mbits/sec    0   1007 KBytes       
-[  5]   1.00-2.00   sec  48.8 MBytes   409 Mbits/sec    0   1.20 MBytes       
-[  5]   2.00-3.00   sec  46.2 MBytes   388 Mbits/sec    0   1.40 MBytes       
-[  5]   3.00-4.00   sec  47.5 MBytes   398 Mbits/sec    0   1.40 MBytes       
-[  5]   4.00-5.00   sec  46.2 MBytes   388 Mbits/sec    0   1.49 MBytes       
-[  5]   5.00-6.00   sec  47.5 MBytes   398 Mbits/sec    0   1.49 MBytes       
-[  5]   6.00-7.00   sec  46.2 MBytes   388 Mbits/sec    0   1.60 MBytes       
-[  5]   7.00-8.00   sec  47.5 MBytes   398 Mbits/sec    0   1.60 MBytes       
-[  5]   8.00-9.00   sec  47.5 MBytes   398 Mbits/sec    0   1.60 MBytes       
-[  5]   9.00-10.00  sec  46.2 MBytes   388 Mbits/sec    0   1.66 MBytes       
+[  5]   0.00-1.00   sec  47.6 MBytes   400 Mbits/sec    0   1.50 MBytes       
+[  5]   1.00-2.00   sec  52.5 MBytes   440 Mbits/sec    0   1.91 MBytes       
+[  5]   2.00-3.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes       
+[  5]   3.00-4.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes       
+[  5]   4.00-5.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes       
+[  5]   5.00-6.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes       
+[  5]   6.00-7.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes       
+[  5]   7.00-8.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes       
+[  5]   8.00-9.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes       
+[  5]   9.00-10.00  sec  55.0 MBytes   461 Mbits/sec    0   2.49 MBytes       
 - - - - - - - - - - - - - - - - - - - - - - - - -
 [ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec   468 MBytes   392 Mbits/sec    0   sender
-[  5]   0.00-10.01  sec   465 MBytes   390 Mbits/sec        receiver
+[  5]   0.00-10.00  sec   514 MBytes   431 Mbits/sec    0   sender
+[  5]   0.00-10.01  sec   511 MBytes   428 Mbits/sec        receiver
 
 ```

@@ -1,0 +1,10 @@
+# Module parameters for adapters based on the mt7612u chipset
+#
+# "Disable usb scatter-gather support"
+
+# /etc/modprobe.d/mt76_usb.conf
+# 
+options mt76_usb disable_usb_sg=1
+#
+# echo 1 > /sys/module/mt76_usb/parameters/disable_usb_sg
+
