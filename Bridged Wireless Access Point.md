@@ -16,13 +16,13 @@ This document is for WiFi adapters based on the following chipsets
 mt7612u
 ```
 
-Note: Links to adapters that are based on this chipset can be found at this site
+Links to adapters that are based on this chipset can be found at this site
 
 ```
 https://github.com/morrownr/USB-WiFi
 ```
 
-2021-02-24
+2021-02-25
 
 #### Tested Setup
 
