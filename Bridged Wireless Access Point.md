@@ -14,6 +14,11 @@ This document is for WiFi adapters based on the following chipsets
 ```
 mt7612u
 ```
+Note: Links to adapters that are based on this chipset can be found at this site:
+```
+[https://github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
+```
+
 2021-02-24
 
 ##### Tested Setup
@@ -42,7 +47,7 @@ $ sudo apt update
 
 $ sudo apt dist-upgrade
 ```
-
+-----
 2. Disable Raspberry Pi onboard WiFi and Overclock the CPU.
 
 Note: This step is specific to Raspberry Pi 4B hardware.
@@ -137,7 +142,7 @@ $ sudo systemctl enable systemd-networkd
 ```
 $ sudo nano /etc/dhcpcd.conf
 ```
-Add the following line above the first ```interface xxx line```, if any
+Add the following line above the first ```interface xxx``` line, if any
 ```
 denyinterfaces wlan0 eth0
 ```
@@ -173,7 +178,7 @@ interface=wlan0
 bridge=br0
 driver=nl80211
 ctrl_interface=/var/run/hostapd
-#ctrl_interface_group=0
+ctrl_interface_group=0
 
 # Change as desired
 ssid=pi
@@ -182,8 +187,8 @@ ssid=pi
 country_code=US
 
 # Enable DFS channels
-#ieee80211d=1
-#ieee80211h=1
+ieee80211d=1
+ieee80211h=1
 
 # 2g (b/g/n)
 #hw_mode=g
@@ -217,7 +222,7 @@ wpa_key_mgmt=WPA-PSK
 #wpa_group_rekey=1800
 rsn_pairwise=CCMP
 # ieee80211w=2 is required for WPA-3 SAE
-#ieee80211w=2
+ieee80211w=1
 # If parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
 #sae_require_mfp=1
@@ -231,7 +236,7 @@ wmm_enabled=1
 #
 # mt7612u
 # 20 MHz channel width for band 1 - 2g
-#ht_capab=[LDPC][SHORT-GI-20][TX-STBC]
+#ht_capab=[LDPC][SHORT-GI-20][TX-STBC][RX-STBC1]
 # 40 MHz channel width for band 2 - 5g
 ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 
@@ -243,10 +248,10 @@ ieee80211ac=1
 vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 #
 # Required for 80 MHz width channel operation
-#vht_oper_chwidth=1
+vht_oper_chwidth=1
 #
 # Use the next line with channel 36
-#vht_oper_centr_freq_seg0_idx=42
+vht_oper_centr_freq_seg0_idx=42
 #
 # Use the next with channel 149
 #vht_oper_centr_freq_seg0_idx=155
@@ -283,3 +288,26 @@ $ sudo reboot
 15. Enjoy!
 
 -----
+
+iperf3
+```
+$ iperf3 -c 192.168.1.40
+Connecting to host 192.168.1.40, port 5201
+[  5] local 192.168.1.36 port 51418 connected to 192.168.1.40 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  44.0 MBytes   369 Mbits/sec    0   1007 KBytes       
+[  5]   1.00-2.00   sec  48.8 MBytes   409 Mbits/sec    0   1.20 MBytes       
+[  5]   2.00-3.00   sec  46.2 MBytes   388 Mbits/sec    0   1.40 MBytes       
+[  5]   3.00-4.00   sec  47.5 MBytes   398 Mbits/sec    0   1.40 MBytes       
+[  5]   4.00-5.00   sec  46.2 MBytes   388 Mbits/sec    0   1.49 MBytes       
+[  5]   5.00-6.00   sec  47.5 MBytes   398 Mbits/sec    0   1.49 MBytes       
+[  5]   6.00-7.00   sec  46.2 MBytes   388 Mbits/sec    0   1.60 MBytes       
+[  5]   7.00-8.00   sec  47.5 MBytes   398 Mbits/sec    0   1.60 MBytes       
+[  5]   8.00-9.00   sec  47.5 MBytes   398 Mbits/sec    0   1.60 MBytes       
+[  5]   9.00-10.00  sec  46.2 MBytes   388 Mbits/sec    0   1.66 MBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   468 MBytes   392 Mbits/sec    0   sender
+[  5]   0.00-10.01  sec   465 MBytes   390 Mbits/sec        receiver
+
+```
