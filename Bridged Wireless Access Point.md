@@ -73,13 +73,13 @@ $ sudo apt install hostapd
 ```
 -----
 
-4. Reboot system.
+Reboot system.
 ```
 $ sudo reboot
 ```
 -----
 
-5. Enable the wireless access point service and set it to start
+Enable the wireless access point service and set it to start
    when your Raspberry Pi boots.
 ```
 $ sudo systemctl unmask hostapd
@@ -88,7 +88,7 @@ $ sudo systemctl enable hostapd
 ```
 -----
 
-6. Add a bridge network device named br0 by creating a file using
+Add a bridge network device named br0 by creating a file using
    the following command, with the contents below.
 ```
 $ sudo nano /etc/systemd/network/bridge-br0.netdev
@@ -101,7 +101,7 @@ Kind=bridge
 ```
 -----
 
-7. Determine the names of the network interfaces.
+Determine the names of the network interfaces.
 ```
 $ ip link
 ```
@@ -111,7 +111,7 @@ and wlan0 during the remainder of this document.
 
 -----
 
-8. Bridge the Ethernet network with the wireless network, first
+Bridge the Ethernet network with the wireless network, first
    add the built-in Ethernet interface ( eth0 ) as a bridge
    member by creating the following file.
 ```
@@ -127,14 +127,14 @@ Bridge=br0
 ```
 -----
 
-9. Enable the systemd-networkd service to create and populate
+Enable the systemd-networkd service to create and populate
     the bridge when your Raspberry Pi boots.
 ```
 $ sudo systemctl enable systemd-networkd
 ```
 -----
 
-10. Block the eth0 and wlan0 interfaces from being
+Block the eth0 and wlan0 interfaces from being
     processed, and let dhcpcd configure only br0 via DHCP.
 ```
 $ sudo nano /etc/dhcpcd.conf
@@ -149,14 +149,14 @@ interface br0
 ```
 -----
 
-11. To ensure WiFi radio is not blocked on your Raspberry Pi,
+To ensure WiFi radio is not blocked on your Raspberry Pi,
     execute the following command.
 ```
 $ sudo rfkill unblock wlan
 ```
 -----
 
-12. Create the hostapd configuration file.
+Create the hostapd configuration file.
 ```
 $ sudo nano /etc/hostapd/hostapd.conf
 ```
@@ -261,7 +261,7 @@ vht_oper_centr_freq_seg0_idx=42
 ```
 -----
 
-13. Establish conf file and log file locations.
+Establish conf file and log file locations.
 ```
 $ sudo nano /etc/default/hostapd
 ```
@@ -272,13 +272,13 @@ DAEMON_OPTS="-d -K -f /home/pi/hostapd.log"
 ```
 -----
 
-14. Reboot system.
+Reboot system.
 
 $ sudo reboot
 
 -----
 
-15. Enjoy!
+Enjoy!
 
 -----
 
