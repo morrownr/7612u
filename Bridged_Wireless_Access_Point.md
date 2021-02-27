@@ -16,11 +16,7 @@ This document is for WiFi adapters based on the following chipsets
 mt7612u
 ```
 
-Links to adapters that are based on this chipset can be found at this site
-
-
-[USB WiFi Adapters](https://github.com/morrownr/USB-WiFi)
-
+Links to adapters that are based on this chipset can be found at this site - [USB WiFi Adapters](https://github.com/morrownr/USB-WiFi)
 
 
 2021-02-26
@@ -50,7 +46,7 @@ Update system.
 ```
 $ sudo apt update
 
-$ sudo apt dist-upgrade
+$ sudo apt full-upgrade
 ```
 -----
 
@@ -241,7 +237,7 @@ ieee80211ac=1
 #
 # mt7612u
 vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
-#
+
 # Required for 80 MHz width channel operation
 vht_oper_chwidth=1
 #
@@ -257,7 +253,7 @@ vht_oper_centr_freq_seg0_idx=42
 #logger_stdout=-1
 #logger_stdout_level=2
 
-# end of hostapd.conf
+# End of hostapd.conf
 ```
 -----
 
