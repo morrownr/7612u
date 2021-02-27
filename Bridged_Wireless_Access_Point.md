@@ -19,7 +19,7 @@ mt7612u
 Links to adapters that are based on this chipset can be found at this site
 
 
-	[github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
+	[USB-WiFi](https://github.com/morrownr/USB-WiFi)
 
 
 
