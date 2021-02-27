@@ -1,9 +1,9 @@
 ## Bridged Wireless Access Point
 
-A bridged wireless access point works within an existing
-ethernet network to extend the network to WiFi capable computers
-and devices in areas where the WiFi signal is weak or otherwise
-does not meet expectations.
+A bridged wireless access point works within an existing ethernet
+network to extend the network to WiFi capable computers and devices
+in areas where the WiFi signal is weak or otherwise does not meet
+expectations.
 
 Known issues
 
@@ -19,7 +19,8 @@ mt7612u
 Links to adapters that are based on this chipset can be found at this site
 
 
-[https://github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
+	[https://github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
+
 
 
 2021-02-26
@@ -53,19 +54,20 @@ $ sudo apt dist-upgrade
 ```
 -----
 
-Disable Raspberry Pi onboard WiFi and Overclock the CPU. (Specific to Raspberry Pi 4B hardware.)
+Disable Raspberry Pi onboard WiFi, Bluetooth and Overclock the CPU. (Specific to Raspberry Pi 4B hardware.)
 ```
 $ sudo nano /boot/config.txt
 ```
 Add
 ```
 dtoverlay=disable-wifi
-over_voltage=2
-arm_freq=1750
+dtoverlay=disable-bt
+over_voltage=1
+arm_freq=1600
 ```
 -----
 
-Install needed package. ( https://w1.fi/hostapd/ )
+Install needed package. [hostapd](https://w1.fi/hostapd/)
 ```
 $ sudo apt install hostapd
 ```
@@ -78,7 +80,7 @@ $ sudo reboot
 -----
 
 Enable the wireless access point service and set it to start
-   when your Raspberry Pi boots.
+when your Raspberry Pi boots.
 ```
 $ sudo systemctl unmask hostapd
 
@@ -87,7 +89,7 @@ $ sudo systemctl enable hostapd
 -----
 
 Add a bridge network device named br0 by creating a file using
-   the following command, with the contents below.
+the following command, with the contents below.
 ```
 $ sudo nano /etc/systemd/network/bridge-br0.netdev
 ```
@@ -103,15 +105,15 @@ Determine the names of the network interfaces.
 ```
 $ ip link
 ```
-Note: If the interface names are not ```eth0``` and ```wlan0```, then the
-interface names used in your system will have to replace eth0
-and wlan0 during the remainder of this document.
+Note: If the interface names are not ```eth0``` and ```wlan0```,
+then the interface names used in your system will have to replace
+eth0 and wlan0 during the remainder of this document.
 
 -----
 
 Bridge the Ethernet network with the wireless network, first
-   add the built-in Ethernet interface ( eth0 ) as a bridge
-   member by creating the following file.
+add the built-in Ethernet interface ( eth0 ) as a bridge member
+by creating the following file.
 ```
 $ sudo nano /etc/systemd/network/br0-member-eth0.network
 ```
@@ -125,15 +127,15 @@ Bridge=br0
 ```
 -----
 
-Enable the systemd-networkd service to create and populate
-    the bridge when your Raspberry Pi boots.
+Enable the systemd-networkd service to create and populate the
+bridge when your Raspberry Pi boots.
 ```
 $ sudo systemctl enable systemd-networkd
 ```
 -----
 
-Block the eth0 and wlan0 interfaces from being
-    processed, and let dhcpcd configure only br0 via DHCP.
+Block the eth0 and wlan0 interfaces from being processed, and
+let dhcpcd configure only br0 via DHCP.
 ```
 $ sudo nano /etc/dhcpcd.conf
 ```
@@ -147,8 +149,8 @@ interface br0
 ```
 -----
 
-To ensure WiFi radio is not blocked on your Raspberry Pi,
-    execute the following command.
+To ensure WiFi radio is not blocked on your Raspberry Pi, execute the
+following command.
 ```
 $ sudo rfkill unblock wlan
 ```
