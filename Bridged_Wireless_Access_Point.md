@@ -19,7 +19,7 @@ mt7612u
 Links to adapters that are based on this chipset can be found at this site
 
 
-	[https://github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
+	[github.com/morrownr/USB-WiFi](https://github.com/morrownr/USB-WiFi)
 
 
 
@@ -67,7 +67,7 @@ arm_freq=1600
 ```
 -----
 
-Install needed package. [hostapd](https://w1.fi/hostapd/)
+Install needed package. Website - [hostapd](https://w1.fi/hostapd/)
 ```
 $ sudo apt install hostapd
 ```
