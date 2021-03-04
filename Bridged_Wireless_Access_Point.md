@@ -278,7 +278,7 @@ Enjoy!
 
 -----
 
-iperf3 test
+iperf3 results
 ```
 $ iperf3 -c 192.168.1.40
 Connecting to host 192.168.1.40, port 5201
