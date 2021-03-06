@@ -17,8 +17,8 @@ mt7612u
 ```
 Tested adapters
 
-		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
-		[TEROW ROW02FD](https://github.com/morrownr/USB-WiFi)
+[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
+[TEROW ROW02FD](https://github.com/morrownr/USB-WiFi)
 
 Links to adapters that are based on this chipset can be found at this site - [USB WiFi Adapters](https://github.com/morrownr/USB-WiFi)
 
