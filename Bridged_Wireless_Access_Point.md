@@ -19,17 +19,21 @@ mt7612u
 Links to adapters that are based on this chipset can be found at this site - [USB WiFi Adapters](https://github.com/morrownr/USB-WiFi)
 
 
-2021-02-26
+2021-03-05
 
 #### Tested Setup
 
 	Raspberry Pi 4B (4gb)
+
+	Optional - Powered USB 3 Hub - Transcend TS-HUB3K
 
 	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
 
 	Raspberry Pi Onboard WiFi disabled
 
 	USB WiFi Adapter based on the mt7612u chipset
+		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
+		[TEROW ROW02FD](https://github.com/morrownr/USB-WiFi)
 
 	WiFi Adapter Driver - the driver is in the kernel (PnP)
 
@@ -37,8 +41,18 @@ Links to adapters that are based on this chipset can be found at this site - [US
 		Ethernet cables are CAT 6
 		Internet is fiber-optic at 1 Gbps up and 1 Gbps down
 
+Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
+hardware. The primary problem has to do with the backfeeding of
+current into the Raspberry Pi. Testing has shown that the Transcend
+TS-HUB3K works well.
 
-#### Steps
+Note: The USB WiFi Adapters shown above require a maximum of 400 mA
+of electricity during heavy use. This is much less than many AC1200
+class adapters and makes them a good choice to use with Raspberry Pi
+hardware.
+
+
+#### Setup Steps
 -----
 
 Update system.
@@ -50,14 +64,35 @@ $ sudo apt full-upgrade
 ```
 -----
 
-Disable Raspberry Pi onboard WiFi, Bluetooth and Overclock the CPU. (Specific to Raspberry Pi 4B hardware.)
+Disable various LEDs, onboard WiFi, Bluetooth and Overclock the CPU.
+(Optional)
 ```
 $ sudo nano /boot/config.txt
 ```
 Add
 ```
-dtoverlay=disable-wifi
+# turn off mainboard LEDs
+dtoverlay=act-led
+
+# disable ACT LED
+dtparam=act_led_trigger=none
+dtparam=act_led_activelow=off
+  
+# disable PWR LED
+dtparam=pwr_led_trigger=none
+dtparam=pwr_led_activelow=off
+
+# turn off ethernet port LEDs
+dtparam=eth_led0=4
+dtparam=eth_led1=4
+
+# turn off bluetooth
 dtoverlay=disable-bt
+
+# turn off wifi
+dtoverlay=disable-wifi
+
+# overclocking
 over_voltage=1
 arm_freq=1600
 ```
@@ -197,7 +232,7 @@ macaddr_acl=0
 ignore_broadcast_ssid=0
 rts_threshold=2347
 fragm_threshold=2346
-send_probe_response=1
+#send_probe_response=1
 
 # Security
 auth_algs=1
@@ -213,7 +248,7 @@ wpa_key_mgmt=WPA-PSK
 #wpa_group_rekey=1800
 rsn_pairwise=CCMP
 # ieee80211w=2 is required for WPA-3 SAE
-ieee80211w=1
+ieee80211w=2
 # If parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
 #sae_require_mfp=1
@@ -226,9 +261,9 @@ ieee80211n=1
 wmm_enabled=1
 #
 # mt7612u
-# 20 MHz channel width for band 1 - 2g
+# band 1 - 2g - 20 MHz channel width
 #ht_capab=[LDPC][SHORT-GI-20][TX-STBC][RX-STBC1]
-# 40 MHz channel width for band 2 - 5g
+# band 2 - 5g - 40 MHz channel width
 ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 
 # IEEE 802.11ac
