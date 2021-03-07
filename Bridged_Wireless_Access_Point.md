@@ -1,30 +1,29 @@
 ## Bridged Wireless Access Point
 
+github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point.md
+
 A bridged wireless access point works within an existing ethernet
-network to extend the network to WiFi capable computers and devices
-in areas where the WiFi signal is weak or otherwise does not meet
-expectations.
+network to add WiFi capability where it does not exist or to extend the
+network to WiFi capable computers and devices in areas where the WiFi
+signal is weak or otherwise does not meet expectations.
 
 Known issues
 
-	WPA3-SAE operation is not testing good at this time and is disabled.
+	WPA3-SAE is not testing good at this time and is disabled.
 
 
-This document is for WiFi adapters based on the following chipsets
+This document is for WiFi adapters based on the following chipset
 
 ```
 mt7612u
 ```
-Tested adapters
+Tested WiFi adapter
 
 [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
 
-[TEROW ROW02FD](https://github.com/morrownr/USB-WiFi)
+-----
 
-Links to adapters that are based on this chipset can be found at this site - [USB WiFi Adapters](https://github.com/morrownr/USB-WiFi)
-
-
-2021-03-05
+2021-03-07
 
 #### Tested Setup
 
@@ -34,9 +33,9 @@ Links to adapters that are based on this chipset can be found at this site - [US
 
 	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
 
-	Raspberry Pi Onboard WiFi disabled
+	Optional - Raspberry Pi Onboard WiFi disabled
 
-	USB WiFi Adapter based on the mt7612u chipset
+	AC1200 USB WiFi Adapter - Alfa AWUS036ACM
 
 	WiFi Adapter Driver - the driver is in the kernel (PnP)
 
@@ -46,13 +45,18 @@ Links to adapters that are based on this chipset can be found at this site - [US
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
 hardware. The primary problem has to do with the backfeeding of
-current into the Raspberry Pi. Testing has shown that the Transcend
-TS-HUB3K works well.
+current into the Raspberry Pi. Testing here has shown that the
+Transcend TS-HUB3K works well. This hub has a side port that works
+well for the Alfa AWUS036ACM adapter while leave the three ports
+on the front of the hub available for other peripherals.
 
-Note: The USB WiFi Adapters shown above require a maximum of 400 mA
-of electricity during heavy use. This is much less than many AC1200
-class adapters and makes them a good choice to use with Raspberry Pi
-hardware.
+Note: The Alfa AWUS036ACM adapter requests a maximum of 400 mA from
+the USB subsystem during initialization. Testing with a meter shows
+actual usage of 360 mA during heavy load and usage of 180 mA during
+light loads. This is much lower power usage than many AC1200 class
+adapters which makes this adapter a good choice for a Raspberry Pi 4B
+which has an overall limit of 1200 mA power available via the USB
+subsystem. This adapter does not require usb-modeswitch.
 
 
 #### Setup Steps
@@ -68,34 +72,33 @@ $ sudo apt full-upgrade
 -----
 
 Disable various LEDs, onboard WiFi, Bluetooth and Overclock the CPU.
-(Optional)
 ```
 $ sudo nano /boot/config.txt
 ```
-Add
+Add (all items in this step are optional)
 ```
-# turn off mainboard LEDs
+# turn off Mainboard LEDs
 dtoverlay=act-led
 
-# disable ACT LED
+# disable Activity LED
 dtparam=act_led_trigger=none
 dtparam=act_led_activelow=off
-  
-# disable PWR LED
+
+# disable Power LED
 dtparam=pwr_led_trigger=none
 dtparam=pwr_led_activelow=off
 
-# turn off ethernet port LEDs
+# turn off Ethernet port LEDs
 dtparam=eth_led0=4
 dtparam=eth_led1=4
 
-# turn off bluetooth
-dtoverlay=disable-bt
-
-# turn off wifi
+# turn off WiFi
 dtoverlay=disable-wifi
 
-# overclocking
+# turn off Bluetooth
+dtoverlay=disable-bt
+
+# overclock CPU
 over_voltage=1
 arm_freq=1600
 ```
@@ -113,8 +116,8 @@ $ sudo reboot
 ```
 -----
 
-Enable the wireless access point service and set it to start
-when your Raspberry Pi boots.
+Enable the wireless access point service and set it to start when your
+Raspberry Pi boots.
 ```
 $ sudo systemctl unmask hostapd
 
@@ -122,8 +125,8 @@ $ sudo systemctl enable hostapd
 ```
 -----
 
-Add a bridge network device named br0 by creating a file using
-the following command, with the contents below.
+Add a bridge network device named br0 by creating a file using the
+following command, with the contents below.
 ```
 $ sudo nano /etc/systemd/network/bridge-br0.netdev
 ```
@@ -139,15 +142,15 @@ Determine the names of the network interfaces.
 ```
 $ ip link
 ```
-Note: If the interface names are not ```eth0``` and ```wlan0```,
-then the interface names used in your system will have to replace
-eth0 and wlan0 during the remainder of this document.
+Note: If the interface names are not ```eth0``` and ```wlan0```, then
+the interface names used in your system will have to replace eth0 and
+wlan0 during the remainder of this document.
 
 -----
 
-Bridge the Ethernet network with the wireless network, first
-add the built-in Ethernet interface ( eth0 ) as a bridge member
-by creating the following file.
+Bridge the Ethernet network with the wireless network, first add the
+built-in Ethernet interface ( eth0 ) as a bridge member by creating the
+following file.
 ```
 $ sudo nano /etc/systemd/network/br0-member-eth0.network
 ```
@@ -161,15 +164,15 @@ Bridge=br0
 ```
 -----
 
-Enable the systemd-networkd service to create and populate the
-bridge when your Raspberry Pi boots.
+Enable the systemd-networkd service to create and populate the bridge
+when your Raspberry Pi boots.
 ```
 $ sudo systemctl enable systemd-networkd
 ```
 -----
 
-Block the eth0 and wlan0 interfaces from being processed, and
-let dhcpcd configure only br0 via DHCP.
+Block the eth0 and wlan0 interfaces from being processed, and let dhcpcd
+configure only br0 via DHCP.
 ```
 $ sudo nano /etc/dhcpcd.conf
 ```
@@ -197,11 +200,18 @@ $ sudo nano /etc/hostapd/hostapd.conf
 File contents
 ```
 # /etc/hostapd/hostapd.conf
-# https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
+# Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
 # 2g, 5g, a/b/g/n/ac
-# 2021-02-24
+# 2021-03-07
 
-# Needs to match your system
+# Defaults:
+# SSID: pi
+# PASSPHRASE: raspberry
+# Band: 5g
+# Channel: 36
+# Country: US
+
+# needs to match your system
 interface=wlan0
 
 bridge=br0
@@ -209,13 +219,13 @@ driver=nl80211
 ctrl_interface=/var/run/hostapd
 ctrl_interface_group=0
 
-# Change as desired
+# change as desired
 ssid=pi
 
-# Change as required
+# change as required
 country_code=US
 
-# Enable DFS channels
+# enable DFS channels
 ieee80211d=1
 ieee80211h=1
 
@@ -237,7 +247,7 @@ rts_threshold=2347
 fragm_threshold=2346
 #send_probe_response=1
 
-# Security
+# security
 auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
@@ -274,15 +284,19 @@ ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 ieee80211ac=1
 #
 # mt7612u
+# Band 2 - 5g
 vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 
 # Required for 80 MHz width channel operation
+# Band 2 - 5g
 vht_oper_chwidth=1
 #
 # Use the next line with channel 36
+# Band 2 - 5g
 vht_oper_centr_freq_seg0_idx=42
 #
 # Use the next with channel 149
+# Band 2 - 5g
 #vht_oper_centr_freq_seg0_idx=155
 
 # Event logger
@@ -322,16 +336,16 @@ $ iperf3 -c 192.168.1.40
 Connecting to host 192.168.1.40, port 5201
 [  5] local 192.168.1.83 port 43192 connected to 192.168.1.40 port 5201
 [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-[  5]   0.00-1.00   sec  47.6 MBytes   400 Mbits/sec    0   1.50 MBytes       
-[  5]   1.00-2.00   sec  52.5 MBytes   440 Mbits/sec    0   1.91 MBytes       
-[  5]   2.00-3.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes       
-[  5]   3.00-4.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes       
-[  5]   4.00-5.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes       
-[  5]   5.00-6.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes       
-[  5]   6.00-7.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes       
-[  5]   7.00-8.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes       
-[  5]   8.00-9.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes       
-[  5]   9.00-10.00  sec  55.0 MBytes   461 Mbits/sec    0   2.49 MBytes       
+[  5]   0.00-1.00   sec  47.6 MBytes   400 Mbits/sec    0   1.50 MBytes
+[  5]   1.00-2.00   sec  52.5 MBytes   440 Mbits/sec    0   1.91 MBytes
+[  5]   2.00-3.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
+[  5]   3.00-4.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes
+[  5]   4.00-5.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes
+[  5]   5.00-6.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes
+[  5]   6.00-7.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
+[  5]   7.00-8.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
+[  5]   8.00-9.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes
+[  5]   9.00-10.00  sec  55.0 MBytes   461 Mbits/sec    0   2.49 MBytes
 - - - - - - - - - - - - - - - - - - - - - - - - -
 [ ID] Interval           Transfer     Bitrate         Retr
 [  5]   0.00-10.00  sec   514 MBytes   431 Mbits/sec    0   sender
