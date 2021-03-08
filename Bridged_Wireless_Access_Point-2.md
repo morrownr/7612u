@@ -259,7 +259,7 @@ wpa_key_mgmt=WPA-PSK
 #wpa_group_rekey=1800
 rsn_pairwise=CCMP
 # ieee80211w=2 is required for WPA-3 SAE
-ieee80211w=2
+#ieee80211w=2
 # If parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
 #sae_require_mfp=1
@@ -367,9 +367,6 @@ rsn_pairwise=CCMP
 # IEEE 802.11n
 ieee80211n=1
 wmm_enabled=1
-#
-# # band 1 - 2g - 20 MHz channel width
-#ht_capab=[SHORT-GI-20]
 
 # End of hostapd.conf
 ```
@@ -411,7 +408,7 @@ ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 [Install]
 WantedBy=multi-user.target
 ```
-Note that the 'Environment=' line and 'ExecStart=' line have been modified.
+Note that the 'Environment=' line and 'ExecStart=' lines have been modified.
 
 -----
 
