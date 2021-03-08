@@ -411,7 +411,8 @@ ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 [Install]
 WantedBy=multi-user.target
 ```
-Note that the Environment= line and ExecStart= line have been modified.
+Note that the 'Environment=' line and 'ExecStart=' line have been modified.
+
 -----
 
 Reboot system.
