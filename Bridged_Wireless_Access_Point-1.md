@@ -1,11 +1,14 @@
 ## Bridged Wireless Access Point
 
-github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point.md
-
 A bridged wireless access point works within an existing ethernet
 network to add WiFi capability where it does not exist or to extend the
 network to WiFi capable computers and devices in areas where the WiFi
 signal is weak or otherwise does not meet expectations.
+
+#### Single Band
+
+This document outlines a single band setup using the Raspberry Pi 4B
+with a USB 3 WiFi adapter for 5g.
 
 Known issues
 

@@ -390,25 +390,11 @@ $ cp /usr/lib/systemd/system/hostapd.service /etc/systemd/system/hostapd.service
 ```
 $ sudo nano /etc/systemd/system/hostapd.service
 ```
-Change contents to the following
+Change the 'Environment=' line and 'ExecStart=' lines to the following
 ```
-[Unit]
-Description=Advanced IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/EAP Authenticator
-After=network.target
-
-[Service]
-Type=forking
-PIDFile=/run/hostapd.pid
-Restart=on-failure
-RestartSec=2
 Environment=DAEMON_CONF="/etc/hostapd/hostapd-5g.conf /etc/hostapd/hostapd-2g.conf"
-EnvironmentFile=-/etc/default/hostapd
 ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
-
-[Install]
-WantedBy=multi-user.target
 ```
-Note that the 'Environment=' line and 'ExecStart=' lines have been modified.
 
 -----
 
