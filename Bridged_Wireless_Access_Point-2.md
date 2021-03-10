@@ -145,9 +145,9 @@ Determine the names of the network interfaces.
 ```
 $ ip link
 ```
-Note: If the interface names are not eth0, wlan0 and wlan1, then the
-interface names used in your system will have to replace eth0 and
-wlan0 during the remainder of this document.
+Note: If the interface names are not eth0, wlan0 and wlan1, then the interface
+names used in your system will have to replace eth0, wlan0 and wlan1 for the
+remainder of this document.
 
 -----
 
@@ -385,7 +385,7 @@ DAEMON_OPTS="-d -K -f /home/pi/hostapd.log"
 
 Modify hostapd.service file.
 ```
-$ cp /usr/lib/systemd/system/hostapd.service /etc/systemd/system/hostapd.service
+$ sudo cp /usr/lib/systemd/system/hostapd.service /etc/systemd/system/hostapd.service
 ```
 ```
 $ sudo nano /etc/systemd/system/hostapd.service
