@@ -14,11 +14,9 @@ with a USB 3 WiFi adapter for 5g.
 
 This setup supports WPA3-SAE personal.
 
-This document is for WiFi adapters based on the mt7612ufollowing chipset -
-
 -----
 
-2021-03-10
+2021-03-16
 
 #### Tested Setup
 
@@ -27,19 +25,19 @@ This document is for WiFi adapters based on the mt7612ufollowing chipset -
 	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
 
 	AC1200 USB WiFi Adapter
-		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi) - single-state
-		[TEROW ROW02FD](https://github.com/morrownr/USB-WiFi) - multi-state
+		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
 
 	Ethernet connection providing internet
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
 hardware. The primary problem has to do with the backfeeding of
-current into the Raspberry Pi.
+current into the Raspberry Pi. I have avoided using a powered hub
+in this setup to enable a very high degree of stability.
 
 Note: The Alfa AWUS036ACM adapter requests a maximum of 400 mA from
 the USB subsystem during initialization. Testing with a meter shows
 actual usage of 360 mA during heavy load and usage of 180 mA during
-light loads. This is much lower power usage than many AC1200 class
+light loads. This is much lower power usage than most AC1200 class
 adapters which makes this adapter a good choice for a Raspberry Pi 4B
 which has an overall limit of 1200 mA power available via the USB
 subsystem. This adapter does not require usb-modeswitch.
@@ -57,7 +55,7 @@ $ sudo apt full-upgrade
 ```
 -----
 
-Reduce overall power consumption and overclock the CPU.
+Reduce overall power consumption and overclock the CPU a modest amount.
 
 Note: all items in this step are optional
 ```
@@ -198,7 +196,7 @@ File contents
 ```
 # /etc/hostapd/hostapd.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-03-14
+# 2021-03-16
 
 # Defaults:
 # SSID: pi
@@ -247,7 +245,7 @@ fragm_threshold=2346
 auth_algs=3
 ignore_broadcast_ssid=0
 wpa=2
-wpa_pairwise=CCMP
+#wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 # Change as desired
 wpa_passphrase=raspberry
@@ -258,10 +256,12 @@ wpa_key_mgmt=SAE WPA-PSK
 # WPA-3 SAE
 #wpa_key_mgmt=SAE
 #wpa_group_rekey=1800
+# ieee80211w=1 is required for WPA-3 SAE Transitional
 # ieee80211w=2 is required for WPA-3 SAE
 ieee80211w=1
 # If parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
+required for WPA-3 SAE Transitional
 sae_require_mfp=1
 # If parameter is not 9 set, 5 is the default value.
 #sae_anti_clogging_threshold=10
@@ -322,7 +322,7 @@ Enjoy!
 
 -----
 
-iperf3 results
+iperf3 results - 5g
 ```
 $ iperf3 -c 192.168.1.40
 Connecting to host 192.168.1.40, port 5201
