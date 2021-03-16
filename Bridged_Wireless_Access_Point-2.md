@@ -12,49 +12,29 @@ onboard WiFi for 2g and a USB 3 WiFi adapter for 5g.
 
 #### Information
 
-Known issues
+This setup supports WPA3-SAE personal.
 
-	WPA3-SAE is not testing good at this time and is disabled.
-
-The [home location](https://github.com/morrownr/7612u) of this document.
-
-This document is for WiFi adapters based on the following chipset -
-
-```
-mt7612u
-```
-Tested WiFi adapter
-
-[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
+This document is for WiFi adapters based on the mt7612ufollowing chipset -
 
 -----
 
-2021-03-08
+2021-03-10
 
 #### Tested Setup
 
 	Raspberry Pi 4B (4gb)
 
-	Optional - Powered USB 3 Hub - Transcend TS-HUB3K
-
 	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
 
-	Optional - Raspberry Pi Onboard WiFi disabled
-
-	AC1200 USB WiFi Adapter - Alfa AWUS036ACM
-
-	WiFi Adapter Driver - the driver is in the kernel (PnP)
+	AC1200 USB WiFi Adapter
+		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi) - single-state
+		[TEROW ROW02FD](https://github.com/morrownr/USB-WiFi) - multi-state
 
 	Ethernet connection providing internet
-		Ethernet cables are CAT 6
-		Internet is fiber-optic at 1 Gbps up and 1 Gbps down
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
 hardware. The primary problem has to do with the backfeeding of
-current into the Raspberry Pi. Testing here has shown that the
-Transcend TS-HUB3K works well. This hub has a side port that works
-well for the Alfa AWUS036ACM adapter while leave the three ports
-on the front of the hub available for other peripherals.
+current into the Raspberry Pi.
 
 Note: The Alfa AWUS036ACM adapter requests a maximum of 400 mA from
 the USB subsystem during initialization. Testing with a meter shows
@@ -145,8 +125,8 @@ Determine the names of the network interfaces.
 ```
 $ ip link
 ```
-Note: If the interface names are not eth0, wlan0 and wlan1, then the interface
-names used in your system will have to replace eth0, wlan0 and wlan1 for the
+Note: If the interface names are not `eth0`, `wlan0` and `wlan1`, then the interface
+names used in your system will have to replace `eth0`, `wlan0` and `wlan1` for the
 remainder of this document.
 
 -----
@@ -204,7 +184,7 @@ File contents
 ```
 # /etc/hostapd/hostapd-5g.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-03-07
+# 2021-03-14
 
 # Defaults:
 # SSID: pi4-5
@@ -246,23 +226,25 @@ fragm_threshold=2346
 #send_probe_response=1
 
 # security
-auth_algs=1
+auth_algs=3
 ignore_broadcast_ssid=0
 wpa=2
 wpa_pairwise=CCMP
+rsn_pairwise=CCMP
 # Change as desired
 wpa_passphrase=raspberry
 # WPA-2 AES
-wpa_key_mgmt=WPA-PSK
+#wpa_key_mgmt=WPA-PSK
+# WPA3-AES Transitional
+wpa_key_mgmt=SAE WPA-PSK
 # WPA-3 SAE
 #wpa_key_mgmt=SAE
 #wpa_group_rekey=1800
-rsn_pairwise=CCMP
 # ieee80211w=2 is required for WPA-3 SAE
-#ieee80211w=2
+ieee80211w=1
 # If parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
-#sae_require_mfp=1
+sae_require_mfp=1
 # If parameter is not 9 set, 5 is the default value.
 #sae_anti_clogging_threshold=10
 
