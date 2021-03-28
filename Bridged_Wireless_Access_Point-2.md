@@ -16,13 +16,13 @@ This setup supports WPA3-SAE personal.
 
 -----
 
-2021-03-16
+2021-03-28
 
 #### Tested Setup
 
 	Raspberry Pi 4B (4gb)
 
-	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
+	Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
 
 	AC1200 USB WiFi Adapter
 		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
@@ -66,7 +66,7 @@ Change
 # turn off onboard audio
 dtparam=audio=off
 
-# Enable DRM VC4 V3D driver on top of the dispmanx display stack
+# disable DRM VC4 V3D driver on top of the dispmanx display stack
 #dtoverlay=vc4-fkms-v3d
 #max_framebuffers=2
 ```
