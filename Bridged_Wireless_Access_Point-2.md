@@ -254,7 +254,7 @@ wpa_key_mgmt=SAE WPA-PSK
 ieee80211w=1
 # If parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
-required for WPA-3 SAE Transitional
+# required for WPA-3 SAE Transitional
 sae_require_mfp=1
 # If parameter is not 9 set, 5 is the default value.
 #sae_anti_clogging_threshold=10
