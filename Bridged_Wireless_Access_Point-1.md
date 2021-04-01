@@ -282,19 +282,20 @@ ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 ieee80211ac=1
 #
 # mt7612u
-# Band 2 - 5g
-vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+# band 2 - 5g
+#vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 
 # Required for 80 MHz width channel operation
-# Band 2 - 5g
+# band 2 - 5g
 vht_oper_chwidth=1
 #
 # Use the next line with channel 36
-# Band 2 - 5g
+# band 2 - 5g
 vht_oper_centr_freq_seg0_idx=42
 #
 # Use the next with channel 149
-# Band 2 - 5g
+# band 2 - 5g
 #vht_oper_centr_freq_seg0_idx=155
 
 # End of hostapd.conf

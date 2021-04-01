@@ -16,7 +16,7 @@ This setup supports WPA3-SAE personal.
 
 -----
 
-2021-03-28
+2021-03-31
 
 #### Tested Setup
 
@@ -193,10 +193,10 @@ File contents
 ```
 # /etc/hostapd/hostapd-5g.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-03-16
+# 2021-04-01
 
 # Defaults:
-# SSID: pi4-5
+# SSID: pi4-5g
 # PASSPHRASE: raspberry
 # Band: 5g
 # Channel: 36
@@ -211,7 +211,7 @@ ctrl_interface=/var/run/hostapd
 ctrl_interface_group=0
 
 # change as desired
-ssid=pi4-5
+ssid=pi4-5g
 
 # change as required
 country_code=US
@@ -235,32 +235,31 @@ fragm_threshold=2346
 #send_probe_response=1
 
 # security
-auth_algs=3
 ignore_broadcast_ssid=0
 wpa=2
-#wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 # Change as desired
 wpa_passphrase=raspberry
 # WPA-2 AES
-#wpa_key_mgmt=WPA-PSK
+wpa_key_mgmt=WPA-PSK
 # WPA3-AES Transitional
-wpa_key_mgmt=SAE WPA-PSK
+#wpa_key_mgmt=SAE WPA-PSK
 # WPA-3 SAE
 #wpa_key_mgmt=SAE
+# auth_algs=3 required for WPA-3 SAE, otherwise 1
+auth_algs=1
 #wpa_group_rekey=1800
 # ieee80211w=1 is required for WPA-3 SAE Transitional
 # ieee80211w=2 is required for WPA-3 SAE
-ieee80211w=1
+#ieee80211w=1
 # If parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
 # required for WPA-3 SAE Transitional
-sae_require_mfp=1
+#sae_require_mfp=1
 # If parameter is not 9 set, 5 is the default value.
 #sae_anti_clogging_threshold=10
 
 # IEEE 802.11n
-# 2g and 5g
 ieee80211n=1
 wmm_enabled=1
 #
@@ -273,19 +272,20 @@ ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 ieee80211ac=1
 #
 # mt7612u
-# Band 2 - 5g
-vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+# band 2 - 5g
+#vht_capab=[RXLDPC][TX-STBC-2BY1][SHORT-GI-80][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 
 # Required for 80 MHz width channel operation
-# Band 2 - 5g
+# band 2 - 5g
 vht_oper_chwidth=1
 #
 # Use the next line with channel 36
-# Band 2 - 5g
+# band 2 - 5g
 vht_oper_centr_freq_seg0_idx=42
 #
 # Use the next with channel 149
-# Band 2 - 5g
+# band 2 - 5g
 #vht_oper_centr_freq_seg0_idx=155
 
 # End of hostapd.conf
@@ -303,7 +303,7 @@ File contents
 # 2021-03-07
 
 # Defaults:
-# SSID: pi4-2
+# SSID: pi4-2g
 # PASSPHRASE: raspberry
 # Band: 2g
 # Channel: 6
@@ -318,7 +318,7 @@ ctrl_interface=/var/run/hostapd
 ctrl_interface_group=0
 
 # change as desired
-ssid=pi4-2
+ssid=pi4-2g
 
 # change as required
 country_code=US
@@ -383,7 +383,7 @@ $ sudo cp /usr/lib/systemd/system/hostapd.service /etc/systemd/system/hostapd.se
 ```
 $ sudo nano /etc/systemd/system/hostapd.service
 ```
-Change the 'Environment=' line and 'ExecStart=' lines to the following
+Change the 'Environment=' line and 'ExecStart=' line to the following
 ```
 Environment=DAEMON_CONF="/etc/hostapd/hostapd-5g.conf /etc/hostapd/hostapd-2g.conf"
 ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
