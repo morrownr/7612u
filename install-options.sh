@@ -14,3 +14,18 @@ echo "Copying ${OPTIONS_FILE} to: /etc/modprobe.d"
 cp -r ${OPTIONS_FILE} /etc/modprobe.d
 echo "${OPTIONS_FILE} was installed successfully."
 
+read -p "Do you want edit the options file? [y/n] " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    nano /etc/modprobe.d/${OPTIONS_FILE}
+fi
+
+read -p "Are you ready to reboot? [y/n] " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    reboot
+fi
+
+exit 0

@@ -21,3 +21,12 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 nano /etc/modprobe.d/${OPTIONS_FILE}
+
+read -p "Are you ready to reboot? [y/n] " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    reboot
+fi
+
+exit 0
