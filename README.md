@@ -57,11 +57,11 @@ Step 5: Download the repo
 ```bash
 $ git clone https://github.com/morrownr/7612u.git
 ```
-Step 7: Move to the newly created directory
+Step 6: Move to the newly created directory
 ```bash
 $ cd ~/src/7612u
 ```
-Step 9: Run the installation script
+Step 7: Run the installation script
 ```bash
 $ sudo ./install-options.sh
 ```
