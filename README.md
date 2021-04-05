@@ -62,3 +62,31 @@ Step 9: Run the installation script
 ```bash
 $ sudo ./install-options.sh
 ```
+
+Question: What can I do with a mt7612u based adapter that I can't do
+with my rtl8812au based adapter?
+
+Answer: A lot...
+
+Run multiple interface combinations on a single adapter at the same time
+
+$ sudo iw dev
+
+phy#0
+	Interface mon0
+		ifindex 20
+		wdev 0x1000000002
+		addr 00:13:ef:5f:0c:7c
+		type monitor
+		txpower 19.00 dBm
+	Interface wlan0
+		ifindex 19
+		wdev 0x1000000001
+		addr 00:13:ef:5f:0c:7c
+		ssid Bass
+		type managed
+		channel 149 (5745 MHz), width: 80 MHz, center1: 5775 MHz
+		txpower 19.00 dBm
+		multicast TXQ:
+			qsz-byt	qsz-pkt	flows	drops	marks	overlmt
+			0	0	0	0	0	0
