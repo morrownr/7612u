@@ -1,9 +1,9 @@
 ## Bridged Wireless Access Point
 
 A bridged wireless access point works within an existing ethernet
-network to add WiFi capability where it does not exist or to extend the
-network to WiFi capable computers and devices in areas where the WiFi
-signal is weak or otherwise does not meet expectations.
+network to add WiFi capability where it does not exist or to extend
+the network to WiFi capable computers and devices in areas where the
+WiFi signal is weak or otherwise does not meet expectations.
 
 #### Single Band
 
@@ -24,7 +24,7 @@ This setup supports WPA3-SAE personal.
 
 	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
 
-	AC1200 USB WiFi Adapter
+	AC1200 USB WiFi Adapter with mt7612u chipset
 		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
 
 	Ethernet connection providing internet
@@ -46,6 +46,10 @@ subsystem. This adapter does not require usb-modeswitch.
 #### Setup Steps
 -----
 
+USB adapter driver installation is not required as the driver is in-kernel.
+
+-----
+
 Update system.
 
 ```
@@ -57,7 +61,9 @@ $ sudo apt full-upgrade
 
 Reduce overall power consumption and overclock the CPU a modest amount.
 
-Note: all items in this step are optional
+Note: all items in this step are optional and some items are specific to
+the Raspberry Pi 4B. If installing to a Raspberry Pi 3b or 3b+ you will
+need to use the appropriate settings for that hardward.
 ```
 $ sudo nano /boot/config.txt
 ```
@@ -66,7 +72,7 @@ Change
 # turn off onboard audio
 dtparam=audio=off
 
-# Enable DRM VC4 V3D driver on top of the dispmanx display stack
+# disable DRM VC4 V3D driver on top of the dispmanx display stack
 #dtoverlay=vc4-fkms-v3d
 #max_framebuffers=2
 ```
@@ -87,15 +93,15 @@ dtparam=pwr_led_activelow=off
 dtparam=eth_led0=4
 dtparam=eth_led1=4
 
-# turn off WiFi
-dtoverlay=disable-wifi
-
 # turn off Bluetooth
 dtoverlay=disable-bt
 
 # overclock CPU
 over_voltage=1
 arm_freq=1600
+
+# turn off WiFi
+dtoverlay=disable-wifi
 ```
 -----
 
@@ -137,9 +143,9 @@ Determine the names of the network interfaces.
 ```
 $ ip link
 ```
-Note: If the interface names are not `eth0` and `wlan0`, then
-the interface names used in your system will have to replace `eth0` and
-`wlan0` for the remainder of this document.
+Note: If the interface names are not `eth0` and `wlan0`,
+then the interface names used in your system will have to replace
+`eth0` and `wlan0` for the remainder of this document.
 
 -----
 
@@ -171,7 +177,7 @@ configure only br0 via DHCP.
 ```
 $ sudo nano /etc/dhcpcd.conf
 ```
-Add the following line above the first ```interface xxx``` line, if any
+Add the following line above the first `interface xxx` line, if any
 ```
 denyinterfaces eth0 wlan0
 ```
@@ -196,10 +202,10 @@ File contents
 ```
 # /etc/hostapd/hostapd.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-03-16
+# 2021-04-07
 
 # Defaults:
-# SSID: pi
+# SSID: pi4
 # PASSPHRASE: raspberry
 # Band: 5g
 # Channel: 36
@@ -214,7 +220,7 @@ ctrl_interface=/var/run/hostapd
 ctrl_interface_group=0
 
 # change as desired
-ssid=pi
+ssid=pi4
 
 # change as required
 country_code=US
@@ -223,17 +229,14 @@ country_code=US
 ieee80211d=1
 ieee80211h=1
 
-# 2g (b/g/n)
-#hw_mode=g
-#channel=6
-#
-# 5g (a/n/ac)
+# a = 5g (a/n/ac)
+# g = 2g (b/g/n)
 hw_mode=a
 channel=36
 # channel=149
 
 beacon_int=100
-dtim_period=1
+dtim_period=2
 max_num_sta=32
 macaddr_acl=0
 ignore_broadcast_ssid=0
@@ -242,34 +245,36 @@ fragm_threshold=2346
 #send_probe_response=1
 
 # security
-auth_algs=3
+# auth_algs=1 works for WPA-2
+# auth_algs=3 required for WPA-3 SAE and Transitional
+auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
-#wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 # Change as desired
 wpa_passphrase=raspberry
 # WPA-2 AES
-#wpa_key_mgmt=WPA-PSK
+wpa_key_mgmt=WPA-PSK
 # WPA3-AES Transitional
-wpa_key_mgmt=SAE WPA-PSK
+#wpa_key_mgmt=SAE WPA-PSK
 # WPA-3 SAE
 #wpa_key_mgmt=SAE
 #wpa_group_rekey=1800
 # ieee80211w=1 is required for WPA-3 SAE Transitional
 # ieee80211w=2 is required for WPA-3 SAE
-ieee80211w=1
-# If parameter is not set, 19 is the default value.
+#ieee80211w=1
+# if parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
-required for WPA-3 SAE Transitional
-sae_require_mfp=1
-# If parameter is not 9 set, 5 is the default value.
+# required for WPA-3 SAETransitional
+#sae_require_mfp=1
+# if parameter is not 9 set, 5 is the default value.
 #sae_anti_clogging_threshold=10
 
 # IEEE 802.11n
-# 2g and 5g
 ieee80211n=1
 wmm_enabled=1
+#
+# Note: Capabilities can vary even between adapters with the same chipset
 #
 # mt7612u
 # band 1 - 2g - 20 MHz channel width
@@ -283,7 +288,6 @@ ieee80211ac=1
 #
 # mt7612u
 # band 2 - 5g
-#vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 
 # Required for 80 MHz width channel operation

