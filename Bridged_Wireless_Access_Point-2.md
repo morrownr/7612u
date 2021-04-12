@@ -19,15 +19,15 @@ This setup supports WPA3-SAE personal but it is turned off by dafault.
 2021-04-07
 
 #### Tested Setup
-
+```
 	Raspberry Pi 4B (4gb)
 
 	Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
-
-	AC1200 USB WiFi Adapter with mt7612u chipset
-		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
-
+	
 	Ethernet connection providing internet
+
+	AC1200 USB WiFi Adapter with mt7612u chipset```
+	[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
 hardware. The primary problem has to do with the backfeeding of
