@@ -29,7 +29,7 @@ This setup supports WPA3-SAE personal but it is turned off by dafault.
 
 	AC1200 USB WiFi Adapter with mt7612u chipset
 ```
-[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
+Note: The [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi) is the adapter used.
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
 hardware. The primary problem has to do with the backfeeding of
