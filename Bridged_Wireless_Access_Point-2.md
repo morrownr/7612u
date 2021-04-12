@@ -27,7 +27,7 @@ This setup supports WPA3-SAE personal but it is turned off by dafault.
 	
 	Ethernet connection providing internet
 
-	AC1200 USB WiFi Adapter with mt7612u chipset such as the Alfa AWUS036ACM
+	AC1200 USB WiFi Adapter with mt7612u chipset ( Alfa AWUS036ACM )
 ```
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
