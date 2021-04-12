@@ -200,7 +200,7 @@ File contents
 ```
 # /etc/hostapd/hostapd-5g.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-04-07
+# 2021-04-11
 
 # Defaults:
 # SSID: pi4-5g
@@ -236,17 +236,16 @@ channel=36
 beacon_int=100
 dtim_period=2
 max_num_sta=32
-macaddr_acl=0
-ignore_broadcast_ssid=0
 rts_threshold=2347
 fragm_threshold=2346
-#send_probe_response=1
+send_probe_response=1
 
 # security
 # auth_algs=1 works for WPA-2
 # auth_algs=3 required for WPA-3 SAE and Transitional
 auth_algs=1
-ignore_broadcast_ssid=0
+macaddr_acl=0
+#ignore_broadcast_ssid=0
 wpa=2
 rsn_pairwise=CCMP
 # Change as desired
@@ -263,7 +262,7 @@ wpa_key_mgmt=WPA-PSK
 #ieee80211w=1
 # if parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
-# required for WPA-3 SAETransitional
+# required for WPA-3 SAE Transitional
 #sae_require_mfp=1
 # if parameter is not 9 set, 5 is the default value.
 #sae_anti_clogging_threshold=10
@@ -387,17 +386,16 @@ hw_mode=g
 channel=6
 
 beacon_int=100
-dtim_period=1
+dtim_period=2
 max_num_sta=32
-macaddr_acl=0
-ignore_broadcast_ssid=0
 rts_threshold=2347
 fragm_threshold=2346
-#send_probe_response=1
+send_probe_response=1
 
 # security
 auth_algs=1
-ignore_broadcast_ssid=0
+macaddr_acl=0
+#ignore_broadcast_ssid=0
 wpa=2
 wpa_pairwise=CCMP
 # Change as desired
