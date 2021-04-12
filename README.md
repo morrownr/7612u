@@ -14,7 +14,7 @@ The below documents provide instructions for setting up an Access Point using a 
 with `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 ```
 Bridged_Wireless_Access_Point-1.md - 5g single band
-Bridged_Wireless_Access_Point-2.md - 5g and 2g dual band ( it works really well)
+Bridged_Wireless_Access_Point-2.md - 5g and 2g dual band ( it works really well )
 ```
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 This adapter works very well with the Raspberry Pi hardware.
