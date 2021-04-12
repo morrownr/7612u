@@ -12,17 +12,17 @@ onboard WiFi for 2g and a USB 3 WiFi adapter for 5g.
 
 #### Information
 
-This setup supports WPA3-SAE personal.
+This setup supports WPA3-SAE personal but it is turned off by dafault.
 
 -----
 
-2021-03-16
+2021-04-07
 
 #### Tested Setup
 
 	Raspberry Pi 4B (4gb)
 
-	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
+	Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
 
 	AC1200 USB WiFi Adapter with mt7612u chipset
 		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)

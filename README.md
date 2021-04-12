@@ -4,17 +4,17 @@
 
 ### 7612u :rocket:
 
-Linux Support for USB WiFi Adapters that are based on the MT7612U/MT7610U Chipsets
+Linux Support for USB WiFi Adapters that are based on the MT7612U and MT7610U Chipsets.
 
-USB WiFi adapters based on the mt7612u/mt7610u chipset have been supported in-kernel since
-Linux kernel v4.19, therefore, there is no need to post a driver. This repo will
-be used to provide information.
+USB WiFi adapters based on the mt7612u and mt7610u chipsets have been supported in-kernel
+since Linux kernel v4.19, therefore, there is no need to post a driver. This repo will be
+used to provide information and utilities.
 
 The below documents provide instructions for setting up an Access Point using a Raspberry Pi 4b
 with `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 ```
-*Bridged_Wireless_Access_Point-1.md* - 5g only
-*Bridged_Wireless_Access_Point-2.md* - 5g and 2g dual band (like a real wifi router)
+Bridged_Wireless_Access_Point-1.md - 5g only single band
+Bridged_Wireless_Access_Point-2.md - 5g and 2g dual band (like a real wifi router) :rocket:
 ```
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 This adapter works very well with the Raspberry Pi hardware.
