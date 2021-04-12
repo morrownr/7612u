@@ -1,8 +1,8 @@
 ## Monitor Mode
 
-2021-04-07
+2021-04-11
 
-Tested with Kali Linux
+Tested with Kali Linux and an Alfa AWUS036ACM (mt7612u) adapter.
 
 -----
 Install the aircrack-ng package
