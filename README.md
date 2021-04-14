@@ -21,9 +21,8 @@ This adapter works very well with the Raspberry Pi hardware.
 
 The mt7612u driver does support one module parameter - disable_usb_sg
 
-This parameter is used to turn USB Scatter-Gather support on or off. Pay attention
-to the setting in that turning this parameter on disables Scatter-Gather support.
-Documentation is the file mt76_usb.conf.
+This parameter is used to turn USB Scatter-Gather support on or off. Documentation
+is the file mt76_usb.conf.
 
 To make it easy to install and manage support for this parameter, I have added some scripts
 that you can download and use. To install...
