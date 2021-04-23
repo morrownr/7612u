@@ -9,14 +9,29 @@ Tested with Kali Linux and an Alfa AWUS036ACM (mt7612u) adapter.
 Tested with Raspberry Pi OS and an Alfa AWUS036ACHM (mt7610u) adapter.
 
 -----
+To ensure WiFi radio is not blocked, execute the following command
+```
+$ sudo rfkill unblock wlan
+```
+
+-----
 Install the aircrack-ng package
 ```
 $ sudo apt install aircrack-ng
 ```
+-----
+Disable interfering processes
+
+Note: An alternate method that may work is shown below
+```
+$ sudo airmon-ng start kill
+```
+
+Alternate method to disable interfering processes
 
 Ensure Network Manager doesn't cause problems
 
-Note: Not required for the Raspberry Pi OS
+Note: The Raspberry Pi OS does not use Network Manager
 ```
 $ sudo nano /etc/NetworkManager/NetworkManager.conf
 ```
@@ -26,6 +41,7 @@ add
 unmanaged-devices=interface-name:mon0;interface-name:mon1
 ```
 
+-----
 Enable monitor mode using iw and ip:
 ```
 $ sudo iw dev
@@ -39,10 +55,14 @@ phy#0
 		type managed
 		txpower 12.00 dBm
 ```
+
+-----
 Add monitor interface
 ```
 $ sudo iw phy phy0 interface add mon0 type monitor
 ```
+
+-----
 Check that mon0 was added
 ```
 $ sudo iw dev
@@ -62,12 +82,6 @@ phy#0
 		addr aa:bb:cc:dd:00:cc
 		type managed
 		txpower 23.00 dBm
-```
-
------
-To ensure WiFi radio is not blocked, execute the following command.
-```
-$ sudo rfkill unblock wlan
 ```
 
 -----
