@@ -48,7 +48,7 @@ unmanaged-devices=interface-name:mon0;interface-name:mon1
 ```
 
 -----
-Enable monitor mode using `iw`
+Get status of WiFi interface
 ```
 $ sudo iw dev
 ```
