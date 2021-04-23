@@ -57,6 +57,13 @@ phy#0
 		type managed
 		txpower 23.00 dBm
 ```
+
+-----
+To ensure WiFi radio is not blocked, execute the following command.
+```
+$ sudo rfkill unblock wlan
+```
+
 -----
 Test injection
 ```
@@ -66,6 +73,7 @@ $ sudo iw dev mon0 set channel 149 (or whatever channel you want)
 
 $ sudo aireplay-ng --test mon0
 ```
+
 -----
 Test deauth
 ```
@@ -75,4 +83,5 @@ $ sudo airodump-ng mon0 --bssid <routerMAC> --channel <channel of router>
 
 $ sudo aireplay-ng --deauth 0 -c <deviceMAC> -a <routerMAC> mon0 -D
 ```
+
 -----
