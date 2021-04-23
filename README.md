@@ -10,6 +10,7 @@ USB WiFi adapters based on the mt7612u and mt7610u chipsets have been supported 
 since Linux kernel v4.19, therefore, there is no need to post a driver. This repo will be
 used to provide information and utilities.
 
+-----
 The below documents provide instructions for setting up an Access Point using a Raspberry Pi 4b
 with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 ```
