@@ -4,6 +4,10 @@
 
 Tested with Kali Linux and an Alfa AWUS036ACM (mt7612u) adapter.
 
+2021-04-23
+
+Tested with Raspberry Pi OS and an Alfa AWUS036ACHM (mt7610u) adapter.
+
 -----
 Install the aircrack-ng package
 ```
@@ -11,6 +15,8 @@ $ sudo apt install aircrack-ng
 ```
 
 Ensure Network Manager doesn't cause problems
+
+Note: Not required for the Raspberry Pi OS
 ```
 $ sudo nano /etc/NetworkManager/NetworkManager.conf
 ```
@@ -27,7 +33,7 @@ $ sudo iw dev
 ```
 phy#0
 	Interface wlan0
-		ifindex 3
+		ifindex 4
 		wdev 0x1
 		addr aa:bb:cc:dd:00:cc
 		type managed
