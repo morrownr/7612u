@@ -33,7 +33,8 @@ Disable interfering processes
 ```
 $ sudo airmon-ng start kill
 ```
-Note: Alternate method to disable interfering processes
+
+Note: Below is an alternate method to disable interfering processes
 
 Ensure Network Manager doesn't cause problems
 
