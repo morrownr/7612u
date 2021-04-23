@@ -2,14 +2,22 @@
 
 2021-04-11
 
-Tested with Kali Linux and an Alfa AWUS036ACM (mt7612u) adapter.
+Tested with Kali Linux (amd64) and an Alfa AWUS036ACM (mt7612u) adapter.
 
 2021-04-23
 
-Tested with Raspberry Pi OS and an Alfa AWUS036ACHM (mt7610u) adapter.
+Tested with Raspberry Pi OS (arm32) and an Alfa AWUS036ACHM (mt7610u) adapter.
 
 -----
-To ensure WiFi radio is not blocked, execute the following command
+Update system
+```
+$ sudo apt update
+$ sudo apt full-upgrade
+$ sudo reboot
+```
+
+-----
+Ensure WiFi radio is not blocked
 ```
 $ sudo rfkill unblock wlan
 ```
@@ -19,15 +27,13 @@ Install the aircrack-ng package
 ```
 $ sudo apt install aircrack-ng
 ```
+
 -----
 Disable interfering processes
-
-Note: An alternate method that may work is shown below
 ```
 $ sudo airmon-ng start kill
 ```
-
-Alternate method to disable interfering processes
+Note: Alternate method to disable interfering processes
 
 Ensure Network Manager doesn't cause problems
 
