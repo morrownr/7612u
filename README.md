@@ -30,8 +30,8 @@ Information about the Scatter-Gather module parameter:
 Background: Scatter and Gather (Vectored I/O) is a concept that was primarily used in hard disks
 and it enhances large I/O request performance.
 
-Problem reports seem to be limited to situations where the user is running an AP with a
-USB3 capable adapter in a USB3 port while operating on the 5Ghz band. Symtoms include
+Problem reports seem to be rare and limited to situations where the user is running an AP
+with a USB3 capable adapter in a USB3 port while operating on the 5Ghz band. Symtoms include
 dramatically reduced throughput. Research tends to indicate that this could be a hardware
 specific problem and is not caused by the driver or USB WiFi adapter. The issue causing
 the reported problems may be fixed because I certainly have not seen the problem with
