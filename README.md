@@ -19,11 +19,26 @@ Bridged_Wireless_Access_Point-2.md - 5g and 2g dual band ( it works really well 
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 This adapter works very well with the Raspberry Pi hardware.
 
+-----
 The mt7612u driver does support one module parameter - disable_usb_sg
 
 This parameter is used to turn USB Scatter-Gather support on or off. Documentation
 is the file mt76_usb.conf.
 
+Information about the Scatter-Gather module parameter:
+
+Background: Scatter and Gather (Vectored I/O) is a concept that was primarily used in hard disks
+and it enhances large I/O request performance.
+
+Problem reports seem to be limited to situations where the user is running an AP with a
+USB3 capable adapter in a USB3 port while operating on the 5Ghz band. Symtoms include
+dramatically reduced throughput. Research tends to indicate that this could be a hardware
+specific problem and is not caused by the driver or USB WiFi adapter. The issue causing
+the reported problems may be fixed because I certainly have not seen the problem with
+the AP setups I have outlined above. However, if you experience dramatically reduced
+throughput, try disable_usb_sg=1. The Installation Steps below can help make this change.
+
+-----
 To make it easy to install and manage support for this parameter, I have added some scripts
 that you can download and use. To install...
 
@@ -64,3 +79,21 @@ Step 7: Run the installation script
 ```bash
 $ sudo ./install-options.sh
 ```
+
+-----
+
+The script called 'edit-options.sh" allows you the ability to edit the 
+module paramter:
+
+Step 1: Open a terminal (Ctrl+Alt+T)
+
+Step 2: Move to the driver directory
+```
+$ cd ~/src/7612u
+```
+
+Step 3: Run the following script
+```
+$ sudo ./edit-options.sh
+```
+-----
