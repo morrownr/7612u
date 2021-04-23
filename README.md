@@ -82,7 +82,7 @@ $ sudo ./install-options.sh
 
 -----
 
-The script called 'edit-options.sh" allows you the ability to edit the 
+The script called `edit-options.sh` makes it easy to edit the 
 module paramter:
 
 Step 1: Open a terminal (Ctrl+Alt+T)
