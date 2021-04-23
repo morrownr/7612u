@@ -11,7 +11,7 @@ since Linux kernel v4.19, therefore, there is no need to post a driver. This rep
 used to provide information and utilities.
 
 The below documents provide instructions for setting up an Access Point using a Raspberry Pi 4b
-with `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
+with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 ```
 Bridged_Wireless_Access_Point-1.md - 5g single band
 Bridged_Wireless_Access_Point-2.md - 5g and 2g dual band ( it works really well )
