@@ -38,7 +38,7 @@ Note: Below is an alternate method to disable interfering processes
 
 Ensure Network Manager doesn't cause problems
 
-Note: The Raspberry Pi OS does not use Network Manager
+Note: The Raspberry Pi OS does not use Network Manager so disregard this alternate method for the RasPiOS.
 ```
 $ sudo nano /etc/NetworkManager/NetworkManager.conf
 ```
