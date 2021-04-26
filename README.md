@@ -4,9 +4,9 @@
 
 ### 7612u :rocket:
 
-Linux Support for USB WiFi Adapters that are based on the MT7612U and MT7610U Chipsets.
+Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
 
-USB WiFi adapters based on the mt7612u and mt7610u chipsets have been supported in-kernel
+USB WiFi adapters based on the mt7612u chipset have been supported in-kernel
 since Linux kernel v4.19, therefore, there is no need to post a driver. This repo will be
 used to provide information and utilities.
 
