@@ -22,7 +22,7 @@ The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.c
 This adapter works very well with the Raspberry Pi hardware.
 
 -----
-The below document provides instructions for testing monitor mode with a Raspberry Pi with the Raspberry Pi OS and a USB WiFi adapter based on the mt7612u or mt7610u chipsets.
+The below document provides instructions for testing monitor mode with the Raspberry Pi OS (arm32) and Kali Linux (amd64) and a USB WiFi adapter based on the mt7612u chipset.
 
 [Monitor_Mode.md](https://github.com/morrownr/7612u/blob/main/Monitor_Mode.md)
 
