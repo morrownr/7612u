@@ -12,7 +12,9 @@ onboard WiFi for 2g and a USB 3 WiFi adapter for 5g.
 
 #### Information
 
-This setup supports WPA3-SAE personal but it is turned off by dafault.
+This setup supports WPA3-SAE personal on the 5g band but it is turned off by
+default. The 2g band currently does not support WPA3-SAE. The problem is
+likely the driver for the onboard chipset.
 
 -----
 
@@ -24,7 +26,7 @@ This setup supports WPA3-SAE personal but it is turned off by dafault.
 	Raspberry Pi 4B (4gb)
 
 	Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
-	
+
 	Ethernet connection providing internet
 
 	AC1200 USB WiFi Adapter with mt7612u chipset ( Alfa AWUS036ACM )

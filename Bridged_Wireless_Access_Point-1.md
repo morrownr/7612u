@@ -1,9 +1,9 @@
 ## Bridged Wireless Access Point
 
-A bridged wireless access point works within an existing ethernet
-network to add WiFi capability where it does not exist or to extend
-the network to WiFi capable computers and devices in areas where the
-WiFi signal is weak or otherwise does not meet expectations.
+A bridged wireless access point (aka Dumb AP) works within an existing
+ethernet network to add WiFi capability where it does not exist or to
+extend the network to WiFi capable computers and devices in areas where
+the WiFi signal is weak or otherwise does not meet expectations.
 
 #### Single Band
 
@@ -12,22 +12,30 @@ with a USB 3 WiFi adapter for 5g.
 
 #### Information
 
-This setup supports WPA3-SAE personal.
+This setup supports WPA3-SAE personal but it is off by default.
 
 -----
 
-2021-03-16
+2021-05-05
 
 #### Tested Setup
 
 	Raspberry Pi 4B (4gb)
 
-	Raspberry Pi OS (2021-01-11) (32 bit) (kernel 5.10.11-v7l+)
-
-	AC1200 USB WiFi Adapter with mt7612u chipset
-		[Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi)
+	Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
 
 	Ethernet connection providing internet
+
+	USB WiFi Adapter with mt7612u chipset - Alfa AWUS036ACM
+
+	[Case](https://www.amazon.com/dp/B07X8RL8SL)
+
+	[Right Angle USB Extender](https://www.amazon.com/dp/B07S6B5X76)
+
+	[Power Supply](https://www.amazon.com/dp/B08C9VYLLK)
+
+Note: I use the case upside down. There are several little things that
+work better with the case upside down and no negatives that I can find.
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
 hardware. The primary problem has to do with the backfeeding of
@@ -40,13 +48,15 @@ actual usage of 360 mA during heavy load and usage of 180 mA during
 light loads. This is much lower power usage than most AC1200 class
 adapters which makes this adapter a good choice for a Raspberry Pi 4B
 which has an overall limit of 1200 mA power available via the USB
-subsystem. This adapter does not require usb-modeswitch.
+subsystem.
 
 
 #### Setup Steps
 -----
 
 USB adapter driver installation is not required as the driver is in-kernel.
+
+Recommendation: Use module parameter - disable_usb_sg=1
 
 -----
 
@@ -59,7 +69,7 @@ $ sudo apt full-upgrade
 ```
 -----
 
-Reduce overall power consumption and overclock the CPU a modest amount.
+Reduce power consumption and overclock the CPU a modest amount.
 
 Note: all items in this step are optional and some items are specific to
 the Raspberry Pi 4B. If installing to a Raspberry Pi 3b or 3b+ you will
@@ -78,6 +88,10 @@ dtparam=audio=off
 ```
 Add
 ```
+# overclock CPU
+over_voltage=1
+arm_freq=1600
+
 # turn off Mainboard LEDs
 dtoverlay=act-led
 
@@ -95,10 +109,6 @@ dtparam=eth_led1=4
 
 # turn off Bluetooth
 dtoverlay=disable-bt
-
-# overclock CPU
-over_voltage=1
-arm_freq=1600
 
 # turn off WiFi
 dtoverlay=disable-wifi
@@ -141,7 +151,7 @@ Kind=bridge
 
 Determine the names of the network interfaces.
 ```
-$ ip link
+$ ip link show
 ```
 Note: If the interface names are not `eth0` and `wlan0`,
 then the interface names used in your system will have to replace
@@ -239,16 +249,14 @@ beacon_int=100
 dtim_period=2
 max_num_sta=32
 macaddr_acl=0
-ignore_broadcast_ssid=0
 rts_threshold=2347
 fragm_threshold=2346
 #send_probe_response=1
 
 # security
-# auth_algs=1 works for WPA-2
-# auth_algs=3 required for WPA-3 SAE and Transitional
 auth_algs=1
 ignore_broadcast_ssid=0
+# wpa=2 is required for WPA2 and WPA3 (read the docs)
 wpa=2
 rsn_pairwise=CCMP
 # Change as desired
@@ -263,46 +271,85 @@ wpa_key_mgmt=WPA-PSK
 # ieee80211w=1 is required for WPA-3 SAE Transitional
 # ieee80211w=2 is required for WPA-3 SAE
 #ieee80211w=1
-# if parameter is not set, 19 is the default value.
-#sae_groups=19 20 21 25 26
-# required for WPA-3 SAETransitional
+# required for WPA3-SAE Transitional
 #sae_require_mfp=1
-# if parameter is not 9 set, 5 is the default value.
-#sae_anti_clogging_threshold=10
 
+# Note: Capabilities can vary even between adapters with the same chipset
+#
 # IEEE 802.11n
 ieee80211n=1
 wmm_enabled=1
 #
-# Note: Capabilities can vary even between adapters with the same chipset
-#
 # mt7612u
-# band 1 - 2g - 20 MHz channel width
+# to support 20 MHz channel width on 11n
 #ht_capab=[LDPC][SHORT-GI-20][TX-STBC][RX-STBC1]
-# band 2 - 5g - 40 MHz channel width
+# to support 40 MHz channel width on 11n
 ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 
 # IEEE 802.11ac
-# 5g
 ieee80211ac=1
 #
 # mt7612u
-# band 2 - 5g
+# band 2 - 5g - 80 MHz channel width on 11ac
 vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
-
-# Required for 80 MHz width channel operation
-# band 2 - 5g
+#
+# Required for 80 MHz width channel operation on band 2 - 5g
 vht_oper_chwidth=1
 #
-# Use the next line with channel 36
-# band 2 - 5g
+# Use the next line with channel 36  (36 + 6 = 42) band 2 - 5g
 vht_oper_centr_freq_seg0_idx=42
 #
-# Use the next with channel 149
-# band 2 - 5g
+# Use the next line with channel 149 (149 + 6 = 155) band 2 - 5g
 #vht_oper_centr_freq_seg0_idx=155
 
-# End of hostapd.conf
+# Event logger - as desired
+#logger_syslog=-1
+#logger_syslog_level=2
+#logger_stdout=-1
+#logger_stdout_level=2
+
+# WMM - as desired
+#uapsd_advertisement_enabled=1
+#wmm_ac_bk_cwmin=4
+#wmm_ac_bk_cwmax=10
+#wmm_ac_bk_aifs=7
+#wmm_ac_bk_txop_limit=0
+#wmm_ac_bk_acm=0
+#wmm_ac_be_aifs=3
+#wmm_ac_be_cwmin=4
+#wmm_ac_be_cwmax=10
+#wmm_ac_be_txop_limit=0
+#wmm_ac_be_acm=0
+#wmm_ac_vi_aifs=2
+#wmm_ac_vi_cwmin=3
+#wmm_ac_vi_cwmax=4
+#wmm_ac_vi_txop_limit=94
+#wmm_ac_vi_acm=0
+#wmm_ac_vo_aifs=2
+#wmm_ac_vo_cwmin=2
+#wmm_ac_vo_cwmax=3
+#wmm_ac_vo_txop_limit=47
+#wmm_ac_vo_acm=0
+
+# TX queue parameters - as desired
+#tx_queue_data3_aifs=7
+#tx_queue_data3_cwmin=15
+#tx_queue_data3_cwmax=1023
+#tx_queue_data3_burst=0
+#tx_queue_data2_aifs=3
+#tx_queue_data2_cwmin=15
+#tx_queue_data2_cwmax=63
+#tx_queue_data2_burst=0
+#tx_queue_data1_aifs=1
+#tx_queue_data1_cwmin=7
+#tx_queue_data1_cwmax=15
+#tx_queue_data1_burst=3.0
+#tx_queue_data0_aifs=1
+#tx_queue_data0_cwmin=3
+#tx_queue_data0_cwmax=7
+#tx_queue_data0_burst=1.5
+
+# end of hostapd.conf
 ```
 -----
 
