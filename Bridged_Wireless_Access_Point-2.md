@@ -113,7 +113,7 @@ dtparam=eth_led1=4
 
 # turn off Bluetooth
 dtoverlay=disable-bt
-
+```
 -----
 
 Install needed package. Website - [hostapd](https://w1.fi/hostapd/)
