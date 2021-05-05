@@ -20,19 +20,19 @@ This setup supports WPA3-SAE personal but it is off by default.
 
 #### Tested Setup
 
-	Raspberry Pi 4B (4gb)
+Raspberry Pi 4B (4gb)
 
-	Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
+Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
 
-	Ethernet connection providing internet
+Ethernet connection providing internet
 
-	USB WiFi Adapter with mt7612u chipset - Alfa AWUS036ACM
+USB WiFi Adapter with mt7612u chipset - Alfa AWUS036ACM
 
-	[Case](https://www.amazon.com/dp/B07X8RL8SL)
+[Case](https://www.amazon.com/dp/B07X8RL8SL)
 
-	[Right Angle USB Extender](https://www.amazon.com/dp/B07S6B5X76)
+[Right Angle USB Extender](https://www.amazon.com/dp/B07S6B5X76)
 
-	[Power Supply](https://www.amazon.com/dp/B08C9VYLLK)
+[Power Supply](https://www.amazon.com/dp/B08C9VYLLK)
 
 Note: I use the case upside down. There are several little things that
 work better with the case upside down and no negatives that I can find.
@@ -251,9 +251,11 @@ max_num_sta=32
 macaddr_acl=0
 rts_threshold=2347
 fragm_threshold=2346
-#send_probe_response=1
+send_probe_response=1
 
 # security
+# auth_algs=1 works for WPA-2
+# auth_algs=3 required for WPA-3 SAE and Transitional
 auth_algs=1
 ignore_broadcast_ssid=0
 # wpa=2 is required for WPA2 and WPA3 (read the docs)

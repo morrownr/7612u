@@ -1,9 +1,9 @@
 ## Bridged Wireless Access Point
 
-A bridged wireless access point works within an existing ethernet
-network to add WiFi capability where it does not exist or to extend
-the network to WiFi capable computers and devices in areas where the
-WiFi signal is weak or otherwise does not meet expectations.
+A bridged wireless access point (aka Dumb AP) works within an existing
+ethernet network to add WiFi capability where it does not exist or to
+extend the network to WiFi capable computers and devices in areas where
+the WiFi signal is weak or otherwise does not meet expectations.
 
 #### Dual Band
 
@@ -14,23 +14,32 @@ onboard WiFi for 2g and a USB 3 WiFi adapter for 5g.
 
 This setup supports WPA3-SAE personal on the 5g band but it is turned off by
 default. The 2g band currently does not support WPA3-SAE. The problem is
-likely the driver for the onboard chipset.
+likely the driver for the onboard Broadcom chipset.
+
+I am going to test with an alternate adapter for 2g support.
 
 -----
 
-2021-04-11
+2021-05-05
 
 #### Tested Setup
 
-```
-	Raspberry Pi 4B (4gb)
+Raspberry Pi 4B (4gb)
 
-	Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
+Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
 
-	Ethernet connection providing internet
+Ethernet connection providing internet
 
-	AC1200 USB WiFi Adapter with mt7612u chipset ( Alfa AWUS036ACM )
-```
+USB WiFi Adapter with mt7612u chipset - Alfa AWUS036ACM
+
+[Case](https://www.amazon.com/dp/B07X8RL8SL)
+
+[Right Angle USB Extender](https://www.amazon.com/dp/B07S6B5X76)
+
+[Power Supply](https://www.amazon.com/dp/B08C9VYLLK)
+
+Note: I use the case upside down. There are several little things that
+work better with the case upside down and no negatives that I can find.
 
 Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
 hardware. The primary problem has to do with the backfeeding of
@@ -43,13 +52,15 @@ actual usage of 360 mA during heavy load and usage of 180 mA during
 light loads. This is much lower power usage than most AC1200 class
 adapters which makes this adapter a good choice for a Raspberry Pi 4B
 which has an overall limit of 1200 mA power available via the USB
-subsystem. This adapter does not require usb-modeswitch.
+subsystem.
 
 
 #### Setup Steps
 -----
 
 USB adapter driver installation is not required as the driver is in-kernel.
+
+Recommendation: For the Alfa adapter, use module parameter - disable_usb_sg=1
 
 -----
 
@@ -62,7 +73,7 @@ $ sudo apt full-upgrade
 ```
 -----
 
-Reduce overall power consumption and overclock the CPU a modest amount.
+Reduce power consumption and overclock the CPU a modest amount.
 
 Note: all items in this step are optional and some items are specific to
 the Raspberry Pi 4B. If installing to a Raspberry Pi 3b or 3b+ you will
@@ -81,6 +92,10 @@ dtparam=audio=off
 ```
 Add
 ```
+# overclock CPU
+over_voltage=1
+arm_freq=1600
+
 # turn off Mainboard LEDs
 dtoverlay=act-led
 
@@ -99,10 +114,6 @@ dtparam=eth_led1=4
 # turn off Bluetooth
 dtoverlay=disable-bt
 
-# overclock CPU
-over_voltage=1
-arm_freq=1600
-```
 -----
 
 Install needed package. Website - [hostapd](https://w1.fi/hostapd/)
@@ -141,7 +152,7 @@ Kind=bridge
 
 Determine the names of the network interfaces.
 ```
-$ ip link
+$ ip link show
 ```
 Note: If the interface names are not `eth0`, `wlan0` and `wlan1`,
 then the interface names used in your system will have to replace
@@ -238,6 +249,7 @@ channel=36
 beacon_int=100
 dtim_period=2
 max_num_sta=32
+macaddr_acl=0
 rts_threshold=2347
 fragm_threshold=2346
 send_probe_response=1
@@ -246,8 +258,8 @@ send_probe_response=1
 # auth_algs=1 works for WPA-2
 # auth_algs=3 required for WPA-3 SAE and Transitional
 auth_algs=1
-macaddr_acl=0
-#ignore_broadcast_ssid=0
+ignore_broadcast_ssid=0
+# wpa=2 is required for WPA2 and WPA3 (read the docs)
 wpa=2
 rsn_pairwise=CCMP
 # Change as desired
@@ -262,43 +274,35 @@ wpa_key_mgmt=WPA-PSK
 # ieee80211w=1 is required for WPA-3 SAE Transitional
 # ieee80211w=2 is required for WPA-3 SAE
 #ieee80211w=1
-# if parameter is not set, 19 is the default value.
-#sae_groups=19 20 21 25 26
-# required for WPA-3 SAE Transitional
+# required for WPA3-SAE Transitional
 #sae_require_mfp=1
-# if parameter is not 9 set, 5 is the default value.
-#sae_anti_clogging_threshold=10
 
+# Note: Capabilities can vary even between adapters with the same chipset
+#
 # IEEE 802.11n
 ieee80211n=1
 wmm_enabled=1
 #
-# Note: Capabilities can vary even between adapters with the same chipset
-#
 # mt7612u
-# band 1 - 2g - 20 MHz channel width
+# to support 20 MHz channel width on 11n
 #ht_capab=[LDPC][SHORT-GI-20][TX-STBC][RX-STBC1]
-# band 2 - 5g - 40 MHz channel width
+# to support 40 MHz channel width on 11n
 ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
 
 # IEEE 802.11ac
-# 5g
 ieee80211ac=1
 #
 # mt7612u
-# band 2 - 5g
+# band 2 - 5g - 80 MHz channel width on 11ac
 vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
-
-# Required for 80 MHz width channel operation
-# band 2 - 5g
+#
+# Required for 80 MHz width channel operation on band 2 - 5g
 vht_oper_chwidth=1
 #
-# Use the next line with channel 36
-# band 2 - 5g
+# Use the next line with channel 36  (36 + 6 = 42) band 2 - 5g
 vht_oper_centr_freq_seg0_idx=42
 #
-# Use the next with channel 149
-# band 2 - 5g
+# Use the next line with channel 149 (149 + 6 = 155) band 2 - 5g
 #vht_oper_centr_freq_seg0_idx=155
 
 # Event logger - as desired
