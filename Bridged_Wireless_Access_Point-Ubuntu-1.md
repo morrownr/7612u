@@ -186,7 +186,7 @@ $ sudo nano /etc/default/hostapd
 Add to bottom of file
 ```
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
-DAEMON_OPTS="-d -K -f /home/pi/hostapd.log"
+DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
 
@@ -252,3 +252,14 @@ Reboot system.
 $ sudo reboot
 ```
 -----
+
+Notes:
+
+Ensure Network Manager doesn't cause problems
+
+$ sudo nano /etc/NetworkManager/NetworkManager.conf
+
+add
+
+[keyfile]
+unmanaged-devices=interface-name:wlan0
