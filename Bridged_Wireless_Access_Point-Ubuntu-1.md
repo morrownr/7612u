@@ -267,3 +267,25 @@ add
 [keyfile]
 unmanaged-devices=interface-name:wlan0
 ```
+
+-----
+
+We will now need to configure a network bridge between the newly
+created Wireless network and your current network connection (this
+will typically be eth0).
+
+$ sudo apt install bridge-utils
+
+We will now need to edit our network configuration file on the server
+to disable eth0 configuration and set up our new bridge network (br0).
+Open up the interfaces file and enter the following details for br0
+(Leaving eth0 configuration in place).
+
+$ sudo nano /etc/network/interfaces
+
+auto br0
+iface br0 inet dhcp
+bridge-ports eth0 wlan0
+
+If you wish for your Wireless server to have a static IP address,
+this should be configured on the br0 interface and eth0 left as DHCP.
