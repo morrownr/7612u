@@ -14,9 +14,9 @@ used to provide information and utilities.
 The below documents provide instructions for setting up an Access Point using a Raspberry Pi 4b
 with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 
-[Bridged_Wireless_Access_Point-1.md - 5g single band](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point-1.md)
+[Bridged_Wireless_Access_Point-RasPiOS-1.md - 5g single band](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point-1.md)
 
-[Bridged_Wireless_Access_Point-2.md - 5g and 2g dual band ( it works really well )](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point-2.md)
+[Bridged_Wireless_Access_Point-RasPiOS-2.md - 5g and 2g dual band ( it works really well )](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point-2.md)
 
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 This adapter works very well with the Raspberry Pi hardware.
@@ -89,7 +89,7 @@ $ sudo ./install-options.sh
 
 -----
 
-The script called `edit-options.sh` makes it easy to edit the 
+The script called `edit-options.sh` makes it easy to edit the
 module paramter:
 
 Step 1: Open a terminal (Ctrl+Alt+T)
