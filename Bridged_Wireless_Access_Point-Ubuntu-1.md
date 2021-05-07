@@ -126,9 +126,10 @@ fragm_threshold=2346
 auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
+wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 # Change as desired
-wpa_passphrase=myPW2021
+wpa_passphrase=mypw2021
 # WPA-2 AES
 wpa_key_mgmt=WPA-PSK
 # WPA3-AES Transitional
@@ -255,11 +256,14 @@ $ sudo reboot
 
 Notes:
 
-Ensure Network Manager doesn't cause problems
+?
 
+Ensure Network Manager doesn't cause problems.
+```
 $ sudo nano /etc/NetworkManager/NetworkManager.conf
-
+```
 add
-
+```
 [keyfile]
 unmanaged-devices=interface-name:wlan0
+```
