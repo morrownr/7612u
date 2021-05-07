@@ -1,4 +1,4 @@
-Warning: Do not use this document until this warning is gone. Testing.
+Warning: Do not use this document until this warning is gone. Testing in progress.
 
 ## Bridged Wireless Access Point - Ubuntu 21.04
 
@@ -31,10 +31,11 @@ WPA3-SAE will not work if a Realtek chipset based USB WiFi adapter is used.
 
 
 #### Setup Steps
+
 -----
 
-USB WiFi adapter driver installation, if required, should be performed and
-tested prior to continuing.
+Install USB WiFi adapter and driver prior to continuing.
+
 -----
 
 Update and reboot system.
@@ -173,7 +174,6 @@ vht_oper_centr_freq_seg0_idx=42
 #
 # Use the next line with channel 149 (149 + 6 = 155) band 2 - 5g
 #vht_oper_centr_freq_seg0_idx=155
-
 
 # end of hostapd.conf
 ```
