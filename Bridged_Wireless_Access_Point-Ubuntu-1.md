@@ -7,17 +7,23 @@ network to add WiFi capability where it does not exist or to extend
 the network to WiFi capable computers and devices in areas where the
 WiFi signal is weak or otherwise does not meet expectations.
 
+This guide disables Network Manager and makes use of systemd-networkd
+so as to provide consistency amoung the various Linux platforms that
+are supported.
+
 #### Single Band
 
 This document outlines a single band setup with a USB3 WiFi adapter for 5g.
 
 #### Information
 
-WPA3-SAE will not work if a Realtek chipset based USB WiFi adapter is used.
+WPA3-SAE will not work if a Realtek 88xx chipset based USB WiFi adapter is used.
+
+WPA3-SAE will work if a Mediatek 761x chipset based USB WiFI adapter is used.
 
 -----
 
-2021-05-07
+2021-05-10
 
 #### Tested Setup
 
@@ -25,16 +31,16 @@ WPA3-SAE will not work if a Realtek chipset based USB WiFi adapter is used.
 
 	Ubuntu 21.04
 
-	AC1200 USB WiFi Adapter
+	AC1200/AC1300 USB WiFi Adapter
 
-	Ethernet connection providing internet
+	Ethernet connection providing internet service
 
 
 #### Setup Steps
 
 -----
 
-Install USB WiFi adapter and driver prior to continuing.
+Install and configure USB WiFi adapter and driver prior to continuing.
 
 -----
 
@@ -47,16 +53,6 @@ $ sudo apt full-upgrade
 
 $ sudo reboot
 ```
------
-
-Determine the names of the network interfaces.
-```
-$ ip link show
-```
-Note: If the interface names are not `eth0` and `wlan0`,
-then the interface names used in your system will have to replace
-`eth0` and `wlan0` for the remainder of this document.
-
 -----
 
 Install hostapd. Website - [hostapd](https://w1.fi/hostapd/)
@@ -93,7 +89,9 @@ File contents
 # needs to match your system
 interface=wlan0
 
+# needs to match bridge interface name in your system
 bridge=br0
+
 driver=nl80211
 ctrl_interface=/var/run/hostapd
 ctrl_interface_group=0
@@ -191,8 +189,133 @@ DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
 
-Add a bridge network device named br0 by creating a file using the
-following command, with the contents below.
+Determine the names of the network interfaces.
+```
+$ ip link show
+$ ip a
+```
+Note: If the interface names are not `eth0` and `wlan0`,
+then the interface names used in your system will have to replace
+`eth0` and `wlan0` for the remainder of this document.
+
+Note: You may assign a MAC address to your bridge, the same as your
+physical device ?, adding the line MACAddress=xx:xx:xx:xx:xx:xx
+in the NetDev section below.
+
+-----
+
+Disable Network Manager service.
+
+Note: This guide uses systemd-networkd for consistency with other guides.
+```
+$ sudo systemctl disable NetworkManager
+```
+-----
+
+Enable the systemd-networkd service.
+```
+$ sudo systemctl enable systemd-networkd
+```
+-----
+
+Enable systemd-resolved service.
+
+Note: This service implements a caching DNS server.
+```
+$ sudo systemctl enable systemd-resolved
+
+$ sudo systemctl start systemd-resolved
+```
+Note: Once started, systemd-resolved will create its own resolv.conf
+somewhere under /run/systemd directory. However, it is a common
+practise to store DNS resolver information in /etc/resolv.conf, and
+many applications still rely on /etc/resolv.conf. Thus for compatibility
+reasons, create a symlink to /etc/resolv.conf as follows.
+```
+$ sudo rm /etc/resolv.conf
+$ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+```
+-----
+
+Configure Network Connections with `systemd-networkd`
+
+To configure network devices with systemd-networkd, you must specify
+configuration information in text files with .network extension. These
+network configuration files are then stored and loaded from
+/etc/systemd/network. When there are multiple files, systemd-networkd
+loads and processes them one by one in lexical order.
+
+-----
+
+Create folder `/etc/systemd/network`, if it does not exist.
+```
+$ sudo mkdir /etc/systemd/network
+```
+-----
+
+Configure DHCP networking. For this, create the following configuration
+file. The name of a file can be arbitrary, but remember that files are
+processed in lexical order.
+```
+$ sudo nano /etc/systemd/network/20-dhcp.network
+```
+File contents
+```
+[Match]
+Name=eth0
+
+[Network]
+DHCP=yes
+```
+-----
+
+Assign a static IP address to the eth0 network interface [optional].
+```
+$ sudo nano /etc/systemd/network/10-static-ether.network
+```
+File contents
+```
+[Match]
+Name=eth0
+
+[Network]
+Address=192.168.01.50/24
+Gateway=192.168.01.1
+DNS=8.8.8.8
+```
+Note: the interface eth0 will be assigned an address 192.168.10.50/24,
+a default gateway 192.168.10.1, and a DNS server 8.8.8.8. One subtlety
+here is that the name of an interface eth0 matches the pattern rule
+defined in the earlier DHCP configuration as well. However, since the
+file 10-static-enp3s0.network is processed before 20-dhcp.network
+according to lexical order, the static configuration takes priority
+over DHCP configuration in case of eth0 interface.
+
+-----
+
+Restart systemd-networkd service or reboot.
+```
+$ sudo systemctl restart systemd-networkd
+```
+-----
+Check the status of the service.
+```
+$ systemctl status systemd-networkd
+
+$ systemctl status systemd-resolved
+```
+-----
+
+Configure Virtual Network Devices with `systemd-networkd`
+
+systemd-networkd also allows you to configure virtual network devices
+such as bridges, VLANs, tunnel, VXLAN, bonding, etc. You must configure
+these virtual devices in files with .netdev extension.
+
+-----
+
+Create a bridge interface (br0) and add a physical interface (eth0) to
+the bridge.
 ```
 $ sudo nano /etc/systemd/network/bridge-br0.netdev
 ```
@@ -202,13 +325,17 @@ File contents
 Name=br0
 Kind=bridge
 ```
+
+Optionally, you may add the below to the above if you need to set the
+MAC address of the bridge.
+```
+MACAddress=xx:xx:xx:xx:xx:xx
+```
 -----
 
-Bridge the Ethernet network with the wireless network, first add the
-built-in Ethernet interface ( eth0 ) as a bridge member by creating the
-following file.
+Configure the bridge interface.
 ```
-$ sudo nano /etc/systemd/network/br0-member-eth0.network
+$ sudo nano /etc/systemd/network/bridge-br0-ethernet.network
 ```
 File contents
 ```
@@ -218,27 +345,18 @@ Name=eth0
 [Network]
 Bridge=br0
 ```
------
+```
+$ sudo nano /etc/systemd/network/bridge-br0.network
+```
+File contents
+```
+[Match]
+Name=br0
 
-Enable the systemd-networkd service to create and populate the bridge
-when your system boots.
-```
-$ sudo systemctl enable systemd-networkd
-```
------
-
-Block the eth0 and wlan0 interfaces from being processed, and let dhcpcd
-configure only br0 via DHCP.
-```
-$ sudo nano /etc/dhcpcd.conf
-```
-Add the following line above the first `interface xxx` line, if any
-```
-denyinterfaces eth0 wlan0
-```
-Go to the end of the file and add the following line
-```
-interface br0
+[Network]
+Address=192.168.01.100/24
+Gateway=192.168.01.1
+DNS=8.8.8.8
 ```
 -----
 
@@ -254,38 +372,13 @@ $ sudo reboot
 ```
 -----
 
+
+
+
 Notes:
 
-?
-
-Ensure Network Manager doesn't cause problems.
-```
-$ sudo nano /etc/NetworkManager/NetworkManager.conf
-```
-add
-```
-[keyfile]
-unmanaged-devices=interface-name:wlan0
-```
 
 -----
 
-We will now need to configure a network bridge between the newly
-created Wireless network and your current network connection (this
-will typically be eth0).
 
-$ sudo apt install bridge-utils
-
-We will now need to edit our network configuration file on the server
-to disable eth0 configuration and set up our new bridge network (br0).
-Open up the interfaces file and enter the following details for br0
-(Leaving eth0 configuration in place).
-
-$ sudo nano /etc/network/interfaces
-
-auto br0
-iface br0 inet dhcp
-bridge-ports eth0 wlan0
-
-If you wish for your Wireless server to have a static IP address,
-this should be configured on the br0 interface and eth0 left as DHCP.
+-----
