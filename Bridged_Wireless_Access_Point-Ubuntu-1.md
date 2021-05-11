@@ -1,4 +1,4 @@
-Warning: Do not use this document until this warning is gone. Testing in progress.
+Warning: Testing in progress.
 
 ## Bridged Wireless Access Point - Ubuntu 21.04
 
@@ -17,13 +17,15 @@ This document outlines a single band setup with a USB3 WiFi adapter for 5g.
 
 #### Information
 
+This setup supports WPA3-SAE. It is turned off by default.
+
 WPA3-SAE will not work if a Realtek 88xx chipset based USB WiFi adapter is used.
 
 WPA3-SAE will work if a Mediatek 761x chipset based USB WiFI adapter is used.
 
 -----
 
-2021-05-10
+2021-05-11
 
 #### Tested Setup
 
@@ -40,8 +42,13 @@ WPA3-SAE will work if a Mediatek 761x chipset based USB WiFI adapter is used.
 
 -----
 
-Install and configure USB WiFi adapter and driver prior to continuing.
+Install and configure USB WiFi adapter.
 
+Note: For full speed operation module parameters may be required.
+
+Realtek: rtw_vht_enable=1 rtw_switch_usb_mode=1
+
+Mediatek: disable_usb_sg=1
 -----
 
 Update and reboot system.
@@ -53,6 +60,15 @@ $ sudo apt full-upgrade
 
 $ sudo reboot
 ```
+-----
+
+Determine the names and state of the network interfaces.
+```
+$ ip a
+```
+Note: If the interface names are not `eth0` and `wlan0`,
+then the interface names used in your system will have to replace
+`eth0` and `wlan0` for the remainder of this document.
 -----
 
 Install hostapd. Website - [hostapd](https://w1.fi/hostapd/)
@@ -77,7 +93,7 @@ File contents
 ```
 # /etc/hostapd/hostapd.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-05-10
+# 2021-05-11
 
 # Defaults:
 # SSID: myAP
@@ -87,7 +103,7 @@ File contents
 # Country: US
 
 # needs to match your system
-interface=wlan0
+interface=<wlan0>
 
 # needs to match bridge interface name in your system
 bridge=br0
@@ -121,17 +137,17 @@ fragm_threshold=2346
 #send_probe_response=1
 
 # security
+# change wpa_passphrase as desired
+wpa_passphrase=myPW2021
 auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
 rsn_pairwise=CCMP
-# Change as desired
-wpa_passphrase=myPW2021
-# WPA-2 AES
+# wpa_key_mgmt=WPA-PSK is required for WPA2-AES
 wpa_key_mgmt=WPA-PSK
-# WPA3-AES Transitional
+# wpa_key_mgmt=SAE WPA-PSK is required for WPA3-AES Transitional
 #wpa_key_mgmt=SAE WPA-PSK
-# WPA-3 SAE
+# wpa_key_mgmt=SAE is required for WPA3-SAE
 #wpa_key_mgmt=SAE
 #wpa_group_rekey=1800
 # ieee80211w=1 is required for WPA-3 SAE Transitional
@@ -139,7 +155,7 @@ wpa_key_mgmt=WPA-PSK
 #ieee80211w=1
 # if parameter is not set, 19 is the default value.
 #sae_groups=19 20 21 25 26
-# required for WPA-3 SAETransitional
+# sae_require_mfp=1 is required for WPA-3 SAE Transitional
 #sae_require_mfp=1
 # if parameter is not 9 set, 5 is the default value.
 #sae_anti_clogging_threshold=10
@@ -148,7 +164,10 @@ wpa_key_mgmt=WPA-PSK
 ieee80211n=1
 wmm_enabled=1
 #
-# Note: Capabilities can vary even between adapters with the same chipset
+# Note: Capabilities can vary even between adapters with the same chipset.
+#
+# Note: Only one ht_capab= line and one vht_capab= should be active. The
+# contends of these lines is determined by the capabilities of your adapter.
 #
 # rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
 # band 1 - 2g - 20 MHz channel width
@@ -190,6 +209,8 @@ vht_oper_centr_freq_seg0_idx=42
 -----
 
 Establish hostapd conf file and log file locations.
+
+Note: Make sure to change <your_home> to your home directory.
 ```
 $ sudo nano /etc/default/hostapd
 ```
@@ -200,25 +221,15 @@ DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
 
-Determine the names and state of the network interfaces.
-```
-$ ip a
-```
-Note: If the interface names are not `eth0` and `wlan0`,
-then the interface names used in your system will have to replace
-`eth0` and `wlan0` for the remainder of this document.
-
------
-
 Disable Network Manager service.
 
-Note: This guide uses systemd-networkd for consistency with other guides.
+Note: This guide uses systemd-networkd for network management.
 ```
 $ sudo systemctl disable NetworkManager
 ```
 -----
 
-Enable the systemd-networkd service.
+Enable the systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
 ```
 $ sudo systemctl enable systemd-networkd
 ```
@@ -256,14 +267,14 @@ Kind=bridge
 ```
 -----
 
-Add the ethernet interface.
+Bind the ethernet interface.
 ```
-$ sudo nano /etc/systemd/network/bridge-br0-ether.network
+$ sudo nano /etc/systemd/network/bridge-br0-ethernet.network
 ```
 File contents
 ```
 [Match]
-Name=eth0
+Name=<eth0>
 
 [Network]
 Bridge=br0
@@ -297,21 +308,23 @@ Reboot system.
 $ sudo reboot
 ```
 -----
+End of installation.
 
 
 Notes:
 
-
 -----
 
-To restart systemd-networkd service or reboot.
+Restart systemd-networkd service.
 ```
 $ sudo systemctl restart systemd-networkd
 ```
 -----
 
-To check the status of the service.
+Check the status of the services.
 ```
+$ systemctl status hostapd
+
 $ systemctl status systemd-networkd
 
 $ systemctl status systemd-resolved
