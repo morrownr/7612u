@@ -127,7 +127,7 @@ wpa=2
 wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 # Change as desired
-wpa_passphrase=mypw2021
+wpa_passphrase=myPW2021
 # WPA-2 AES
 wpa_key_mgmt=WPA-PSK
 # WPA3-AES Transitional
@@ -218,25 +218,6 @@ $ sudo systemctl enable systemd-networkd
 ```
 -----
 
-Enable systemd-resolved service.
-
-Note: This service implements a caching DNS server.
-```
-$ sudo systemctl enable systemd-resolved
-
-$ sudo systemctl start systemd-resolved
-```
-Note: Once started, systemd-resolved will create its own resolv.conf
-somewhere under /run/systemd directory. However, it is a common
-practise to store DNS resolver information in /etc/resolv.conf, and
-many applications still rely on /etc/resolv.conf. Thus for compatibility
-reasons, create a symlink to /etc/resolv.conf as follows.
-```
-$ sudo rm /etc/resolv.conf
-$ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
-```
------
-
 Configure Network Connections with `systemd-networkd`
 
 To configure network devices with systemd-networkd, you must specify
@@ -253,60 +234,7 @@ $ sudo mkdir /etc/systemd/network
 ```
 -----
 
-Configure DHCP networking. For this, create the following configuration
-file. The name of a file can be arbitrary, but remember that files are
-processed in lexical order.
-```
-$ sudo nano /etc/systemd/network/20-dhcp.network
-```
-File contents
-```
-[Match]
-Name=eth0
-
-[Network]
-DHCP=yes
-```
------
-
-Assign a static IP address to the eth0 network interface [optional].
-```
-$ sudo nano /etc/systemd/network/10-static-ether.network
-```
-File contents
-```
-[Match]
-Name=eth0
-
-[Network]
-Address=192.168.01.50/24
-Gateway=192.168.01.1
-DNS=8.8.8.8
-```
-Note: the interface eth0 will be assigned an address 192.168.10.50/24,
-a default gateway 192.168.10.1, and a DNS server 8.8.8.8. One subtlety
-here is that the name of an interface eth0 matches the pattern rule
-defined in the earlier DHCP configuration as well. However, since the
-file 10-static-enp3s0.network is processed before 20-dhcp.network
-according to lexical order, the static configuration takes priority
-over DHCP configuration in case of eth0 interface.
-
------
-
-Restart systemd-networkd service or reboot.
-```
-$ sudo systemctl restart systemd-networkd
-```
------
-Check the status of the service.
-```
-$ systemctl status systemd-networkd
-
-$ systemctl status systemd-resolved
-```
------
-
-Configure Virtual Network Devices with `systemd-networkd`
+Configure Virtual Network Device with `systemd-networkd`
 
 systemd-networkd also allows you to configure virtual network devices
 such as bridges, VLANs, tunnel, VXLAN, bonding, etc. You must configure
@@ -354,9 +282,24 @@ File contents
 Name=br0
 
 [Network]
-Address=192.168.01.100/24
-Gateway=192.168.01.1
+Address=192.168.1.100/24
+Gateway=192.168.1.1
 DNS=8.8.8.8
+```
+-----
+
+Block the eth0 and wlan0 interfaces from being processed, and let dhcpcd
+configure only br0 via DHCP.
+```
+$ sudo nano /etc/dhcpcd.conf
+```
+Add the following line above the first `interface xxx` line, if any
+```
+denyinterfaces eth0 wlan0
+```
+Go to the end of the file and add the following line
+```
+interface br0
 ```
 -----
 
@@ -380,5 +323,76 @@ Notes:
 
 -----
 
+Enable systemd-resolved service.
 
+Note: This service implements a caching DNS server.
+```
+$ sudo systemctl enable systemd-resolved
+
+$ sudo systemctl start systemd-resolved
+```
+Note: Once started, systemd-resolved will create its own resolv.conf
+somewhere under /run/systemd directory. However, it is a common
+practise to store DNS resolver information in /etc/resolv.conf, and
+many applications still rely on /etc/resolv.conf. Thus for compatibility
+reasons, create a symlink to /etc/resolv.conf as follows.
+```
+$ sudo rm /etc/resolv.conf
+$ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+```
+-----
+
+Configure DHCP networking.
+
+Create the following configuration file. The name of a file can be arbitrary,
+but remember that files are processed in lexical order.
+```
+$ sudo nano /etc/systemd/network/20-dhcp.network
+```
+File contents
+```
+[Match]
+Name=eth0
+
+[Network]
+DHCP=yes
+```
+-----
+
+Assign a static IP address to the eth0 network interface [optional].
+```
+$ sudo nano /etc/systemd/network/10-static-ether.network
+```
+File contents
+```
+[Match]
+Name=eth0
+
+[Network]
+Address=192.168.01.50/24
+Gateway=192.168.01.1
+DNS=8.8.8.8
+```
+Note: the interface eth0 will be assigned an address 192.168.01.50/24,
+a default gateway 192.168.01.1, and a DNS server 8.8.8.8. One subtlety
+here is that the name of an interface eth0 matches the pattern rule
+defined in the earlier DHCP configuration as well. However, since the
+file 10-static-enp3s0.network is processed before 20-dhcp.network
+according to lexical order, the static configuration takes priority
+over DHCP configuration in case of eth0 interface.
+
+-----
+
+Restart systemd-networkd service or reboot.
+```
+$ sudo systemctl restart systemd-networkd
+```
+-----
+Check the status of the service.
+```
+$ systemctl status systemd-networkd
+
+$ systemctl status systemd-resolved
+```
+-----
 -----
