@@ -49,6 +49,7 @@ Note: For full speed operation module parameters may be required.
 Realtek: rtw_vht_enable=1 rtw_switch_usb_mode=1
 
 Mediatek: disable_usb_sg=1
+
 -----
 
 Update and reboot system.
@@ -69,6 +70,7 @@ $ ip a
 Note: If the interface names are not `eth0` and `wlan0`,
 then the interface names used in your system will have to replace
 `eth0` and `wlan0` for the remainder of this document.
+
 -----
 
 Install hostapd. Website - [hostapd](https://w1.fi/hostapd/)
