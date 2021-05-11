@@ -8,7 +8,7 @@ the network to WiFi capable computers and devices in areas where the
 WiFi signal is weak or otherwise does not meet expectations.
 
 This guide disables Network Manager and makes use of systemd-networkd
-so as to provide consistency amoung the various Linux platforms that
+so as to provide consistency among the various Linux platforms that
 are supported.
 
 #### Single Band
@@ -77,7 +77,7 @@ File contents
 ```
 # /etc/hostapd/hostapd.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-05-07
+# 2021-05-10
 
 # Defaults:
 # SSID: myAP
@@ -124,7 +124,6 @@ fragm_threshold=2346
 auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
-wpa_pairwise=CCMP
 rsn_pairwise=CCMP
 # Change as desired
 wpa_passphrase=myPW2021
@@ -156,6 +155,13 @@ wmm_enabled=1
 #ht_capab=[SHORT-GI-20][MAX-AMSDU-7935]
 # band 2 - 5g - 40 MHz channel width
 ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+#
+# mt7612u
+# to support 20 MHz channel width on 11n
+#ht_capab=[LDPC][SHORT-GI-20][TX-STBC][RX-STBC1]
+# to support 40 MHz channel width on 11n
+#ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
+#
 
 # IEEE 802.11ac
 ieee80211ac=1
@@ -164,6 +170,11 @@ ieee80211ac=1
 # band 2 - 5g - 80 MHz channel width
 vht_capab=[MAX-MPDU-11454][SHORT-GI-80][HTC-VHT]
 # Note: [TX-STBC-2BY1] causes problems
+#
+# mt7612u
+# band 2 - 5g - 80 MHz channel width on 11ac
+#vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+#
 
 # Required for 80 MHz width channel operation on band 2 - 5g
 vht_oper_chwidth=1
@@ -189,18 +200,13 @@ DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
 
-Determine the names of the network interfaces.
+Determine the names and state of the network interfaces.
 ```
-$ ip link show
 $ ip a
 ```
 Note: If the interface names are not `eth0` and `wlan0`,
 then the interface names used in your system will have to replace
 `eth0` and `wlan0` for the remainder of this document.
-
-Note: You may assign a MAC address to your bridge, the same as your
-physical device ?, adding the line MACAddress=xx:xx:xx:xx:xx:xx
-in the NetDev section below.
 
 -----
 
@@ -218,32 +224,27 @@ $ sudo systemctl enable systemd-networkd
 ```
 -----
 
-Configure Network Connections with `systemd-networkd`
+Enable systemd-resolved service.
 
-To configure network devices with systemd-networkd, you must specify
-configuration information in text files with .network extension. These
-network configuration files are then stored and loaded from
-/etc/systemd/network. When there are multiple files, systemd-networkd
-loads and processes them one by one in lexical order.
-
------
-
-Create folder `/etc/systemd/network`, if it does not exist.
+Note: This service implements a caching DNS server.
 ```
-$ sudo mkdir /etc/systemd/network
+$ sudo systemctl enable systemd-resolved
+
+$ sudo systemctl start systemd-resolved
+```
+Note: Once started, systemd-resolved will create its own resolv.conf
+somewhere under /run/systemd directory. However, it is a common
+practise to store DNS resolver information in /etc/resolv.conf, and
+many applications still rely on /etc/resolv.conf. Thus for compatibility
+reasons, create a symlink to /etc/resolv.conf as follows.
+```
+$ sudo rm /etc/resolv.conf
+
+$ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 ```
 -----
 
-Configure Virtual Network Device with `systemd-networkd`
-
-systemd-networkd also allows you to configure virtual network devices
-such as bridges, VLANs, tunnel, VXLAN, bonding, etc. You must configure
-these virtual devices in files with .netdev extension.
-
------
-
-Create a bridge interface (br0) and add a physical interface (eth0) to
-the bridge.
+Create a bridge interface (br0).
 ```
 $ sudo nano /etc/systemd/network/bridge-br0.netdev
 ```
@@ -253,17 +254,11 @@ File contents
 Name=br0
 Kind=bridge
 ```
-
-Optionally, you may add the below to the above if you need to set the
-MAC address of the bridge.
-```
-MACAddress=xx:xx:xx:xx:xx:xx
-```
 -----
 
-Configure the bridge interface.
+Add the ethernet interface.
 ```
-$ sudo nano /etc/systemd/network/bridge-br0-ethernet.network
+$ sudo nano /etc/systemd/network/bridge-br0-ether.network
 ```
 File contents
 ```
@@ -273,6 +268,9 @@ Name=eth0
 [Network]
 Bridge=br0
 ```
+-----
+
+Configure the bridge interface.
 ```
 $ sudo nano /etc/systemd/network/bridge-br0.network
 ```
@@ -285,21 +283,6 @@ Name=br0
 Address=192.168.1.100/24
 Gateway=192.168.1.1
 DNS=8.8.8.8
-```
------
-
-Block the eth0 and wlan0 interfaces from being processed, and let dhcpcd
-configure only br0 via DHCP.
-```
-$ sudo nano /etc/dhcpcd.conf
-```
-Add the following line above the first `interface xxx` line, if any
-```
-denyinterfaces eth0 wlan0
-```
-Go to the end of the file and add the following line
-```
-interface br0
 ```
 -----
 
@@ -316,83 +299,21 @@ $ sudo reboot
 -----
 
 
-
-
 Notes:
 
 
 -----
 
-Enable systemd-resolved service.
-
-Note: This service implements a caching DNS server.
-```
-$ sudo systemctl enable systemd-resolved
-
-$ sudo systemctl start systemd-resolved
-```
-Note: Once started, systemd-resolved will create its own resolv.conf
-somewhere under /run/systemd directory. However, it is a common
-practise to store DNS resolver information in /etc/resolv.conf, and
-many applications still rely on /etc/resolv.conf. Thus for compatibility
-reasons, create a symlink to /etc/resolv.conf as follows.
-```
-$ sudo rm /etc/resolv.conf
-$ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
-```
------
-
-Configure DHCP networking.
-
-Create the following configuration file. The name of a file can be arbitrary,
-but remember that files are processed in lexical order.
-```
-$ sudo nano /etc/systemd/network/20-dhcp.network
-```
-File contents
-```
-[Match]
-Name=eth0
-
-[Network]
-DHCP=yes
-```
------
-
-Assign a static IP address to the eth0 network interface [optional].
-```
-$ sudo nano /etc/systemd/network/10-static-ether.network
-```
-File contents
-```
-[Match]
-Name=eth0
-
-[Network]
-Address=192.168.01.50/24
-Gateway=192.168.01.1
-DNS=8.8.8.8
-```
-Note: the interface eth0 will be assigned an address 192.168.01.50/24,
-a default gateway 192.168.01.1, and a DNS server 8.8.8.8. One subtlety
-here is that the name of an interface eth0 matches the pattern rule
-defined in the earlier DHCP configuration as well. However, since the
-file 10-static-enp3s0.network is processed before 20-dhcp.network
-according to lexical order, the static configuration takes priority
-over DHCP configuration in case of eth0 interface.
-
------
-
-Restart systemd-networkd service or reboot.
+To restart systemd-networkd service or reboot.
 ```
 $ sudo systemctl restart systemd-networkd
 ```
 -----
-Check the status of the service.
+
+To check the status of the service.
 ```
 $ systemctl status systemd-networkd
 
 $ systemctl status systemd-resolved
 ```
------
 -----
