@@ -51,6 +51,18 @@ Realtek: rtw_vht_enable=2 rtw_switch_usb_mode=1
 
 Mediatek: disable_usb_sg=1
 ```
+Info: The only AC1200 or above class Realtek chipset/driver combination that I
+have found to provide stable/high speed AP mode support is the rtl8812au. The
+driver is available at the following location:
+
+[8812au](https://github.com/morrownr/8812au)
+
+Info: The Mediatek mt7612u driver is located in the Linux kernel and is
+outstanding in AP mode. Information regarding USB WiFi adapters based on the
+mt7612u chipset can be found at the following location:
+
+[USB-WiFi](https://github.com/morrownr/USB-WiFi)
+
 -----
 
 Update, upgrade and reboot system.
@@ -64,7 +76,7 @@ $ sudo reboot
 ```
 -----
 
-Determine the names and state of the network interfaces.
+Determine names and state of the network interfaces.
 ```
 $ ip a
 ```
@@ -88,7 +100,7 @@ $ sudo systemctl enable hostapd
 ```
 -----
 
-Create the hostapd configuration file.
+Create hostapd configuration file.
 ```
 $ sudo nano /etc/hostapd/hostapd.conf
 ```
