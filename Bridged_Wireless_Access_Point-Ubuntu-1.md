@@ -29,11 +29,11 @@ WPA3-SAE will work if a Mediatek 761x chipset based USB WiFI adapter is used.
 
 #### Tested Setup
 
-	Desktop system based on an AMD64 processor
+	Desktop system based on a x64/AMD64 processor
 
 	Ubuntu 21.04
 
-	AC1200/AC1300 USB WiFi Adapter
+	AC1200/AC1300 USB WiFi Adapter in AP mode
 
 	Ethernet connection providing internet service
 
@@ -44,15 +44,15 @@ WPA3-SAE will work if a Mediatek 761x chipset based USB WiFI adapter is used.
 
 Install and configure USB WiFi adapter.
 
-Note: For full speed operation module parameters may be required.
-
-Realtek: rtw_vht_enable=1 rtw_switch_usb_mode=1
+Note: For full speed operation in AP mode module parameters may be required.
+```
+Realtek: rtw_vht_enable=2 rtw_switch_usb_mode=1
 
 Mediatek: disable_usb_sg=1
-
+```
 -----
 
-Update and reboot system.
+Update, upgrade and reboot system.
 
 ```
 $ sudo apt update
@@ -95,7 +95,7 @@ File contents
 ```
 # /etc/hostapd/hostapd.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-05-11
+# 2021-05-12
 
 # Defaults:
 # SSID: myAP
@@ -104,7 +104,7 @@ File contents
 # Channel: 36
 # Country: US
 
-# needs to match your system
+# needs to match wireless interface in your system
 interface=<wlan0>
 
 # needs to match bridge interface name in your system
@@ -145,6 +145,7 @@ auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
 rsn_pairwise=CCMP
+# only one wpa_key_mgmt= line should be active.
 # wpa_key_mgmt=WPA-PSK is required for WPA2-AES
 wpa_key_mgmt=WPA-PSK
 # wpa_key_mgmt=SAE WPA-PSK is required for WPA3-AES Transitional
@@ -223,21 +224,25 @@ DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
 
-Disable Network Manager service.
+Disable and mask Network Manager service.
 
 Note: This guide uses systemd-networkd for network management.
 ```
 $ sudo systemctl disable NetworkManager
+
+$ sudo systemctl mask NetworkManager
 ```
 -----
 
 Enable the systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
 ```
 $ sudo systemctl enable systemd-networkd
+
+$ sudo systemctl start systemd-networkd
 ```
 -----
 
-Enable systemd-resolved service.
+Enable and start systemd-resolved service.
 
 Note: This service implements a caching DNS server.
 ```
@@ -259,7 +264,7 @@ $ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
 Create a bridge interface (br0).
 ```
-$ sudo nano /etc/systemd/network/bridge-br0.netdev
+$ sudo nano /etc/systemd/network/10-bridge-br0-create.netdev
 ```
 File contents
 ```
@@ -271,7 +276,7 @@ Kind=bridge
 
 Bind the ethernet interface.
 ```
-$ sudo nano /etc/systemd/network/bridge-br0-ethernet.network
+$ sudo nano /etc/systemd/network/20-bridge-br0-bind-ethernet.network
 ```
 File contents
 ```
@@ -285,8 +290,10 @@ Bridge=br0
 
 Configure the bridge interface.
 ```
-$ sudo nano /etc/systemd/network/bridge-br0.network
+$ sudo nano /etc/systemd/network/21-bridge-br0-config.network
 ```
+Note: The contents of the Network block below should reflect the needs of your network.
+
 File contents
 ```
 [Match]
@@ -311,6 +318,7 @@ $ sudo reboot
 ```
 -----
 End of installation.
+
 
 
 Notes:
