@@ -5,7 +5,8 @@ Warning: Testing in progress.
 A bridged wireless access point works within an existing ethernet
 network to add WiFi capability where it does not exist or to extend
 the network to WiFi capable computers and devices in areas where the
-WiFi signal is weak or otherwise does not meet expectations.
+WiFi signal is weak or otherwise does not meet expectations. This is
+also known as a Dumb AP (non-routed) setup.
 
 This guide disables Network Manager and makes use of systemd-networkd
 so as to provide consistency among the various Linux platforms that
@@ -19,13 +20,13 @@ This document outlines a single band setup with a USB3 WiFi adapter for 5g.
 
 This setup supports WPA3-SAE. It is turned off by default.
 
-WPA3-SAE will not work if a Realtek 88xx chipset based USB WiFi adapter is used.
+WPA3-SAE will not work with Realtek 88xx chipset based USB WiFi adapters.
 
-WPA3-SAE will work if a Mediatek 761x chipset based USB WiFI adapter is used.
+WPA3-SAE will work, if enabled, with Mediatek 761x chipset based USB WiFI adapters.
 
 -----
 
-2021-05-11
+2021-05-12
 
 #### Tested Setup
 
@@ -224,7 +225,7 @@ DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
 
-Disable and mask Network Manager service.
+Disable and mask NetworkManager service.
 
 Note: This guide uses systemd-networkd for network management.
 ```
