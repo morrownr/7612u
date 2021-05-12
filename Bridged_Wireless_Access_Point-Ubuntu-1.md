@@ -234,7 +234,7 @@ $ sudo systemctl mask NetworkManager
 ```
 -----
 
-Enable the systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
+Enable and start systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
 ```
 $ sudo systemctl enable systemd-networkd
 
@@ -262,7 +262,7 @@ $ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 ```
 -----
 
-Create a bridge interface (br0).
+Create bridge interface (br0).
 ```
 $ sudo nano /etc/systemd/network/10-bridge-br0-create.netdev
 ```
@@ -274,7 +274,7 @@ Kind=bridge
 ```
 -----
 
-Bind the ethernet interface.
+Bind ethernet interface.
 ```
 $ sudo nano /etc/systemd/network/20-bridge-br0-bind-ethernet.network
 ```
@@ -288,7 +288,7 @@ Bridge=br0
 ```
 -----
 
-Configure the bridge interface.
+Configure bridge interface.
 ```
 $ sudo nano /etc/systemd/network/21-bridge-br0-config.network
 ```
@@ -306,7 +306,7 @@ DNS=8.8.8.8
 ```
 -----
 
-Ensure WiFi radio is not blocked.
+Ensure WiFi radio not blocked.
 ```
 $ sudo rfkill unblock wlan
 ```
@@ -331,7 +331,7 @@ $ sudo systemctl restart systemd-networkd
 ```
 -----
 
-Check the status of the services.
+Check status of the services.
 ```
 $ systemctl status hostapd
 
