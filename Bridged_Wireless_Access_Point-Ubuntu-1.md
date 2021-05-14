@@ -2,11 +2,11 @@ Warning: Testing in progress.
 
 ## Bridged Wireless Access Point - Ubuntu 21.04
 
-A bridged wireless access point works within an existing ethernet
-network to add WiFi capability where it does not exist or to extend
-the network to WiFi capable computers and devices in areas where the
-WiFi signal is weak or otherwise does not meet expectations. This is
-also known as a Dumb AP (non-routed) setup.
+A bridged wireless access point works within an existing network to add
+WiFi capability where it does not exist or to extend the network to WiFi
+capable computers and devices in areas where the WiFi signal is weak or
+otherwise does not meet expectations. This is also known as a Dumb AP
+(non-routed) setup.
 
 This guide disables Network Manager and makes use of systemd-networkd
 so as to provide consistency among the various Linux platforms that
@@ -45,7 +45,7 @@ WPA3-SAE will work, if enabled, with Mediatek 761x chipset based USB WiFI adapte
 
 Install and configure USB WiFi adapter.
 
-Note: For full speed operation in AP mode module parameters may be required.
+Note: For full speed operation in AP mode, module parameters may be required.
 ```
 Realtek: rtw_vht_enable=2 rtw_switch_usb_mode=1
 
@@ -141,7 +141,7 @@ ieee80211h=1
 # g = 2g (b/g/n)
 hw_mode=a
 channel=36
-# channel=149
+#channel=149
 
 beacon_int=100
 dtim_period=2
@@ -180,10 +180,10 @@ wpa_key_mgmt=WPA-PSK
 ieee80211n=1
 wmm_enabled=1
 #
-# Note: Capabilities can vary even between adapters with the same chipset.
+# Note: Capabilities can vary between adapters with the same chipset.
 #
 # Note: Only one ht_capab= line and one vht_capab= should be active. The
-# contends of these lines is determined by the capabilities of your adapter.
+# content of these lines is determined by the capabilities of your adapter.
 #
 # rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
 # band 1 - 2g - 20 MHz channel width
@@ -254,6 +254,8 @@ $ sudo systemctl enable systemd-networkd
 $ sudo systemctl start systemd-networkd
 ```
 -----
+
+Testing: Need to test to see if this section really is needed.
 
 Enable and start systemd-resolved service.
 
@@ -330,9 +332,10 @@ Reboot system.
 $ sudo reboot
 ```
 -----
+
 End of installation.
 
-
+-----
 
 Notes:
 
