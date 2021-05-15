@@ -236,6 +236,7 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
+If running the Desktop version of Ubuntu:
 
 Disable and mask NetworkManager service.
 
@@ -245,6 +246,21 @@ $ sudo systemctl disable NetworkManager
 
 $ sudo systemctl mask NetworkManager
 ```
+If running the Server version of Ubuntu:
+
+Disable and mask networkd-dispatcher.
+
+Note: we are bringing /etc/network/interfaces support.
+
+$ sudo apt-get install ifupdown
+$ sudo systemctl stop networkd-dispatcher
+$ sudo systemctl disable networkd-dispatcher
+$ sudo systemctl mask networkd-dispatcher
+
+Purge netplan.
+
+$ sudo apt-get purge nplan netplan.io
+
 -----
 
 Enable and start systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
