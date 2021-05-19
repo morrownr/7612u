@@ -250,7 +250,7 @@ If running the Server version of Ubuntu:
 
 Disable and mask networkd-dispatcher.
 
-Note: we are bringing /etc/network/interfaces support.
+Note: we are activating /etc/network/interfaces
 ```
 $ sudo apt-get install ifupdown
 $ sudo systemctl stop networkd-dispatcher
