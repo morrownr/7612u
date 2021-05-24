@@ -1,55 +1,46 @@
-Warning: Testing in progress.
+## Bridged Wireless Access Point - for Ubuntu 21.04 - Warning: Testing in progress.
 
-## Bridged Wireless Access Point - Ubuntu 21.04
-
-A bridged wireless access point works within an existing network to add
-WiFi capability where it does not exist or to extend the network to WiFi
-capable computers and devices in areas where the WiFi signal is weak or
-otherwise does not meet expectations. This is also known as a Dumb AP
-(non-routed) setup.
-
-This guide disables Network Manager and makes use of systemd-networkd
-so as to provide consistency among the various Linux platforms that
-are supported.
+A bridged wireless access point (aka Dumb AP) works within an existing
+ethernet network to add WiFi capability where it does not exist or to
+extend the network to WiFi capable computers and devices in areas where
+the WiFi signal is weak or otherwise does not meet expectations.
 
 #### Single Band
 
-This document outlines a single band setup with a USB3 WiFi adapter for 5g.
+This document outlines a single band 5 GHz setup with a USB 3 WiFi adapter.
 
 #### Information
 
-This setup supports WPA3-SAE. It is turned off by default.
+This setup supports WPA3-SAE. It is disabled by default.
 
 WPA3-SAE will not work with Realtek 88xx chipset based USB WiFi adapters.
 
-WPA3-SAE will work, if enabled, with Mediatek 761x chipset based USB WiFI adapters.
+WPA3-SAE will work with Mediatek 761x chipset based USB WiFI adapters.
 
 -----
 
-2021-05-12
+2021-05-20
 
 #### Tested Setup
 
-	Desktop system based on a x64/AMD64 processor
+Desktop system based on a x64/AMD64 processor
 
-	Ubuntu 21.04
+Ubuntu 21.04
 
-	AC1200/AC1300 USB WiFi Adapter in AP mode
+Ethernet connection providing internet
 
-	Ethernet connection providing internet service
-
+USB WiFi Adapter with mt7612u chipset - Alfa AWUS036ACM
 
 #### Setup Steps
 
------
-
-Install and configure USB WiFi adapter.
+USB adapter driver installation should be performed and tested prior to
+following this guide.
 
 Note: For full speed operation in AP mode, module parameters may be required.
 ```
 Realtek: rtw_vht_enable=2 rtw_switch_usb_mode=1
 
-Mediatek: disable_usb_sg=1
+Mediatek: disable_usb_sg=1 (use only if needed for your hardware)
 ```
 Info: The only AC1200 or above class Realtek chipset/driver combination that I
 have found to provide stable/high speed AP mode support is the rtl8812au. The
@@ -236,31 +227,45 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
 -----
+
+Note: This guide uses systemd-networkd for network management.
+
+Disable existing network management.
+
 If running the Desktop version of Ubuntu:
 
 Disable and mask NetworkManager service.
-
-Note: This guide uses systemd-networkd for network management.
 ```
+$ sudo systemctl disable NetworkManager-wait-online
+
+$ sudo systemctl disable NetworkManager-dispatcher
+
+$ sudo systemctl mask networkd-dispatcher
+
 $ sudo systemctl disable NetworkManager
 
 $ sudo systemctl mask NetworkManager
+
+# sudo reboot
 ```
 If running the Server version of Ubuntu:
 
 Disable and mask networkd-dispatcher.
-
-Note: we are bringing /etc/network/interfaces support.
-
+```
 $ sudo apt-get install ifupdown
+
 $ sudo systemctl stop networkd-dispatcher
+
 $ sudo systemctl disable networkd-dispatcher
+
 $ sudo systemctl mask networkd-dispatcher
-
+```
 Purge netplan.
-
+```
 $ sudo apt-get purge nplan netplan.io
 
+$ sudo reboot
+```
 -----
 
 Enable and start systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
@@ -268,28 +273,6 @@ Enable and start systemd-networkd service. Website - [systemd-network](https://w
 $ sudo systemctl enable systemd-networkd
 
 $ sudo systemctl start systemd-networkd
-```
------
-
-Testing: Need to test to see if this section really is needed.
-
-Enable and start systemd-resolved service.
-
-Note: This service implements a caching DNS server.
-```
-$ sudo systemctl enable systemd-resolved
-
-$ sudo systemctl start systemd-resolved
-```
-Note: Once started, systemd-resolved will create its own resolv.conf
-somewhere under /run/systemd directory. However, it is a common
-practise to store DNS resolver information in /etc/resolv.conf, and
-many applications still rely on /etc/resolv.conf. Thus for compatibility
-reasons, create a symlink to /etc/resolv.conf as follows.
-```
-$ sudo rm /etc/resolv.conf
-
-$ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 ```
 -----
 
@@ -370,5 +353,27 @@ $ systemctl status hostapd
 $ systemctl status systemd-networkd
 
 $ systemctl status systemd-resolved
+```
+-----
+
+Testing: Need to test to see if this section is needed.
+
+Enable and start systemd-resolved service.
+
+Note: This service implements a caching DNS server.
+```
+$ sudo systemctl enable systemd-resolved
+
+$ sudo systemctl start systemd-resolved
+```
+Note: Once started, systemd-resolved will create its own resolv.conf
+somewhere under /run/systemd directory. However, it is a common
+practise to store DNS resolver information in /etc/resolv.conf, and
+many applications still rely on /etc/resolv.conf. Thus for compatibility
+reasons, create a symlink to /etc/resolv.conf as follows.
+```
+$ sudo rm /etc/resolv.conf
+
+$ sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 ```
 -----

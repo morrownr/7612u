@@ -1,6 +1,6 @@
 ## Monitor Mode
 
-2021-04-11
+2021-05-15
 
 Tested with Kali Linux (amd64) and an Alfa AWUS036ACM (mt7612u) adapter.
 
@@ -9,6 +9,7 @@ Tested with Kali Linux (amd64) and an Alfa AWUS036ACM (mt7612u) adapter.
 Tested with Raspberry Pi OS (arm32) and an Alfa AWUS036ACHM (mt7610u) adapter.
 
 -----
+
 Update system
 ```
 $ sudo apt update
@@ -17,12 +18,14 @@ $ sudo reboot
 ```
 
 -----
+
 Ensure WiFi radio is not blocked
 ```
 $ sudo rfkill unblock wlan
 ```
 
 -----
+
 Install the aircrack-ng package
 ```
 $ sudo apt install aircrack-ng
@@ -49,6 +52,7 @@ unmanaged-devices=interface-name:mon0;interface-name:mon1
 ```
 
 -----
+
 Get status of WiFi interface
 ```
 $ sudo iw dev
@@ -64,12 +68,14 @@ phy#0
 ```
 
 -----
+
 Add monitor interface
 ```
 $ sudo iw phy phy0 interface add mon0 type monitor
 ```
 
 -----
+
 Check that mon0 was added
 ```
 $ sudo iw dev
@@ -92,6 +98,7 @@ phy#0
 ```
 
 -----
+
 Test injection
 ```
 $ sudo airodump-ng mon0 --band ag
@@ -102,6 +109,7 @@ $ sudo aireplay-ng --test mon0
 ```
 
 -----
+
 Test deauth
 ```
 $ sudo airodump-ng mon0 --band ag
@@ -114,3 +122,8 @@ $ sudo airodump-ng mon0 --bssid <routerMAC> --channel <channel of router>
 ```
 
 -----
+
+Change txpower
+```
+$ sudo iw dev wlan0 set txpower fixed 1600
+```

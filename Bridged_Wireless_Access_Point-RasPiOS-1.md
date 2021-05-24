@@ -1,4 +1,4 @@
-## Bridged Wireless Access Point
+## Bridged Wireless Access Point - RasPiOS
 
 A bridged wireless access point (aka Dumb AP) works within an existing
 ethernet network to add WiFi capability where it does not exist or to
@@ -7,16 +7,20 @@ the WiFi signal is weak or otherwise does not meet expectations.
 
 #### Single Band
 
-This document outlines a single band setup using the Raspberry Pi 4B
-with a USB 3 WiFi adapter for 5g.
+This document outlines a single band 5 GHz setup using the Raspberry Pi 4B
+with a USB 3 WiFi adapter.
 
 #### Information
 
-This setup supports WPA3-SAE personal but it is off by default.
+This setup supports WPA3-SAE. It is disabled by default.
+
+WPA3-SAE will not work with Realtek 88xx chipset based USB WiFi adapters.
+
+WPA3-SAE will work with Mediatek 761x chipset based USB WiFI adapters.
 
 -----
 
-2021-05-05
+2021-05-21
 
 #### Tested Setup
 
@@ -26,7 +30,7 @@ Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
 
 Ethernet connection providing internet
 
-USB WiFi Adapter with mt7612u chipset - Alfa AWUS036ACM
+USB WiFi Adapter
 
 [Case](https://www.amazon.com/dp/B07X8RL8SL)
 
@@ -42,40 +46,78 @@ hardware. The primary problem has to do with the backfeeding of
 current into the Raspberry Pi. I have avoided using a powered hub
 in this setup to enable a very high degree of stability.
 
-Note: The Alfa AWUS036ACM adapter requests a maximum of 400 mA from
-the USB subsystem during initialization. Testing with a meter shows
-actual usage of 360 mA during heavy load and usage of 180 mA during
-light loads. This is much lower power usage than most AC1200 class
-adapters which makes this adapter a good choice for a Raspberry Pi 4B
-which has an overall limit of 1200 mA power available via the USB
-subsystem.
+Note: The rtl88XXxu chipset based USB3 WiFi adapters require from 504 mA of
+power up to well over 800 mA of power depending on the adapter. The Raspberry
+Pi 3B, 3B+ and 4B USB subsystems are only able to supple a total of 1200
+mA of power to all attached devices.
+
+Note: The Alfa AWUS036ACM adapter, mt7612u based adapter, requests a maximum
+of 400 mA from the USB subsystem during initialization. Testing with a meter
+shows actual usage of 360 mA during heavy load and usage of 180 mA during
+light loads. This is much lower power usage than most AC1200 class adapters
+which makes this adapter a good choice for a Raspberry Pi based access point.
 
 
 #### Setup Steps
+
 -----
 
-USB adapter driver installation is not required as the driver is in-kernel.
+USB WiFi adapter driver installation, if required, should be performed and tested
+prior to continuing.
 
-Recommendation: Use module parameter - disable_usb_sg=1
+Note: For USB3 adapters based on Realtek rtl88xx chipsets, the following module
+parameters may be needed for best performance:
+```
+rtw_vht_enable=2 rtw_switch_usb_mode=1
+```
+Note: For USB3 adapters based on Mediatek mt7612ux chipsets, the following module
+parameters may be needed for best performance:
+```
+disable_usb_sg=1
+```
+-----
+
+Determine names and state of the network interfaces.
+
+Code:
+```
+ip a
+```
+Note: If the interface names are not `eth0` and `wlan0`,
+then the interface names used in your system will have to replace
+`eth0` and `wlan0` for the remainder of this document.
 
 -----
 
 Update system.
 
+Code:
 ```
-$ sudo apt update
+sudo apt update
+```
 
-$ sudo apt full-upgrade
-```
 -----
 
-Reduce power consumption and overclock the CPU a modest amount.
+Upgrade system.
 
-Note: all items in this step are optional and some items are specific to
+Code:
+```
+sudo apt full-upgrade
+```
+Note: Upgrading system is not mandatory for this installation but since some
+users forget to upgrade their system on a regular basis, maybe it is a good idea.
+
+-----
+
+Reduce overall power consumption and overclock the CPU a modest amount.
+
+Note: All items in this step are optional and some items are specific to
 the Raspberry Pi 4B. If installing to a Raspberry Pi 3b or 3b+ you will
 need to use the appropriate settings for that hardward.
+
+Code:
 ```
-$ sudo nano /boot/config.txt
+sudo nano /boot/config.txt
 ```
 Change
 ```
@@ -116,121 +158,55 @@ dtoverlay=disable-wifi
 -----
 
 Install needed package. Website - [hostapd](https://w1.fi/hostapd/)
-```
-$ sudo apt install hostapd
-```
------
 
-Reboot system.
+Code:
 ```
-$ sudo reboot
+sudo apt install hostapd
 ```
 -----
 
 Enable the wireless access point service and set it to start when your
 Raspberry Pi boots.
-```
-$ sudo systemctl unmask hostapd
 
-$ sudo systemctl enable hostapd
+Code:
+```
+sudo systemctl unmask hostapd
+
+sudo systemctl enable hostapd
 ```
 -----
 
-Add a bridge network device named br0 by creating a file using the
-following command, with the contents below.
-```
-$ sudo nano /etc/systemd/network/bridge-br0.netdev
-```
-File contents
-```
-[NetDev]
-Name=br0
-Kind=bridge
-```
------
+Create hostapd configuration file.
 
-Determine the names of the network interfaces.
+Code:
 ```
-$ ip link show
-```
-Note: If the interface names are not `eth0` and `wlan0`,
-then the interface names used in your system will have to replace
-`eth0` and `wlan0` for the remainder of this document.
-
------
-
-Bridge the Ethernet network with the wireless network, first add the
-built-in Ethernet interface ( eth0 ) as a bridge member by creating the
-following file.
-```
-$ sudo nano /etc/systemd/network/br0-member-eth0.network
-```
-File contents
-```
-[Match]
-Name=eth0
-
-[Network]
-Bridge=br0
-```
------
-
-Enable the systemd-networkd service to create and populate the bridge
-when your Raspberry Pi boots.
-```
-$ sudo systemctl enable systemd-networkd
-```
------
-
-Block the eth0 and wlan0 interfaces from being processed, and let dhcpcd
-configure only br0 via DHCP.
-```
-$ sudo nano /etc/dhcpcd.conf
-```
-Add the following line above the first `interface xxx` line, if any
-```
-denyinterfaces eth0 wlan0
-```
-Go to the end of the file and add the following line
-```
-interface br0
-```
------
-
-To ensure WiFi radio is not blocked on your Raspberry Pi, execute the
-following command.
-```
-$ sudo rfkill unblock wlan
-```
------
-
-Create the hostapd configuration file.
-```
-$ sudo nano /etc/hostapd/hostapd.conf
+sudo nano /etc/hostapd/hostapd.conf
 ```
 File contents
 ```
 # /etc/hostapd/hostapd.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-04-07
+# 2021-05-20
 
 # Defaults:
-# SSID: pi4
-# PASSPHRASE: raspberry
+# SSID: myAP
+# PASSPHRASE: myPW1234
 # Band: 5g
 # Channel: 36
 # Country: US
 
-# needs to match your system
+# needs to match wireless interface in your system
 interface=wlan0
 
+# needs to match bridge interface name in your system
 bridge=br0
+
 driver=nl80211
 ctrl_interface=/var/run/hostapd
 ctrl_interface_group=0
 
 # change as desired
-ssid=pi4
+ssid=myAP
 
 # change as required
 country_code=US
@@ -243,7 +219,7 @@ ieee80211h=1
 # g = 2g (b/g/n)
 hw_mode=a
 channel=36
-# channel=149
+#channel=149
 
 beacon_int=100
 dtim_period=2
@@ -251,30 +227,33 @@ max_num_sta=32
 macaddr_acl=0
 rts_threshold=2347
 fragm_threshold=2346
-send_probe_response=1
+#send_probe_response=1
 
 # security
-# auth_algs=1 works for WPA-2
-# auth_algs=3 required for WPA-3 SAE and Transitional
+# change wpa_passphrase as desired
+wpa_passphrase=myPW1234
 auth_algs=1
 ignore_broadcast_ssid=0
 # wpa=2 is required for WPA2 and WPA3 (read the docs)
 wpa=2
 rsn_pairwise=CCMP
-# Change as desired
-wpa_passphrase=raspberry
-# WPA-2 AES
+# only one wpa_key_mgmt= line should be active.
+# wpa_key_mgmt=WPA-PSK is required for WPA2-AES
 wpa_key_mgmt=WPA-PSK
-# WPA3-AES Transitional
+# wpa_key_mgmt=SAE WPA-PSK is required for WPA3-AES Transitional
 #wpa_key_mgmt=SAE WPA-PSK
-# WPA-3 SAE
+# wpa_key_mgmt=SAE is required for WPA3-SAE
 #wpa_key_mgmt=SAE
 #wpa_group_rekey=1800
 # ieee80211w=1 is required for WPA-3 SAE Transitional
 # ieee80211w=2 is required for WPA-3 SAE
 #ieee80211w=1
-# required for WPA3-SAE Transitional
+# if parameter is not set, 19 is the default value.
+#sae_groups=19 20 21 25 26
+# sae_require_mfp=1 is required for WPA-3 SAE Transitional
 #sae_require_mfp=1
+# if parameter is not 9 set, 5 is the default value.
+#sae_anti_clogging_threshold=10
 
 # Note: Capabilities can vary even between adapters with the same chipset
 #
@@ -282,14 +261,29 @@ wpa_key_mgmt=WPA-PSK
 ieee80211n=1
 wmm_enabled=1
 #
+# Note: Only one ht_capab= line and one vht_capab= should be active. The
+# content of these lines is determined by the capabilities of your adapter.
+#
+# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
+# band 1 - 2g - 20 MHz channel width
+#ht_capab=[SHORT-GI-20][MAX-AMSDU-7935]
+# band 2 - 5g - 40 MHz channel width
+#ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+#
 # mt7612u
 # to support 20 MHz channel width on 11n
 #ht_capab=[LDPC][SHORT-GI-20][TX-STBC][RX-STBC1]
 # to support 40 MHz channel width on 11n
 ht_capab=[LDPC][HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1]
+#
 
 # IEEE 802.11ac
 ieee80211ac=1
+#
+# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
+# band 2 - 5g - 80 MHz channel width
+#vht_capab=[MAX-MPDU-11454][SHORT-GI-80][HTC-VHT]
+# Note: [TX-STBC-2BY1] causes problems
 #
 # mt7612u
 # band 2 - 5g - 80 MHz channel width on 11ac
@@ -355,46 +349,170 @@ vht_oper_centr_freq_seg0_idx=42
 ```
 -----
 
-Establish conf file and log file locations.
+Establish hostapd conf file and log file locations.
+
+Note: Make sure to change <your_home> to your home directory.
+
+Code:
 ```
-$ sudo nano /etc/default/hostapd
+sudo nano /etc/default/hostapd
 ```
 Add to bottom of file
 ```
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
-DAEMON_OPTS="-d -K -f /home/pi/hostapd.log"
+DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
+```
+-----
+
+Block the eth0 and wlan0 interfaces from being processed, and let dhcpcd
+configure only br0 via DHCP.
+
+Code:
+```
+sudo nano /etc/dhcpcd.conf
+```
+Add the following line above the first `interface xxx` line, if any
+```
+denyinterfaces eth0 wlan0
+```
+Go to the end of the file and add the following line
+```
+interface br0
+```
+-----
+
+Enable systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
+
+Code:
+```
+sudo systemctl enable systemd-networkd
+```
+-----
+
+Create bridge interface br0.
+
+Code:
+```
+sudo nano /etc/systemd/network/10-bridge-br0-create.netdev
+```
+File contents
+```
+[NetDev]
+Name=br0
+Kind=bridge
+```
+-----
+
+Bind ethernet interface.
+
+Code:
+```
+sudo nano /etc/systemd/network/20-bridge-br0-bind-ethernet.network
+```
+File contents
+```
+[Match]
+Name=eth0
+
+[Network]
+Bridge=br0
+```
+-----
+
+Configure bridge interface.
+
+Code:
+```
+sudo nano /etc/systemd/network/21-bridge-br0-config.network
+```
+Note: The contents of the Network block below should reflect the needs of your network.
+
+File contents
+```
+[Match]
+Name=br0
+
+[Network]
+Address=192.168.1.100/24
+Gateway=192.168.1.1
+DNS=8.8.8.8
+```
+-----
+
+Ensure WiFi radio not blocked.
+
+Code:
+```
+$ sudo rfkill unblock wlan
 ```
 -----
 
 Reboot system.
 
+Code:
+```
 $ sudo reboot
+```
+-----
+
+End of installation.
 
 -----
 
-Enjoy!
+Notes:
 
 -----
 
-iperf3 results - 5g
-```
-$ iperf3 -c 192.168.1.40
-Connecting to host 192.168.1.40, port 5201
-[  5] local 192.168.1.83 port 43192 connected to 192.168.1.40 port 5201
-[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-[  5]   0.00-1.00   sec  47.6 MBytes   400 Mbits/sec    0   1.50 MBytes
-[  5]   1.00-2.00   sec  52.5 MBytes   440 Mbits/sec    0   1.91 MBytes
-[  5]   2.00-3.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
-[  5]   3.00-4.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes
-[  5]   4.00-5.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes
-[  5]   5.00-6.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes
-[  5]   6.00-7.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
-[  5]   7.00-8.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
-[  5]   8.00-9.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes
-[  5]   9.00-10.00  sec  55.0 MBytes   461 Mbits/sec    0   2.49 MBytes
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec   514 MBytes   431 Mbits/sec    0   sender
-[  5]   0.00-10.01  sec   511 MBytes   428 Mbits/sec        receiver
+Restart systemd-networkd service.
 
+Code:
 ```
+$ sudo systemctl restart systemd-networkd
+```
+-----
+
+Check status of the services.
+
+Code:
+```
+$ systemctl status hostapd
+
+$ systemctl status systemd-networkd
+```
+-----
+
+Autostarting iperf3
+
+Code:
+```
+sudo apt install iperf3
+```
+Code:
+```
+sudo nano /etc/systemd/system/iperf3.service
+```
+File contents
+```
+[Unit]
+Description=iPerf3 Service
+After=syslog.target network.target auditd.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/iperf3 -s
+
+[Install]
+WantedBy=multi-user.target
+```
+Code:
+```
+sudo systemctl enable iperf3
+```
+Check iperf3 status
+
+Code:
+```
+sudo systemctl status iperf3
+```
+
+-----

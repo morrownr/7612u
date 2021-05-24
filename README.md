@@ -30,20 +30,20 @@ The below document provides instructions for testing monitor mode with the Raspb
 The mt7612u driver does support one module parameter - disable_usb_sg
 
 This parameter is used to turn USB Scatter-Gather support on or off. Documentation
-is the file mt76_usb.conf.
+is in the file mt76_usb.conf.
 
 Information about the Scatter-Gather module parameter:
 
 Background: Scatter and Gather (Vectored I/O) is a concept that was primarily used in hard disks
 and it enhances large I/O request performance.
 
-Problem reports seem to be rare and limited to situations where the user is running an AP
-with a USB3 capable adapter in a USB3 port while operating on the 5Ghz band. Symtoms include
-dramatically reduced throughput. Research tends to indicate that this could be a hardware
-specific problem and is not caused by the driver or USB WiFi adapter. The issue causing
-the reported problems may be fixed because I certainly have not seen the problem with
-the AP setups I have outlined above. However, if you experience dramatically reduced
-throughput, try disable_usb_sg=1. The Installation Steps below can help make this change.
+Problem reports seem to be limited to situations where the user is running an AP
+with a USB3 capable adapter in a USB3 port while operating on the 5Ghz band. Symtoms
+include dramatically reduced throughput. Research tends to indicate that this could
+be a hardware specific problem and is not caused by the driver or USB WiFi adapter.
+If you experience dramatically reduced throughput, try disable_usb_sg=1.
+
+The Installation Steps below can help make this change.
 
 -----
 To make it easy to install and manage support for this parameter, I have added some scripts

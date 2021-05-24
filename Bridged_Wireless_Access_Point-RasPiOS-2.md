@@ -56,6 +56,7 @@ subsystem.
 
 
 #### Setup Steps
+
 -----
 
 USB adapter driver installation is not required as the driver is in-kernel.
@@ -73,7 +74,7 @@ $ sudo apt full-upgrade
 ```
 -----
 
-Reduce power consumption and overclock the CPU a modest amount.
+Reduce overall power consumption and overclock the CPU a modest amount.
 
 Note: all items in this step are optional and some items are specific to
 the Raspberry Pi 4B. If installing to a Raspberry Pi 3b or 3b+ you will
@@ -455,34 +456,27 @@ ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 -----
 
 Reboot system.
-
+```
 $ sudo reboot
+```
+-----
+
+End of installation.
 
 -----
 
-Enjoy!
+Notes:
 
 -----
 
-iperf3 results - 5g
+Restart systemd-networkd service.
 ```
-$ iperf3 -c 192.168.1.40
-Connecting to host 192.168.1.40, port 5201
-[  5] local 192.168.1.83 port 43192 connected to 192.168.1.40 port 5201
-[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-[  5]   0.00-1.00   sec  47.6 MBytes   400 Mbits/sec    0   1.50 MBytes
-[  5]   1.00-2.00   sec  52.5 MBytes   440 Mbits/sec    0   1.91 MBytes
-[  5]   2.00-3.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
-[  5]   3.00-4.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes
-[  5]   4.00-5.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes
-[  5]   5.00-6.00   sec  52.5 MBytes   440 Mbits/sec    0   2.49 MBytes
-[  5]   6.00-7.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
-[  5]   7.00-8.00   sec  51.2 MBytes   430 Mbits/sec    0   2.49 MBytes
-[  5]   8.00-9.00   sec  50.0 MBytes   419 Mbits/sec    0   2.49 MBytes
-[  5]   9.00-10.00  sec  55.0 MBytes   461 Mbits/sec    0   2.49 MBytes
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec   514 MBytes   431 Mbits/sec    0   sender
-[  5]   0.00-10.01  sec   511 MBytes   428 Mbits/sec        receiver
+$ sudo systemctl restart systemd-networkd
+```
+-----
 
+Check status of the services.
 ```
+$ systemctl status hostapd
+
+$ systemctl status systemd-networkd
