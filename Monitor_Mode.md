@@ -1,4 +1,4 @@
-## Monitor Mode
+## Monitor Mode Operation and Testing
 
 2021-05-15
 
@@ -7,6 +7,10 @@ Tested with Kali Linux (amd64) and an Alfa AWUS036ACM (mt7612u) adapter.
 2021-04-23
 
 Tested with Raspberry Pi OS (arm32) and an Alfa AWUS036ACHM (mt7610u) adapter.
+
+2021-05-28
+
+Tested with Linux Mint 20.1 and a USB WiFi adapter based on the rtl8814au chipset.
 
 -----
 
@@ -32,6 +36,17 @@ $ sudo apt install aircrack-ng
 ```
 
 -----
+
+Determine the name(s) and status of wifi interfaces
+```
+$ iw dev
+```
+Note: The output shows the WiFi interface name and the current
+mode among other things. The interface name may be something like
+`wlx00c0cafre8ba` and is required for many of the below commands.
+
+-----
+
 Disable interfering processes
 ```
 $ sudo airmon-ng start kill
