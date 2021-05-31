@@ -31,17 +31,17 @@ this setup guide.
 
 -----
 
-2021-05-27
+2021-05-31
 
 #### Tested Setup
 
-Raspberry Pi 4B (4gb)
+[Raspberry Pi 4B (4gb)](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
 
-Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)
+[Raspberry Pi OS (2021-03-04) (32 bit) (kernel 5.10.17-v7l+)](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit)
 
 Ethernet connection providing internet
 
-USB WiFi Adapter(s)
+[USB WiFi Adapter(s)](https://github.com/morrownr/USB-WiFi)
 
 [Case](https://www.amazon.com/dp/B07X8RL8SL)
 
@@ -191,7 +191,7 @@ Reboot system.
 
 Code:
 ```
-$ sudo reboot
+sudo reboot
 ```
 -----
 
@@ -316,10 +316,10 @@ ieee80211n=1
 wmm_enabled=1
 #
 # mt7612u - mt7610u
-#ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
+ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
 #
 # rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
-ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+#ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
 #
 
 # IEEE 802.11ac
@@ -328,10 +328,10 @@ ieee80211ac=1
 # mt7610u
 #vht_capab=[SHORT-GI-80][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 # mt7612u
-#vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 #
 # rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
-vht_capab=[MAX-MPDU-11454][SHORT-GI-80][HTC-VHT]
+#vht_capab=[MAX-MPDU-11454][SHORT-GI-80][HTC-VHT]
 # Note: [TX-STBC-2BY1] causes problems
 #
 # Required for 80 MHz width channel operation
@@ -463,10 +463,10 @@ wmm_enabled=1
 #ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][RX-STBC1][DSSS_CCK-40]
 #
 # mt7612u - mt7610u
-#ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
+ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
 #
 # rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
-ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+#ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
 
 # Event logger - as desired
 #logger_syslog=-1
@@ -692,7 +692,8 @@ Check status of the services.
 Code:
 ```
 systemctl status hostapd
-
+```
+```
 systemctl status systemd-networkd
 ```
 -----
@@ -747,17 +748,29 @@ Note: For systems running the Gnome desktop, use the following.
 Code:
 ```
 sudo systemctl stop NetworkManager.service
+```
+```
 sudo systemctl disable NetworkManager.service
-
+```
+```
 sudo systemctl stop NetworkManager-wait-online.service
+```
+```
 sudo systemctl disable NetworkManager-wait-online.service
-
+```
+```
 sudo systemctl stop NetworkManager-dispatcher.service
+```
+```
 sudo systemctl disable NetworkManager-dispatcher.service
-
+```
+```
 sudo systemctl stop network-manager.service
+```
+```
 sudo systemctl disable network-manager.service
-
+```
+```
 sudo reboot
 ```
 
@@ -774,9 +787,14 @@ Note: we are activating /etc/network/interfaces
 Code:
 ```
 sudo apt-get install ifupdown
-
+```
+```
 sudo systemctl stop networkd-dispatcher
+```
+```
 sudo systemctl disable networkd-dispatcher
+```
+```
 sudo systemctl mask networkd-dispatcher
 ```
 Purge netplan.
@@ -784,7 +802,8 @@ Purge netplan.
 Code:
 ```
 sudo apt-get purge nplan netplan.io
-
+```
+```
 sudo reboot
 ```
 -----
