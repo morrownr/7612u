@@ -11,22 +11,16 @@ since Linux kernel v4.19, therefore, there is no need to post a driver. This rep
 used to provide information and utilities.
 
 -----
-The below documents provide instructions for setting up an Access Point using a Raspberry Pi 4b
+The below document provides istructions for setting up an Access Point using a Raspberry Pi 4b
 with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 
-[Bridged_Wireless_Access_Point-RasPiOS-1.md - 5g single band](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point-1.md)
-
-[Bridged_Wireless_Access_Point-RasPiOS-2.md - 5g and 2g dual band ( it works really well )](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point-2.md)
+[Bridged_Wireless_Access_Point.md](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point.md)
 
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 This adapter works very well with the Raspberry Pi hardware.
 
 -----
-The below document provides instructions for testing monitor mode with the Raspberry Pi OS (arm32) and Kali Linux (amd64) with a USB WiFi adapter based on the mt7612u chipset.
 
-[Monitor_Mode.md](https://github.com/morrownr/7612u/blob/main/Monitor_Mode.md)
-
------
 The mt7612u driver does support one module parameter - disable_usb_sg
 
 This parameter is used to turn USB Scatter-Gather support on or off. Documentation
