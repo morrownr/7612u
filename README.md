@@ -6,10 +6,9 @@
 
 Linux Support for USB WiFi Adapters that are based on the MT7612U and MT7612UN chipsets.
 
-USB WiFi adapters based on the mt7612u mt7612un chipsets have been supported in-kernel
-since Linux kernel v4.19, therefore, there is no need to install a driver if using a
-popular, modern Linux distribution such as Ubuntu, Raspberry Pi OS, Linux Mint, Kali,
-Fedora or Manjaro.
+USB WiFi adapters based on the mt7612u and mt7612un chipsets have been supported in-kernel
+since Linux kernel v4.19 (2018), therefore, there is no need to install a driver if using a
+modern Linux distribution such as Ubuntu, Raspberry Pi OS, Linux Mint, Kali, Fedora or Manjaro.
 
 The MT76 series of drivers support managed mode, master mode and monitor modes in accordance
 with current Linux Wireless standards. Numerous additional capabilities, include WPA3, are
