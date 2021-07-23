@@ -152,7 +152,7 @@ Wiphy phy0
 		 * AP/VLAN
 		 * monitor
 		 * mesh point
-         * P2P-client
+     		 * P2P-client
 		 * P2P-GO
 	Band 1:
 		Capabilities: 0x1ff
