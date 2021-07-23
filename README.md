@@ -116,7 +116,7 @@ $ sudo ./edit-options.sh
 ```
 
 -----
-
+```
 Alfa AWUS036ACM
 
 $ iw list
@@ -357,5 +357,5 @@ Wiphy phy0
 		* [ CQM_RSSI_LIST ]: multiple CQM_RSSI_THOLD records
 		* [ CONTROL_PORT_OVER_NL80211 ]: control port over nl80211
 		* [ TXQS ]: FQ-CoDel-enabled intermediate TXQs
-
+```
 -----
