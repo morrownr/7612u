@@ -351,11 +351,19 @@ Wiphy phy0
 	Device supports active monitor (which will ACK incoming frames)
 	Device supports configuring vdev MAC-addr on create.
 	Supported extended features:
-		* [ VHT_IBSS ]: VHT-IBSS
-		* [ RRM ]: RRM
-		* [ FILS_STA ]: STA FILS (Fast Initial Link Setup)
-		* [ CQM_RSSI_LIST ]: multiple CQM_RSSI_THOLD records
-		* [ CONTROL_PORT_OVER_NL80211 ]: control port over nl80211
-		* [ TXQS ]: FQ-CoDel-enabled intermediate TXQs
+* [ VHT_IBSS ]: VHT-IBSS
+* [ RRM ]: RRM
+* [ FILS_STA ]: STA FILS (Fast Initial Link Setup)
+* [ CQM_RSSI_LIST ]: multiple CQM_RSSI_THOLD records
+* [ CONTROL_PORT_OVER_NL80211 ]: control port over nl80211
+* [ TXQS ]: FQ-CoDel-enabled intermediate TXQs
+* [ AIRTIME_FAIRNESS ]: airtime fairness scheduling
+* [ AQL ]: Airtime Queue Limits (AQL)
+* [ SCAN_RANDOM_SN ]: use random sequence numbers in scans
+* [ SCAN_MIN_PREQ_CONTENT ]: use probe request with only rate IEs in scans
+* [ CONTROL_PORT_NO_PREAUTH ]: disable pre-auth over nl80211 control port support
+* [ DEL_IBSS_STA ]: deletion of IBSS station support
+* [ SCAN_FREQ_KHZ ]: scan on kHz frequency support
+* [ CONTROL_PORT_OVER_NL80211_TX_STATUS ]: tx status for nl80211 control port support
 ```
 -----
