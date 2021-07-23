@@ -1,27 +1,42 @@
-##### [Click for USB WiFi Adapter Information for Linux](https://github.com/morrownr/USB-WiFi)
+##### [Click for USB WiFi Adapter Information and Links for Linux](https://github.com/morrownr/USB-WiFi)
 
 -----
 
 ### 7612u :rocket:
 
-Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
+Linux Support for USB WiFi Adapters that are based on the MT7612U and MT7612UN chipsets.
 
-USB WiFi adapters based on the mt7612u chipset have been supported in-kernel
-since Linux kernel v4.19, therefore, there is no need to post a driver. This repo will be
-used to provide information and utilities.
+USB WiFi adapters based on the mt7612u mt7612un chipsets have been supported in-kernel
+since Linux kernel v4.19, therefore, there is no need to install a driver if using a
+popular, modern Linux distribution such as Ubuntu, Raspberry Pi OS, Linux Mint, Kali,
+Fedora or Manjaro. This repo will be used to provide information and utilities.
 
 -----
-The below document provides istructions for setting up an Access Point using a Raspberry Pi 4b
+For Linux users that like to work on driver code, here is the location of the MT76
+driver in the Linux kernel repo:
+
+[MT76](https://github.com/torvalds/linux/tree/master/drivers/net/wireless/mediatek/mt76)
+
+If you want to report a bug or submit a fix:
+
+[Reporting bugs and submitting fixes](https://wireless.wiki.kernel.org/en/users/documentation/reporting_bugs)
+
+If you want to see the Linux Wireless Mediatek team site:
+
+[Linux Wireless Mediatek](https://wireless.wiki.kernel.org/en/users/drivers/mediatek)
+
+-----
+The below document provides instructions for setting up an Access Point using a Raspberry Pi 4b
 with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 
 [Bridged_Wireless_Access_Point.md](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point.md)
 
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
-This adapter works very well with the Raspberry Pi hardware.
+
+The Alfa AWUS036ACM works very well with the Raspberry Pi hardware.
 
 -----
-
-The mt7612u driver does support one module parameter - disable_usb_sg
+The mt7612u driver currently supports one module parameter - disable_usb_sg
 
 This parameter is used to turn USB Scatter-Gather support on or off. Documentation
 is in the file mt76_usb.conf.
@@ -31,18 +46,16 @@ Information about the Scatter-Gather module parameter:
 Background: Scatter and Gather (Vectored I/O) is a concept that was primarily used in hard disks
 and it enhances large I/O request performance.
 
-Problem reports seem to be limited to situations where the user is running an AP
-with a USB3 capable adapter in a USB3 port while operating on the 5Ghz band. Symtoms
-include dramatically reduced throughput. Research tends to indicate that this could
-be a hardware specific problem and is not caused by the driver or USB WiFi adapter.
-If you experience dramatically reduced throughput, try disable_usb_sg=1.
+Problem reports, that would cause a need to use this parameter, seem to be limited to
+situations where the user is running an AP with a USB3 capable adapter in a USB3 port
+while operating on the 5Ghz band. Symtoms include dramatically reduced throughput. If you
+experience dramatically reduced throughput, try disable_usb_sg=1.
 
-The Installation Steps below can help make this change.
+The Installation Steps below can help you make this change.
 
 -----
-To make it easy to install and manage support for this parameter, I have added some scripts
-that you can download and use. To install...
-
+To make it easy to install and manage support for the disable_usb_sg parameter, I
+have added some scripts that you can download and use.
 
 ### Installation Steps
 
@@ -97,4 +110,5 @@ Step 3: Run the following script
 ```
 $ sudo ./edit-options.sh
 ```
+
 -----
