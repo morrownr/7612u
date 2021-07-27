@@ -288,14 +288,14 @@ Wiphy phy0
 		 * disassociate
 		 * join_ibss
 		 * join_mesh
-         * remain_on_channel
+       		 * remain_on_channel
 		 * set_tx_bitrate_mask
 		 * frame
 		 * frame_wait_cancel
 		 * set_wiphy_netns
 		 * set_channel
 		 * set_wds_peer
-         * tdls_mgmt
+   		 * tdls_mgmt
 		 * tdls_oper
 		 * probe_client
 		 * set_noack_map
@@ -304,7 +304,7 @@ Wiphy phy0
 		 * set_mcast_rate
 		 * connect
 		 * disconnect
-         * channel_switch
+	         * channel_switch
 		 * set_qos_map
 		 * set_multicast_to_unicast
 	Supported TX frame types:
