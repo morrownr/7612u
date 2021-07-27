@@ -36,7 +36,9 @@ with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u 
 
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 
-The Alfa AWUS036ACM works very well with the Raspberry Pi hardware.
+The Alfa AWUS036ACM works very well with the Raspberry Pi hardware. I have tested
+the Alfa AWUS036ACM with many different computer systems and, in my opinion, it is
+an outstanding USB WiFi adapter.
 
 -----
 The mt7612u driver currently supports one module parameter - disable_usb_sg
