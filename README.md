@@ -11,7 +11,7 @@ since Linux kernel v4.19 (2018), therefore, there is no need to install a driver
 modern Linux distribution such as Ubuntu, Raspberry Pi OS, Linux Mint, Kali, Fedora or Manjaro.
 
 The MT76 series of drivers support managed mode, master mode and monitor modes in accordance
-with current Linux Wireless standards. Numerous additional capabilities, include WPA3, are
+with current Linux Wireless standards. Numerous additional capabilities, including WPA3, are
 supported as well. 
 
 -----
