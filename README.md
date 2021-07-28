@@ -8,7 +8,8 @@ Linux Support for USB WiFi Adapters that are based on the MT7612U and MT7612UN c
 
 USB WiFi adapters based on the mt7612u and mt7612un chipsets have been supported in-kernel
 since Linux kernel v4.19 (2018), therefore, there is no need to install a driver if using a
-modern Linux distribution such as Ubuntu, Raspberry Pi OS, Linux Mint, Kali, Fedora or Manjaro.
+modern version of Linux distribution such as Ubuntu, Raspberry Pi OS, Linux Mint, Kali,
+Fedora or Manjaro.
 
 The MT76 series of drivers support managed mode, master mode and monitor modes in accordance
 with current Linux Wireless standards. Numerous additional capabilities, including WPA3, are
@@ -37,8 +38,8 @@ with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u 
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 
 The Alfa AWUS036ACM works very well with the Raspberry Pi hardware. I have tested
-the Alfa AWUS036ACM with many different computer systems and, in my opinion, it is
-an outstanding USB WiFi adapter.
+the Alfa AWUS036ACM with many different computer systems and Linux distros. In my opinion,
+it is an outstanding USB WiFi adapter.
 
 -----
 The mt7612u driver currently supports one module parameter - disable_usb_sg
@@ -118,7 +119,7 @@ $ sudo ./edit-options.sh
 
 -----
 ```
-Alfa AWUS036ACM
+Alfa AWUS036ACM Technical Information
 
 $ iw list
 Wiphy phy0
