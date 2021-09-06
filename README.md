@@ -51,9 +51,9 @@ STEP 3 - Run both commands below:
 ```
 STEP 4 - Run one of the following commands below:
 ```
-echo 0x800000 > regval # Turn LED ON
-echo 0x820000 > regval # Turn LED OFF
-echo 0x840000 > regval # Make LED BLINK
+# echo 0x800000 > regval # Turn LED ON
+# echo 0x820000 > regval # Turn LED OFF
+# echo 0x840000 > regval # Make LED BLINK
 ```
 -----
 The below document provides instructions for setting up an Access Point using a Raspberry Pi 4b
