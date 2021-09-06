@@ -31,11 +31,12 @@ If you want to see the Linux Wireless Mediatek team site:
 -----
 Known Issues
 
-The only known issue at this is that the LED on mt7612u based adapters does not come on
-automatically when the system is turned on. In looking at the source code, it appears 
-this behavior is intentional.
+The only known issue at this point is that the LED on mt7612u based adapters, if the adapter
+is built with an LED, does not come on automatically when the system is turned on. In looking
+at the source code, it appears this behavior is intentional. Should we submit a pull request
+to improve this behavior? What should the behavior be?
 
-To turn on the LED, please follow instructions below:
+To turn on the LED, please follow instructions below: (does not work with Secure Mode)
 
 STEP 1 - Open Terminal (Ctrl + Alt + T)
 
