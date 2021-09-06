@@ -29,6 +29,32 @@ If you want to see the Linux Wireless Mediatek team site:
 [Linux Wireless Mediatek](https://wireless.wiki.kernel.org/en/users/drivers/mediatek)
 
 -----
+Known Issues
+
+The only known issue at this is that the LED on mt7612u based adapters does not come on
+automatically when the system is turned on. In looking at the source code, it appears 
+this behavior is intentional.
+
+To turn on the LED, please follow instructions below:
+
+STEP 1 - Open Terminal (Ctrl + Alt + T)
+
+STEP 2 - Change to root user:
+```
+$ sudo -i
+```
+STEP 3 - Run both commands below:
+```
+# cd /sys/kernel/debug/ieee80211/phy0/mt76
+# echo 0x770 > regidx
+```
+STEP 4 - Run one of the following commands below:
+```
+echo 0x800000 > regval # Turn LED ON
+echo 0x820000 > regval # Turn LED OFF
+echo 0x840000 > regval # Make LED BLINK
+```
+-----
 The below document provides instructions for setting up an Access Point using a Raspberry Pi 4b
 with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 
