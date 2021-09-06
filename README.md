@@ -38,18 +38,18 @@ to improve this behavior? What should the behavior be?
 
 To turn on the LED, please follow instructions below: (does not work with Secure Mode)
 
-STEP 1 - Open Terminal (Ctrl + Alt + T)
+Step 1: Open Terminal (Ctrl + Alt + T)
 
-STEP 2 - Change to root user:
+Step 2: Change to root user
 ```
 $ sudo -i
 ```
-STEP 3 - Run both commands below:
+Step 3: Run both of the following commands
 ```
 # cd /sys/kernel/debug/ieee80211/phy0/mt76
 # echo 0x770 > regidx
 ```
-STEP 4 - Run one of the following commands below:
+Step 4: Run one of the following commands
 ```
 # echo 0x800000 > regval # Turn LED ON
 # echo 0x820000 > regval # Turn LED OFF
