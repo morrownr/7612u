@@ -29,6 +29,13 @@ If you want to see the Linux Wireless Mediatek team site:
 [Linux Wireless Mediatek](https://wireless.wiki.kernel.org/en/users/drivers/mediatek)
 
 -----
+OpenWRT
+
+Driver package: kmod-mt76x2u
+
+More info to come...
+
+-----
 Known Issues
 
 The only known issue at this point is that the LED on mt7612u based adapters, if the adapter
