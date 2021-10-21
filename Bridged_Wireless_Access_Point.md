@@ -1,4 +1,4 @@
-2021-06-07
+2021-07-23
 
 ## Bridged Wireless Access Point
 
@@ -547,7 +547,7 @@ ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 ```
 -----
 
-Block the eth0, wlan0 qnd wlan1 interfaces from being processed, and let dhcpcd
+Block the eth0, wlan0 and wlan1 interfaces from being processed, and let dhcpcd
 configure only br0 via DHCP.
 ```
 sudo nano /etc/dhcpcd.conf
