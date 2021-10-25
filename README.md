@@ -29,19 +29,22 @@ If you want to see the Linux Wireless Mediatek team site:
 [Linux Wireless Mediatek](https://wireless.wiki.kernel.org/en/users/drivers/mediatek)
 
 -----
+
 OpenWRT
 
 Driver package: kmod-mt76x2u
 
-More info to come...
+Note: If your router has a USB port and supports OpenWRT, you can use adapters based on the
+mt7612u (and mt7610u also) to add another 2.4 GHz or 5 GHz network. It works well.
 
 -----
 Known Issues
 
 The only known issue at this point is that the LED on mt7612u based adapters, if the adapter
 is built with an LED, does not come on automatically when the system is turned on. In looking
-at the source code, it appears this behavior is intentional. Should we submit a pull request
-to improve this behavior? What should the behavior be?
+at the source code, it appears this behavior is intentional and I understand that because one
+of the first things I do is disable the LED, if possible, when I install a new adapter. Should
+we submit an issue or pull request to change this behavior? What should the behavior be?
 
 To turn on the LED, please follow instructions below: (does not work with Secure Mode)
 
@@ -62,7 +65,12 @@ Step 4: Run one of the following commands
 # echo 0x820000 > regval # Turn LED OFF
 # echo 0x840000 > regval # Make LED BLINK
 ```
+
+The above can be automated but how this is accomplished depends on the operating system you
+are using.
+
 -----
+
 The below document provides instructions for setting up an Access Point using a Raspberry Pi 4b
 with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
 
@@ -77,6 +85,7 @@ it is an outstanding USB WiFi adapter.
 [ALFA Network Linux support for MT7612U based products](https://docs.alfa.com.tw/Support/Linux/MT7612U/)
 
 -----
+
 The mt7612u driver currently supports one module parameter - disable_usb_sg
 
 This parameter is used to turn USB Scatter-Gather support on or off. Documentation
@@ -95,6 +104,7 @@ experience dramatically reduced throughput, try disable_usb_sg=1.
 The Installation Steps below can help you make this change.
 
 -----
+
 To make it easy to install and manage support for the disable_usb_sg parameter, I
 have added some scripts that you can download and use.
 
