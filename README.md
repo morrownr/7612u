@@ -80,6 +80,9 @@ Step 3: Run both of the following commands
 # cd /sys/kernel/debug/ieee80211/phy0/mt76
 # echo 0x770 > regidx
 ```
+Note: You may need to change ```phy0``` above depending on the number of adapters in
+your system.
+
 Step 4: Run one of the following commands
 ```
 # echo 0x800000 > regval # Turn LED ON
