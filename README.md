@@ -4,7 +4,7 @@
 
 ### 7612u :rocket:
 
-Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
+### Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
 
 USB WiFi adapters based on the mt7612u chipset have been supported in-kernel since Linux
 kernel v4.19 (2018), therefore, there is no need to install a driver if using a modern
@@ -15,6 +15,9 @@ with current Linux Wireless standards. Numerous additional capabilities, includi
 supported as well. 
 
 -----
+
+### Driver information
+
 For Linux users that like to work on driver code, here is the location of the MT76
 driver in the Linux kernel repo:
 
@@ -30,7 +33,24 @@ If you want to see the Linux Wireless Mediatek team site:
 
 -----
 
-OpenWRT
+### Setting up an access point
+
+The below document provides instructions for setting up an Access Point using a Raspberry Pi 4b
+with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
+
+[Bridged_Wireless_Access_Point.md](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point.md)
+
+The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
+
+The Alfa AWUS036ACM works very well with the Raspberry Pi hardware. I have tested
+the Alfa AWUS036ACM with many different computer systems and Linux distros. In my opinion,
+it is an outstanding USB WiFi adapter.
+
+[ALFA Network Linux support for MT7612U based products](https://docs.alfa.com.tw/Support/Linux/MT7612U/)
+
+-----
+
+### OpenWRT
 
 Driver package: kmod-mt76x2u
 
@@ -38,13 +58,14 @@ Note: If your router has a USB port and supports OpenWRT, you can use adapters b
 mt7612u (and mt7610u also) to add another 2.4 GHz or 5 GHz network. It works well.
 
 -----
-Known Issues
 
-The only known issue at this point is that the LED on mt7612u based adapters, if the adapter
-is built with an LED, does not come on automatically when the system is turned on. In looking
-at the source code, it appears this behavior is intentional and I understand that because one
-of the first things I do is disable the LED, if possible, when I install a new adapter. Should
-we submit an issue or pull request to change this behavior? What should the behavior be?
+### Known Issues (currently only 2 known issues)
+
+Known Issue #1. If your mt7612u based adapter is built with an LED, the LED does not come on
+automatically when the system is turned on. In looking at the source code, it appears this
+behavior is intentional and I understand that because one of the first things I do is disable
+the LED, if possible, when I install a new adapter. Should we submit an issue or pull request
+to change this behavior? What should the behavior be?
 
 To turn on the LED, please follow instructions below: (does not work with Secure Mode)
 
@@ -69,22 +90,8 @@ Step 4: Run one of the following commands
 The above can be automated but how this is accomplished depends on the operating system you
 are using.
 
------
-
-The below document provides instructions for setting up an Access Point using a Raspberry Pi 4b
-with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
-
-[Bridged_Wireless_Access_Point.md](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point.md)
-
-The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
-
-The Alfa AWUS036ACM works very well with the Raspberry Pi hardware. I have tested
-the Alfa AWUS036ACM with many different computer systems and Linux distros. In my opinion,
-it is an outstanding USB WiFi adapter.
-
-[ALFA Network Linux support for MT7612U based products](https://docs.alfa.com.tw/Support/Linux/MT7612U/)
-
------
+Known Issue #2. When running in 5 GHz AP mode, some users have reported the need to use
+the following parameter due to performance problems.
 
 The mt7612u driver currently supports one module parameter - disable_usb_sg
 
@@ -102,8 +109,6 @@ while operating on the 5Ghz band. Symtoms include dramatically reduced throughpu
 experience dramatically reduced throughput, try disable_usb_sg=1.
 
 The Installation Steps below can help you make this change.
-
------
 
 To make it easy to install and manage support for the disable_usb_sg parameter, I
 have added some scripts that you can download and use.
