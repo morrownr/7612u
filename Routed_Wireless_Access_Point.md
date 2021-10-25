@@ -1,3 +1,5 @@
+Note: This document is a work in progress, please ignor for now.
+
 2021-06-07
 
 ## Bridged Wireless Access Point
