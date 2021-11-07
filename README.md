@@ -59,7 +59,7 @@ mt7612u (and mt7610u also) to add another 2.4 GHz or 5 GHz network. It works wel
 
 -----
 
-### Known Issues (currently only 2 known issues)
+### Known Issues
 
 Known Issue #1. If your mt7612u based adapter is built with an LED, the LED does not come on
 automatically when the system is turned on. In looking at the source code, it appears this
@@ -94,7 +94,7 @@ The above can be automated but how this is accomplished depends on the operating
 are using.
 
 Known Issue #2. When running in 5 GHz AP mode, some users have reported the need to use
-the following parameter due to performance problems.
+the following parameter to disable Scatter-Gather.
 
 The mt7612u driver currently supports one module parameter - disable_usb_sg
 
@@ -106,10 +106,10 @@ Information about the Scatter-Gather module parameter:
 Background: Scatter and Gather (Vectored I/O) is a concept that was primarily used in hard disks
 and it enhances large I/O request performance.
 
-Problem reports, that would cause a need to use this parameter, seem to be limited to
-situations where the user is running an AP with a USB3 capable adapter in a USB3 port
-while operating on the 5Ghz band. Symtoms include dramatically reduced throughput. If you
-experience dramatically reduced throughput, try disable_usb_sg=1.
+Problem reports seem to be limited to situations where the user is running an
+AP with a USB3 capable adapter in a USB3 port while operating on the 5Ghz band.
+Symtoms include dramatically reduced throughput. If you experience dramatically
+reduced throughput, try disable_usb_sg=1.
 
 The Installation Steps below can help you make this change.
 
@@ -169,6 +169,12 @@ Step 3: Run the following script
 ```
 $ sudo ./edit-options.sh
 ```
+
+Known Issue #3. DFS channels are currently not supported in 5 GHz AP
+mode. The following PR shows a proposed fix. I have not tested it at
+this point:
+
+https://github.com/openwrt/mt76/pull/428
 
 -----
 ```
