@@ -1,6 +1,4 @@
-Note: This document is a work in progress, please ignor for now.
-
-2021-06-07
+2021-11-09
 
 ## Bridged Wireless Access Point
 
@@ -11,8 +9,8 @@ the WiFi signal is weak or otherwise does not meet expectations.
 
 #### Single Band or Dual Band - Your Choice
 
-This document outlines single band and dual band WiFi setups using a
-Raspberry Pi 3B, 3B+ or 4B with an AC1200 or above USB 3 WiFi adapter for 5 GHz
+This document outlines single band and dual band WiFi setups using a Raspberry
+Pi 3B, 3B+ or 4B with an AC600 USB2 or AC1200 USB3 WiFi adapter for 5 GHz
 band and either an additional external WiFi adapter or internal WiFi for 2.4 GHz
 band. There is a lot of flexibility and capability available with this type of
 setup.
@@ -21,15 +19,20 @@ setup.
 
 This setup supports WPA3-SAE. It is disabled by default.
 
-WPA3-SAE will not work with Realtek 88xx chipset based USB WiFi adapters.
+WPA3-SAE will not work with some Realtek 88xx drivers. Let's just say that this
+issue is in progress.
 
-WPA3-SAE will work with Mediatek 761x chipset based USB WiFI adapters.
+WPA3-SAE works with Mediatek 761x chipset based USB WiFI adapters and, as far as
+I can tell, with all usb wifi adapters that use Linux in-kernel drivers and I
+have tested many.
 
 Note: This guide uses systemd-networkd for network management. If your Linux
 distro uses Network Manager or Netplan, they must be disabled. Sections that
 explain how to do this are located near the end of this document. Please go
 to and follow the appropriate section now, if required, before continuing with
-this setup guide.
+this setup guide. If you are using the Raspberry Pi OS, you may continue with
+this setup guide now as the Raspberry Pi OS does not use Network Manager or
+Netplan.
 
 -----
 
@@ -54,16 +57,16 @@ Ethernet connection providing internet
 Note: I use the case upside down. There are several little things that
 work better with the case upside down and no negatives that I can find.
 
-Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi
-hardware. The primary problem has to do with the backfeeding of
-current into the Raspberry Pi. One that seems to work well here is:
+Note: Very few Powered USB 3 Hubs will work well with Raspberry Pi hardware. The
+primary problem has to do with the backfeeding of current into the Raspberry Pi.
+One that seems to work well here is:
 
 [Transcend USB 3.0 4-Port Hub TS-HUB3K](https://www.amazon.com/gp/product/B005D69QD8)
 
 Note: The rtl88XXxu chipset based USB3 WiFi adapters require from 504 mA of
 power up to well over 800 mA of power depending on the adapter. The Raspberry
-Pi 3B, 3B+ and 4B USB subsystems are only able to supple a total of 1200
-mA of power to all attached devices.
+Pi 3B, 3B+ and 4B USB subsystems are only able to supply a total of 1200
+mA of power total divided between all attached devices.
 
 Note: The Alfa AWUS036ACM adapter, a mt7612u based adapter, requests a maximum
 of 400 mA from the USB subsystem during initialization. Testing with a meter
@@ -71,31 +74,59 @@ shows actual usage of 360 mA during heavy load and usage of 180 mA during
 light loads. This is much lower power usage than most AC1200 class adapters
 which makes this adapter a good choice for a Raspberry Pi based access point.
 
+-----
 
 #### Setup Steps
-
------
 
 USB WiFi adapter driver installation, if required, should be performed and tested
 prior to continuing.
 
-Note: For USB3 adapters based on the Realtek rtl8812au, rtl8814au, and rtl8812bu
+Note: For USB3 adapters based on the Realtek rtl8812au, rtl8812bu and rtl8814au
 chipsets, the following module parameters may be needed for best performance
-when the adapter is set to support 5 GHz band:
+when the adapter is set to support 5 GHz band: (if using a rtl8812bu based
+adapter with a Raspberry Pi 4B or 400, you may need to limit USB mode to USB2
+due to a bug, probably in the Raspberry Pi 4B, that causes dropped connections--
+rtw_switch_usb_mode=2)
+
 ```
 rtw_vht_enable=2 rtw_switch_usb_mode=1
 ```
-Note: For USB3 adapters based on the Realtek rtl8812au, rtl8814au, and rtl8812bu
+
+Note: For USB2 adapters based on the Realtek rtl8811au chipset, the following
+module parameters may be needed for best performance when the adapter is set to
+support 5 GHz band:
+
+```
+rtw_vht_enable=2
+```
+
+Note: For USB3 adapters based on the Realtek rtl8812au, rtl8812bu and rtl8814au
 chipsets, the following module parameters may be needed for best performance
 when the adapter is set to support 2.4 GHz band:
+
 ```
 rtw_vht_enable=1 rtw_switch_usb_mode=2
 ```
-Note: For USB3 adapters based on Mediatek mt7612u or my7612un chipsets, the
-following module parameter may be needed for best performance:
+
+Note: For USB2 adapters based on the Realtek rtl8811au chipset, the following
+module parameters may be needed for best performance when the adapter is set to
+support 2.4 GHz band:
+
+```
+rtw_vht_enable=1
+```
+
+Note: For USB3 or USB2 adapters based on Mediatek mt7612u or mt7610u chipsets,
+the following module parameter may be needed for best performance:
+
 ```
 disable_usb_sg=1
 ```
+
+Note: More information is available at the following site:
+
+https://github.com/morrownr/7612u
+
 Note: For this access point setup to support WPA3-SAE in a dual band setup, two
 USB WiFi adapters with Mediatek or Atheros chipsets are required as the Realtek
 and internal Raspberry Pi WiFi drivers do not support WPA3-SAE as of the date
@@ -124,7 +155,8 @@ users forget to upgrade their system on a regular basis, maybe it is a good idea
 Reduce overall power consumption and overclock the CPU a modest amount.
 
 Note: All items in this step are optional and some items are specific to
-the Raspberry Pi 4B.
+the Raspberry Pi 4B. If installing to a Raspberry Pi 3b or 3b+ you will
+need to use the appropriate settings for that hardward.
 ```
 sudo nano /boot/config.txt
 ```
@@ -229,7 +261,7 @@ File contents
 ```
 # /etc/hostapd/hostapd-5g.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-05-30
+# 2021-11-09
 
 # SSID
 ssid=myPI-5g
@@ -239,19 +271,25 @@ wpa_passphrase=myPW1234
 hw_mode=a
 # Channel
 channel=36
-# Country
+# Channel width
+vht_oper_chwidth=1
+# VHT center channel (chan + 6)
+vht_oper_centr_freq_seg0_idx=42
+# Country code
 country_code=US
-# WiFi interface
-interface=wlan0
 # Bridge interface
 bridge=br0
+# WiFi interface
+interface=wlan0
 
+# nl80211 is used with all Linux mac80211 and modern Realtek drivers
 driver=nl80211
-ctrl_interface=/var/run/hostapd
-ctrl_interface_group=0
+#ctrl_interface=/var/run/hostapd
+#ctrl_interface_group=0
 
 ieee80211d=1
-ieee80211h=1
+# Enables support for 5GHz DFS channels
+#ieee80211h=1
 
 beacon_int=100
 dtim_period=2
@@ -262,6 +300,7 @@ fragm_threshold=2346
 #send_probe_response=1
 
 # security
+# auth_algs=3 is required for WPA-3 SAE and WPA-3 SAE Transitional
 auth_algs=1
 ignore_broadcast_ssid=0
 # wpa=2 is required for WPA2 and WPA3 (read the docs)
@@ -297,8 +336,12 @@ wmm_enabled=1
 # mt7612u - mt7610u
 ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
 #
-# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
+# rtl8812au - rtl8811au - rtl8811cu
 #ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+# rtl8812bu
+#ht_capab=[LDPC][HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+# rtl8814au
+#ht_capab=[LDPC][HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935][DSSS_CCK-40]
 #
 
 # IEEE 802.11ac
@@ -309,18 +352,14 @@ ieee80211ac=1
 # mt7612u
 vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 #
-# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
-#vht_capab=[MAX-MPDU-11454][SHORT-GI-80][HTC-VHT]
-# Note: [TX-STBC-2BY1] causes problems
+# rtl8812au - rtl8812bu
+#vht_capab=[MAX-MPDU-11454][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][HTC-VHT][MAX-A-MPDU-LEN-EXP7]
+# rtl8814au
+#vht_capab=[MAX-MPDU-11454][RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][HTC-VHT][MAX-A-MPDU-LEN-EXP7]
+# rtl8811au - rtl8811cu
+#vht_capab=[MAX-MPDU-11454][SHORT-GI-80][RX-STBC-1][HTC-VHT][MAX-A-MPDU-LEN-EXP7]
 #
-# Required for 80 MHz width channel operation
-vht_oper_chwidth=1
-#
-# Use the next line with channel 36  (36 + 6 = 42)
-vht_oper_centr_freq_seg0_idx=42
-#
-# Use the next line with channel 149 (149 + 6 = 155)
-#vht_oper_centr_freq_seg0_idx=155
+# Note: [TX-STBC-2BY1] may cause problems with some Realtek drivers
 
 # Event logger - as desired
 #logger_syslog=-1
@@ -381,7 +420,7 @@ File contents
 ```
 # /etc/hostapd/hostapd-2g.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-05-30
+# 2021-11-09
 
 # SSID
 ssid=myPI-2g
@@ -393,14 +432,15 @@ hw_mode=g
 channel=6
 # Country
 country_code=US
-# WiFi interface
-interface=wlan1
 # Bridge interface
 bridge=br0
+# WiFi interface
+interface=wlan1
 
+# nl80211 is used with all Linux mac80211 and modern Realtek drivers
 driver=nl80211
-ctrl_interface=/var/run/hostapd
-ctrl_interface_group=0
+#ctrl_interface=/var/run/hostapd
+#ctrl_interface_group=0
 
 beacon_int=100
 dtim_period=2
@@ -410,6 +450,7 @@ fragm_threshold=2346
 #send_probe_response=1
 
 # security
+# auth_algs=3 is required for WPA-3 SAE and WPA-3 SAE Transitional
 auth_algs=1
 macaddr_acl=0
 ignore_broadcast_ssid=0
@@ -436,14 +477,19 @@ wmm_enabled=1
 # Note: Only one ht_capab= line should be active. The content of these lines is
 # determined by the capabilities of your adapter.
 #
+# RasPi4B internal wifi
+ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][DSSS_CCK-40]
+#
 # ar9271
 #ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][RX-STBC1][DSSS_CCK-40]
 #
 # mt7612u - mt7610u
 ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
 #
-# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
+# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu
 #ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+# rtl8814au
+#ht_capab=[LDPC][HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935][DSSS_CCK-40]
 
 # Event logger - as desired
 #logger_syslog=-1
@@ -549,18 +595,18 @@ ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 ```
 -----
 
-Block the eth0, wlan0 qnd wlan1 interfaces from being processed, and let dhcpcd
+Block the eth0, wlan0 and wlan1 interfaces from being processed, and let dhcpcd
 configure only br0 via DHCP.
 ```
 sudo nano /etc/dhcpcd.conf
 ```
 Add the following line above the first `interface xxx` line, if any, for dual band setup
 ```
-denyinterfaces eth0 wlan0 wlan1
+denyinterfaces eth0 <wlan0> <wlan1>
 ```
 Add the following line above the first `interface xxx` line, if any, for single band setup
 ```
-denyinterfaces eth0 wlan0
+denyinterfaces eth0 <wlan0>
 ```
 Go to the end of the file and add the following line
 ```
@@ -636,7 +682,7 @@ End of installation.
 
 -----
 
-Notes:
+Notes: The following sections contain good to know information 
 
 -----
 
@@ -655,7 +701,7 @@ systemctl status systemd-networkd
 ```
 -----
 
-Autostarting iperf3
+Install and autostart iperf3
 ```
 sudo apt install iperf3
 ```
