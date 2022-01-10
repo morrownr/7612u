@@ -1,4 +1,4 @@
-2021-11-09
+2021-12-15
 
 ## Bridged Wireless Access Point
 
@@ -6,6 +6,16 @@ A bridged wireless access point (aka Dumb AP) works within an existing
 ethernet network to add WiFi capability where it does not exist or to
 extend the network to WiFi capable computers and devices in areas where
 the WiFi signal is weak or otherwise does not meet expectations.
+
+```
+INTERNET >>> modem/router >>> RasPi ))) ((( laptop
+            (cable)       ╱            ╲
+            (fiber)   CAT 5e, 6         ((( phone
+            (dsl)
+```
+
+Note: The connection from the router to the RasPi is begging for alternative
+solutions to meet different needs. Please feel free to make suggestions.
 
 #### Single Band or Dual Band - Your Choice
 
@@ -40,7 +50,7 @@ Netplan.
 
 [Raspberry Pi 4B (4gb)](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
 
-[Raspberry Pi OS (2021-05-07) (32 bit) (kernel 5.10.17-v7l+)](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit)
+[Raspberry Pi OS (2021-10-30) (32 bit) (kernel 5.10)](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit)
 
 Ethernet connection providing internet
 
@@ -65,14 +75,17 @@ One that seems to work well here is:
 
 Note: The rtl88XXxu chipset based USB3 WiFi adapters require from 504 mA of
 power up to well over 800 mA of power depending on the adapter. The Raspberry
-Pi 3B, 3B+ and 4B USB subsystems are only able to supple a total of 1200
-mA of power to all attached devices.
+Pi 3B, 3B+ and 4B USB subsystems are only able to supply a total of 1200
+mA of power total divided between all attached devices.
 
 Note: The Alfa AWUS036ACM adapter, a mt7612u based adapter, requests a maximum
 of 400 mA from the USB subsystem during initialization. Testing with a meter
 shows actual usage of 360 mA during heavy load and usage of 180 mA during
 light loads. This is much lower power usage than most AC1200 class adapters
-which makes this adapter a good choice for a Raspberry Pi based access point.
+which makes this adapter a good choice for a Raspberry Pi based access point. 
+Other mt7612u and mt7610u chipset based adapters also show low power usage.
+Another adapter that is very good for use in this setup is the Alfa AWUS036ACHM
+which is an AC600 class adapter that has very impressive range.
 
 -----
 
@@ -116,7 +129,7 @@ support 2.4 GHz band:
 rtw_vht_enable=1
 ```
 
-Note: For USB3 or USB2 adapters based on Mediatek mt7612u or my7610u chipsets,
+Note: For USB3 or USB2 adapters based on Mediatek mt7612u or mt7610u chipsets,
 the following module parameter may be needed for best performance:
 
 ```
@@ -144,9 +157,11 @@ sudo apt update
 -----
 
 Upgrade system.
+
 ```
 sudo apt full-upgrade
 ```
+
 Note: Upgrading system is not mandatory for this installation but since some
 users forget to upgrade their system on a regular basis, maybe it is a good idea.
 
@@ -154,22 +169,25 @@ users forget to upgrade their system on a regular basis, maybe it is a good idea
 
 Reduce overall power consumption and overclock the CPU a modest amount.
 
-Note: All items in this step are optional and some items are specific to
-the Raspberry Pi 4B. If installing to a Raspberry Pi 3b or 3b+ you will
+Note: All items in this step are optional and some items are specific to the
+Raspberry Pi 4B. If installing to a Raspberry Pi 3B or 3B+ or other Pi you will
 need to use the appropriate settings for that hardward.
+
 ```
 sudo nano /boot/config.txt
 ```
-Change
+
+Change:
+
 ```
 # turn off onboard audio
-dtparam=audio=off
+#dtparam=audio=on
 
 # disable DRM VC4 V3D driver on top of the dispmanx display stack
 #dtoverlay=vc4-fkms-v3d
 #max_framebuffers=2
 ```
-Add
+Add:
 ```
 # turn off Mainboard LEDs
 dtoverlay=act-led
@@ -196,38 +214,47 @@ dtoverlay=disable-wifi
 over_voltage=1
 arm_freq=1600
 ```
+
 -----
 
 Enable predictable network interface names
 
 Note: While this step is optional, problems can arise without it on dual band
-setups. Some operating systems have this capability enabled by default but not
-the Raspberry Pi OS.
+setups. Some Linux distros have this capability enabled by default but not the
+Raspberry Pi OS.
+
 ```
 sudo raspi-config
 ```
+
 Select: Advanced options > A4 Network Interface Names > Yes
 
 -----
 
 Reboot system.
+
 ```
 sudo reboot
 ```
+
 -----
 
 Determine name and state of the network interfaces.
+
 ```
 ip a
 ```
+
 You may need to additionally run the following commands in order to
 determine which adapter, in a dual band setup, has which interface name.
+
 ```
 iw list
 ```
 ```
 iw dev
 ```
+
 Note: If the interface names are not `eth0`, `wlan0` and `wlan1`,
 then the interface names used in your system will have to replace
 `eth0`, `wlan0` and `wlan1` for the remainder of this document.
@@ -235,33 +262,40 @@ then the interface names used in your system will have to replace
 -----
 
 Install needed package. Website - [hostapd](https://w1.fi/hostapd/)
+
 ```
 sudo apt install hostapd
 ```
+
 -----
 
 Enable the wireless access point service and set it to start when your
 Raspberry Pi boots.
+
 ```
 sudo systemctl unmask hostapd
 ```
 ```
 sudo systemctl enable hostapd
 ```
+
 -----
 
 Note: The below steps include creating two hostapd configurations files but
 only one is needed if using a single band setup.
 
 Create hostapd configuration file for 5 GHz band.
+
 ```
 sudo nano /etc/hostapd/hostapd-5g.conf
 ```
+
 File contents
+
 ```
 # /etc/hostapd/hostapd-5g.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-11-04
+# 2021-11-15
 
 # SSID
 ssid=myPI-5g
@@ -271,13 +305,18 @@ wpa_passphrase=myPW1234
 hw_mode=a
 # Channel
 channel=36
-# Country
+# Channel width
+vht_oper_chwidth=1
+# VHT center channel (chan + 6)
+vht_oper_centr_freq_seg0_idx=42
+# Country code
 country_code=US
-# WiFi interface
-interface=wlan0
 # Bridge interface
 bridge=br0
+# WiFi interface
+interface=wlan0
 
+# nl80211 is used with all Linux mac80211 (in-kernel) and modern Realtek drivers
 driver=nl80211
 #ctrl_interface=/var/run/hostapd
 #ctrl_interface_group=0
@@ -328,90 +367,43 @@ wpa_key_mgmt=WPA-PSK
 ieee80211n=1
 wmm_enabled=1
 #
-# mt7612u - mt7610u
-ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
+# generic setting
+ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40]
 #
-# rtl8812au - rtl8814au - rtl8811au - rtl8811cu
+# mt7612u - mt7610u
+#ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
+#
+# rtl8812au - rtl8811au - rtl8811cu
 #ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
 # rtl8812bu
 #ht_capab=[LDPC][HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
+# rtl8814au
+#ht_capab=[LDPC][HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935][DSSS_CCK-40]
 #
 
 # IEEE 802.11ac
 ieee80211ac=1
 #
+# generic setting
+vht_capab=[SHORT-GI-80]
+#
 # mt7610u
 #vht_capab=[SHORT-GI-80][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 # mt7612u
-vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
+#vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP3][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
 #
 # rtl8812au - rtl8812bu
 #vht_capab=[MAX-MPDU-11454][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][HTC-VHT][MAX-A-MPDU-LEN-EXP7]
 # rtl8814au
-#vht_capab=[MAX-MPDU-11454][SHORT-GI-80][SU-BEAMFORMER][HTC-VHT]
+#vht_capab=[MAX-MPDU-11454][RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][HTC-VHT][MAX-A-MPDU-LEN-EXP7]
 # rtl8811au - rtl8811cu
 #vht_capab=[MAX-MPDU-11454][SHORT-GI-80][RX-STBC-1][HTC-VHT][MAX-A-MPDU-LEN-EXP7]
 #
 # Note: [TX-STBC-2BY1] may cause problems with some Realtek drivers
-#
-# Required for 80 MHz width channel operation
-vht_oper_chwidth=1
-#
-# Use the next line with channel 36  (36 + 6 = 42)
-vht_oper_centr_freq_seg0_idx=42
-#
-# Use the next line with channel 149 (149 + 6 = 155)
-#vht_oper_centr_freq_seg0_idx=155
-
-# Event logger - as desired
-#logger_syslog=-1
-#logger_syslog_level=2
-#logger_stdout=-1
-#logger_stdout_level=2
-
-# WMM - as desired
-#uapsd_advertisement_enabled=1
-#wmm_ac_bk_cwmin=4
-#wmm_ac_bk_cwmax=10
-#wmm_ac_bk_aifs=7
-#wmm_ac_bk_txop_limit=0
-#wmm_ac_bk_acm=0
-#wmm_ac_be_aifs=3
-#wmm_ac_be_cwmin=4
-#wmm_ac_be_cwmax=10
-#wmm_ac_be_txop_limit=0
-#wmm_ac_be_acm=0
-#wmm_ac_vi_aifs=2
-#wmm_ac_vi_cwmin=3
-#wmm_ac_vi_cwmax=4
-#wmm_ac_vi_txop_limit=94
-#wmm_ac_vi_acm=0
-#wmm_ac_vo_aifs=2
-#wmm_ac_vo_cwmin=2
-#wmm_ac_vo_cwmax=3
-#wmm_ac_vo_txop_limit=47
-#wmm_ac_vo_acm=0
-
-# TX queue parameters - as desired
-#tx_queue_data3_aifs=7
-#tx_queue_data3_cwmin=15
-#tx_queue_data3_cwmax=1023
-#tx_queue_data3_burst=0
-#tx_queue_data2_aifs=3
-#tx_queue_data2_cwmin=15
-#tx_queue_data2_cwmax=63
-#tx_queue_data2_burst=0
-#tx_queue_data1_aifs=1
-#tx_queue_data1_cwmin=7
-#tx_queue_data1_cwmax=15
-#tx_queue_data1_burst=3.0
-#tx_queue_data0_aifs=1
-#tx_queue_data0_cwmin=3
-#tx_queue_data0_cwmax=7
-#tx_queue_data0_burst=1.5
 
 # end of hostapd-5g.conf
 ```
+
 -----
 
 Create the 2g hostapd configuration file.
@@ -422,7 +414,7 @@ File contents
 ```
 # /etc/hostapd/hostapd-2g.conf
 # Documentation: https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf
-# 2021-11-02
+# 2021-11-15
 
 # SSID
 ssid=myPI-2g
@@ -434,14 +426,15 @@ hw_mode=g
 channel=6
 # Country
 country_code=US
-# WiFi interface
-interface=wlan1
 # Bridge interface
 bridge=br0
+# WiFi interface
+interface=wlan1
 
+# nl80211 is used with all Linux mac80211 (in-kernel) and modern Realtek drivers
 driver=nl80211
-ctrl_interface=/var/run/hostapd
-ctrl_interface_group=0
+#ctrl_interface=/var/run/hostapd
+#ctrl_interface_group=0
 
 beacon_int=100
 dtim_period=2
@@ -478,8 +471,11 @@ wmm_enabled=1
 # Note: Only one ht_capab= line should be active. The content of these lines is
 # determined by the capabilities of your adapter.
 #
+# generic 20 NHz setting
+ht_capab=[SHORT-GI-20]
+#
 # RasPi4B internal wifi
-ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][DSSS_CCK-40]
+#ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][DSSS_CCK-40]
 #
 # ar9271
 #ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][RX-STBC1][DSSS_CCK-40]
@@ -487,192 +483,181 @@ ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][DSSS_CCK-40]
 # mt7612u - mt7610u
 #ht_capab=[HT40+][HT40-][GF][SHORT-GI-20][SHORT-GI-40]
 #
-# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu - rtl8814au
+# rtl8812au - rtl8811au -  rtl8812bu - rtl8811cu
 #ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935]
-
-# Event logger - as desired
-#logger_syslog=-1
-#logger_syslog_level=2
-#logger_stdout=-1
-#logger_stdout_level=2
-
-# WMM - as desired
-#uapsd_advertisement_enabled=1
-#wmm_ac_bk_cwmin=4
-#wmm_ac_bk_cwmax=10
-#wmm_ac_bk_aifs=7
-#wmm_ac_bk_txop_limit=0
-#wmm_ac_bk_acm=0
-#wmm_ac_be_aifs=3
-#wmm_ac_be_cwmin=4
-#wmm_ac_be_cwmax=10
-#wmm_ac_be_txop_limit=0
-#wmm_ac_be_acm=0
-#wmm_ac_vi_aifs=2
-#wmm_ac_vi_cwmin=3
-#wmm_ac_vi_cwmax=4
-#wmm_ac_vi_txop_limit=94
-#wmm_ac_vi_acm=0
-#wmm_ac_vo_aifs=2
-#wmm_ac_vo_cwmin=2
-#wmm_ac_vo_cwmax=3
-#wmm_ac_vo_txop_limit=47
-#wmm_ac_vo_acm=0
-
-# TX queue parameters - as desired
-#tx_queue_data3_aifs=7
-#tx_queue_data3_cwmin=15
-#tx_queue_data3_cwmax=1023
-#tx_queue_data3_burst=0
-#tx_queue_data2_aifs=3
-#tx_queue_data2_cwmin=15
-#tx_queue_data2_cwmax=63
-#tx_queue_data2_burst=0
-#tx_queue_data1_aifs=1
-#tx_queue_data1_cwmin=7
-#tx_queue_data1_cwmax=15
-#tx_queue_data1_burst=3.0
-#tx_queue_data0_aifs=1
-#tx_queue_data0_cwmin=3
-#tx_queue_data0_cwmax=7
-#tx_queue_data0_burst=1.5
+# rtl8814au
+#ht_capab=[LDPC][HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][MAX-AMSDU-7935][DSSS_CCK-40]
 
 # End of hostapd-2g.conf
 ```
+
 -----
 
 Establish hostapd conf file and log file locations.
 
 Note: Make sure to change <your_home> to your home directory.
+
 ```
 sudo nano /etc/default/hostapd
 ```
+
 Select one of the following options
 
 Dual band option: Add to bottom of file
+
 ```
 DAEMON_CONF="/etc/hostapd/hostapd-5g.conf /etc/hostapd/hostapd-2g.conf"
 DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
+
 Single band option for 5g: Add to bottom of file
 ```
 DAEMON_CONF="/etc/hostapd/hostapd-5g.conf"
 DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
+
 Single band option for 2g: Add to bottom of file
 ```
 DAEMON_CONF="/etc/hostapd/hostapd-2g.conf"
 DAEMON_OPTS="-d -K -f /home/<your_home>/hostapd.log"
 ```
+
 -----
 
 Modify hostapd.service file.
 
 Code:
+
 ```
 sudo cp /usr/lib/systemd/system/hostapd.service /etc/systemd/system/hostapd.service
 ```
 ```
 sudo nano /etc/systemd/system/hostapd.service
 ```
+
 Select one of the following options
 
 Dual band option: Change the 'Environment=' line and 'ExecStart=' line to the following
+
 ```
 Environment=DAEMON_CONF="/etc/hostapd/hostapd-5g.conf /etc/hostapd/hostapd-2g.conf"
 ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 ```
+
 Single band option for 5g: Change the 'Environment=' line and 'ExecStart=' line to the following
+
 ```
 Environment=DAEMON_CONF="/etc/hostapd/hostapd-5g.conf"
 ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 ```
 Single band option for 2g: Change the 'Environment=' line and 'ExecStart=' line to the following
+
 ```
 Environment=DAEMON_CONF="/etc/hostapd/hostapd-2g.conf"
 ExecStart=/usr/sbin/hostapd -B -P /run/hostapd.pid -B $DAEMON_OPTS $DAEMON_CONF
 ```
 -----
 
-Block the eth0, wlan0 and wlan1 interfaces from being processed, and let dhcpcd
+Block the ethernet and wlan interfaces from being processed, and let dhcpcd
 configure only br0 via DHCP.
+
 ```
 sudo nano /etc/dhcpcd.conf
 ```
-Add the following line above the first `interface xxx` line, if any, for dual band setup
+
+Add the following line above the first `interface xxx` line, if any.
+
 ```
-denyinterfaces eth0 <wlan0> <wlan1>
+denyinterfaces e* wl*
 ```
-Add the following line above the first `interface xxx` line, if any, for single band setup
-```
-denyinterfaces eth0 <wlan0>
-```
+
 Go to the end of the file and add the following line
+
 ```
 interface br0
 ```
+
 -----
 
-Enable systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
+Enable systemd-networkd service. Website - [systemd-network](https://www.freedesktop.org/software/systemd/man/systemd.network.html).
+
 ```
 sudo systemctl enable systemd-networkd
 ```
+
 -----
 
 Create bridge interface br0.
+
 ```
-sudo nano /etc/systemd/network/10-bridge-br0-create.netdev
+sudo nano /etc/systemd/network/10-create-bridge-br0.netdev
 ```
 File contents
+
 ```
 [NetDev]
 Name=br0
 Kind=bridge
 ```
+
 -----
 
 Bind ethernet interface.
+
 ```
-sudo nano /etc/systemd/network/20-bridge-br0-bind-ethernet.network
+sudo nano /etc/systemd/network/20-bind-ethernet-with-bridge-br0.network
 ```
+
 File contents
+
 ```
 [Match]
-Name=eth0
+Name=e*
 
 [Network]
 Bridge=br0
 ```
+
 -----
 
 Configure bridge interface.
+
 ```
-sudo nano /etc/systemd/network/21-bridge-br0-config.network
+sudo nano /etc/systemd/network/30-config-bridge-br0.network
 ```
+
 Note: The contents of the Network block below should reflect the needs of your network.
 
-File contents
+File contents.
+
 ```
 [Match]
 Name=br0
 
 [Network]
-Address=192.168.1.100/24
-Gateway=192.168.1.1
-DNS=8.8.8.8
+DHCP=yes
+#Address=192.168.1.100/24
+#Gateway=192.168.1.1
+#DNS=8.8.8.8
+
 ```
+
 -----
 
 Ensure WiFi radio not blocked.
+
 ```
 sudo rfkill unblock wlan
 ```
+
 -----
 
 Reboot system.
+
 ```
 sudo reboot
 ```
+
 -----
 
 End of installation.
@@ -681,33 +666,40 @@ End of installation.
 
 -----
 
-Notes: The following sections contain good to know information 
+Notes: The following sections contain good to know information. 
 
 -----
 
 Restart systemd-networkd service.
+
 ```
 sudo systemctl restart systemd-networkd
 ```
+
 -----
 
 Check status of the services.
+
 ```
 systemctl status hostapd
 ```
 ```
 systemctl status systemd-networkd
 ```
+
 -----
 
-Install and autostart iperf3
+Install and autostart iperf3.
+
 ```
 sudo apt install iperf3
 ```
 ```
 sudo nano /etc/systemd/system/iperf3.service
 ```
+
 File contents
+
 ```
 [Unit]
 Description=iPerf3 Service
@@ -723,21 +715,28 @@ WantedBy=multi-user.target
 ```
 sudo systemctl enable iperf3
 ```
-Check iperf3 status
+```
+sudo reboot
+```
+
+Check iperf3 status.
 ```
 sudo systemctl status iperf3
 ```
 
 -----
 
-Disable NetworkManager
+Disable NetworkManager.
 
 Note: For systems not running the Gnome desktop, purging Network Manager
 is the easiest solution.
+
 ```
 sudo apt purge network-manager
 ```
+
 Note: For systems running the Gnome desktop, use the following.
+
 ```
 sudo systemctl stop NetworkManager.service
 ```
@@ -768,13 +767,14 @@ sudo reboot
 
 -----
 
-Disable Netplan
+Disable Netplan.
 
 Note: Netplan is the default network manager on Ubuntu server.
 
 Disable and mask networkd-dispatcher.
 
 Note: we are activating /etc/network/interfaces
+
 ```
 sudo apt-get install ifupdown
 ```
@@ -787,11 +787,14 @@ sudo systemctl disable networkd-dispatcher
 ```
 sudo systemctl mask networkd-dispatcher
 ```
+
 Purge netplan.
+
 ```
 sudo apt-get purge nplan netplan.io
 ```
 ```
 sudo reboot
 ```
+
 -----

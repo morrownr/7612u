@@ -1,3 +1,5 @@
+-----
+
 ##### [Click for USB WiFi Adapter Information and Links for Linux](https://github.com/morrownr/USB-WiFi)
 
 -----
@@ -175,6 +177,14 @@ mode. The following PR shows a proposed fix. I have not tested it at
 this point:
 
 https://github.com/openwrt/mt76/pull/428
+
+-----
+
+Wishlist for the MT76 drivers:
+
+1. AP mode DFS support
+2. LED on by default (keep the ability to turn it off)
+3. Remove Scatter-Gather support (or at least make it off by default)
 
 -----
 ```
