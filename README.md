@@ -8,20 +8,21 @@
 
 ### Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
 
-USB WiFi adapters based on the mt7612u chipset have been supported in-kernel since Linux
-kernel v4.19 (2018), therefore, there is no need to install a driver if using a modern
-release of Ubuntu, Raspberry Pi OS, Linux Mint, Kali, Fedora or Manjaro. (and others)
+USB WiFi adapters based on the mt7612u chipset have been supported
+in-kernel since Linux kernel v4.19 (2018), therefore, there is no need
+to install a driver if using a modern release of Ubuntu, Raspberry Pi
+OS, Linux Mint, Kali, Fedora or Manjaro. (and others)
 
-The MT76 series of drivers support managed mode, master mode and monitor modes in accordance
-with current Linux Wireless standards. Numerous additional capabilities, including WPA3, are
-supported as well. 
+The MT76 series of drivers support managed mode, master mode and monitor
+modes in accordance with current Linux Wireless standards. Numerous
+additional capabilities, including WPA3, are supported as well. 
 
 -----
 
 ### Driver information
 
-For Linux users that like to work on driver code, here is the location of the MT76
-driver in the Linux kernel repo:
+For Linux users that like to work on driver code, here is the location
+of the MT76 driver in the Linux kernel repo:
 
 [MT76](https://github.com/torvalds/linux/tree/master/drivers/net/wireless/mediatek/mt76)
 
@@ -37,16 +38,17 @@ If you want to see the Linux Wireless Mediatek team site:
 
 ### Setting up an access point
 
-The below document provides instructions for setting up an Access Point using a Raspberry Pi 4b
-with the Raspberry Pi OS, `hostapd` and a USB WiFi adapter based on the mt7612u chipset.
+The below document provides instructions for setting up an Access Point
+using a Raspberry Pi 4B with the Raspberry Pi OS, `hostapd` and a USB
+WiFi adapter based on the mt7612u chipset.
 
 [Bridged_Wireless_Access_Point.md](https://github.com/morrownr/7612u/blob/main/Bridged_Wireless_Access_Point.md)
 
 The adapter used in the above documents is an [Alfa AWUS036ACM](https://github.com/morrownr/USB-WiFi).
 
-The Alfa AWUS036ACM works very well with the Raspberry Pi hardware. I have tested
-the Alfa AWUS036ACM with many different computer systems and Linux distros. In my opinion,
-it is an outstanding USB WiFi adapter.
+The Alfa AWUS036ACM works very well with the Raspberry Pi hardware. I
+have tested the Alfa AWUS036ACM with many different computer systems and
+Linux distros. In my opinion, it is an outstanding USB WiFi adapter.
 
 [ALFA Network Linux support for MT7612U based products](https://docs.alfa.com.tw/Support/Linux/MT7612U/)
 
@@ -56,121 +58,144 @@ it is an outstanding USB WiFi adapter.
 
 Driver package: kmod-mt76x2u
 
-Note: If your router has a USB port and supports OpenWRT, you can use adapters based on the
-mt7612u (and mt7610u also) to add another 2.4 GHz or 5 GHz network. It works well.
+Note: If your router has a USB port and supports OpenWRT, you can use
+adapters based on the mt7612u to add another 2.4 GHz or 5 GHz network.
+It works well.
 
 -----
 
 ### Known Issues
 
-Known Issue #1. If your mt7612u based adapter is built with an LED, the LED does not come on
-automatically when the system is turned on. In looking at the source code, it appears this
-behavior is intentional and I understand that because one of the first things I do is disable
-the LED, if possible, when I install a new adapter. Should we submit an issue or pull request
-to change this behavior? What should the behavior be?
+Known Issue #1. If your mt7612u based adapter is built with an LED, the
+LED does not come on automatically when the system is turned on. In
+looking at the source code, it appears this behavior is intentional and
+I understand that because one of the first things I do is disable the
+LED, if possible, when I install a new adapter. Should we submit an
+issue or pull request to change this behavior? What should the behavior
+be?
 
-To turn on the LED, please follow instructions below: (does not work with Secure Mode)
+To turn on the LED, please follow instructions below: (does not work
+with Secure Mode)
 
-Step 1: Open Terminal (Ctrl + Alt + T)
+Step 1: Open Terminal (Ctrl + Alt + t)
 
 Step 2: Change to root user
+
 ```
 $ sudo -i
 ```
+
 Step 3: Run both of the following commands
+
+Note: You may need to change `phy0` to match your system.
+
 ```
 # cd /sys/kernel/debug/ieee80211/phy0/mt76
 # echo 0x770 > regidx
 ```
-Note: You may need to change ```phy0``` above depending on the number of adapters in
-your system.
 
 Step 4: Run one of the following commands
+
 ```
 # echo 0x800000 > regval # Turn LED ON
 # echo 0x820000 > regval # Turn LED OFF
 # echo 0x840000 > regval # Make LED BLINK
 ```
 
-The above can be automated but how this is accomplished depends on the operating system you
-are using.
+Step 5: Run:
 
-Known Issue #2. When running in 5 GHz AP mode, some users have reported the need to use
-the following parameter to disable Scatter-Gather.
-
-The mt7612u driver currently supports one module parameter - disable_usb_sg
-
-This parameter is used to turn USB Scatter-Gather support on or off. Documentation
-is in the file mt76_usb.conf.
-
-Information about the Scatter-Gather module parameter:
-
-Background: Scatter and Gather (Vectored I/O) is a concept that was primarily used in hard disks
-and it enhances large I/O request performance.
-
-Problem reports seem to be limited to situations where the user is running an
-AP with a USB3 capable adapter in a USB3 port while operating on the 5Ghz band.
-Symtoms include dramatically reduced throughput. If you experience dramatically
-reduced throughput, try disable_usb_sg=1.
-
-The Installation Steps below can help you make this change.
-
-To make it easy to install and manage support for the disable_usb_sg parameter, I
-have added some scripts that you can download and use.
-
-### Installation Steps
-
-Step 1: Open a terminal (Ctrl+Alt+T)
-
-Step 2: Install git (select the option for the OS you are using)
 ```
-    Option for Debian compatible Operating Systems
+exit
+```
 
-    $ sudo apt install -y git
-```
-```
-    Option for Arch or Manjaro
+The above can be automated. The following is an one way to do it with
+Raspberry Pi OS:
 
-    $ sudo pacman -S --noconfirm git
-```
-Step 3: Create a directory to hold the downloaded files
+This method uses `/etc/rc.local`
 
-```bash
-$ mkdir ~/src
+Open Terminal (Ctrl + Alt + t)
+
+This method is valid for many distros, even systemd-based distros. In
+order for this method to work, you must grant execute permissions to
+/etc/rc.local as follows:
+
 ```
-Step 4: Move to the newly created directory
-```bash
-$ cd ~/src
+sudo chmod +x /etc/rc.local
 ```
-Step 5: Download the repo
-```bash
-$ git clone https://github.com/morrownr/7612u.git
+
+Edit /etc/rc.local :
+
 ```
-Step 6: Move to the newly created directory
-```bash
-$ cd ~/src/7612u
+sudo nano /etc/rc.local
 ```
-Step 7: Run the installation script
-```bash
-$ sudo ./install-options.sh
+
+add before `exit 0`:
+
+```
+# Make LED BLINK
+cd /sys/kernel/debug/ieee80211/phy0/mt76
+echo 0x770 > regidx
+echo 0x840000 > regval
+```
+
+Save the file: Ctrl + Alt + o, Enter, Ctrl + Alt + x
+
+```
+sudo reboot
 ```
 
 -----
 
-The script called `edit-options.sh` makes it easy to edit the
-module paramter:
+Known Issue #2. When running in 5 GHz AP mode, some users have reported
+the need to use the following parameter to disable Scatter-Gather.
 
-Step 1: Open a terminal (Ctrl+Alt+T)
+The mt7612u driver currently supports one module parameter -
+disable_usb_sg
 
-Step 2: Move to the driver directory
+This parameter is used to turn USB Scatter-Gather support on or off.
+
+Information about the Scatter-Gather module parameter:
+
+Background: Scatter and Gather (Vectored I/O) is a concept that was
+primarily used in hard disks and it enhances large I/O request
+performance.
+
+Problem reports seem to be limited to situations where the user is
+running an AP with a USB3 capable adapter in a USB3 port while operating
+on the 5Ghz band. Symtoms include dramatically reduced throughput or
+crashing if using two adapters. If you experience either of these
+problems, try disable_usb_sg=1.
+
+Method #1:
+
+Note: This is the quick way to set the paramter:
+
+Open a terminal (Ctrl+Alt+t)
+
 ```
-$ cd ~/src/7612u
+sudo -i
+echo "options mt76_usb disable_usb_sg=1" > /etc/modprobe.d/mt76_usb.conf
+exit
+sudo reboot
 ```
 
-Step 3: Run the following script
+Method #2:
+
+Open a terminal (Ctrl + Alt + t)
+
 ```
-$ sudo ./edit-options.sh
+sudo nano /etc/modprobe.d/mt76_usb.conf
 ```
+
+add:
+
+```
+options mt76_usb disable_usb_sg=1
+```
+
+Save the file: Ctrl + Alt + o, Enter, Ctrl + Alt + x
+
+-----
 
 Known Issue #3. DFS channels are currently not supported in 5 GHz AP
 mode. The following PR shows a proposed fix. I have not tested it at
@@ -437,4 +462,5 @@ Wiphy phy0
 * [ SCAN_FREQ_KHZ ]: scan on kHz frequency support
 * [ CONTROL_PORT_OVER_NL80211_TX_STATUS ]: tx status for nl80211 control port support
 ```
+
 -----

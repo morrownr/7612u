@@ -77,7 +77,7 @@ Ethernet and Powerline AV2 connections providing internet (both tested)
 
 [SD Card](https://www.amazon.com/Samsung-Endurance-32GB-Micro-Adapter/dp/B07B98GXQT)
 
-Note: I use the case upside down with little stick on rubber feet. There
+Note: I use the case upside down with little stick-on rubber feet. There
 are several little things that work better with the case upside down and
 no negatives that I can find.
 
@@ -153,7 +153,9 @@ disable_usb_sg=1
 Note: Here is a quick way to set the paramter:
 
 ```
-echo mt76-usb disable_usb_sg=1 > /etc/modules.d/mt76-usb
+sudo -i
+echo "options mt76_usb disable_usb_sg=1" > /etc/modprobe.d/mt76_usb.conf
+exit
 ```
 
 Note: More information is available at the following site:
@@ -171,7 +173,7 @@ The follow site provides links to adapters that support WPA3-SAE: [USB-WIFI](htt
 
 Update, upgrade and clean up the operating system.
 ```
-sudo apt update && sudo apt full-upgrade && sudo apt autoremove
+sudo apt update && sudo apt upgrade && sudo apt autoremove
 ```
 
 Note: Upgrading the operating system is not mandatory for this
