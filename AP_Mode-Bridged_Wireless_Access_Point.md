@@ -150,7 +150,7 @@ following module parameter may be needed for best performance:
 disable_usb_sg=1
 ```
 
-Note: Here is a quick way to set the paramter:
+Note: Here is a quick way to set the `disable_usb_sg` paramter:
 
 ```
 sudo -i
