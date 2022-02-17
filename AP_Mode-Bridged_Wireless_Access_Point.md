@@ -1,4 +1,4 @@
-2022-02-11
+2022-02-16
 
 ## Bridged Wireless Access Point
 
@@ -18,17 +18,19 @@ INTERNET >>>>>>> modem/router >>>>>>> RasPi ))))) ((((( laptop
                 (cable)         ╱                ╲
                 (fiber)      CAT 5e+              ((((( phone
                 (dsl)        Powerline AV2
+                             Ethernet Over Coax
 ```
 
 Note: The connection from the router to the RasPi is best served by a
 CAT 5e or greater ethernet cable but alternatives exist. One
 alternative is to use your existing electrical wiring by using
-Powerline AV2 adapters. These adapters are also called Homeplug AV2
+`Powerline AV2` adapters. These adapters are also called `Homeplug AV2`
 adapters and come in a variety of speeds and prices. I have had success
-with Powerline AV2 adapters but success depends on the quality and setup
-of the electrical wiring to be used. Anyone considering Powerline AV2
-should research the issue and be prepared to the return the product if
-it does not work well.
+with `Powerline AV2` adapters but success depends on the quality and setup
+of the electrical wiring to be used.  Another option is `Ethernet Over
+Coax (MoCa)`. Anyone considering `Powerline AV2` or `Ethernet Over
+Coax (MoCa)` should research the products and be prepared to return
+the products if it does not work well. 
 
 #### Single Band or Dual Band - Your Choice
 
