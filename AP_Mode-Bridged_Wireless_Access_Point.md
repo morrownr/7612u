@@ -30,7 +30,7 @@ with `Powerline AV2` adapters but success depends on the quality and setup
 of the electrical wiring to be used.  Another option is `Ethernet Over
 Coax (MoCa)`. Anyone considering `Powerline AV2` or `Ethernet Over
 Coax (MoCa)` should research the products and be prepared to return
-the products if it does not work well. 
+the products if expectations are not met. 
 
 #### Single Band or Dual Band - Your Choice
 
