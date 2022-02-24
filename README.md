@@ -174,7 +174,7 @@ Open a terminal (Ctrl+Alt+t)
 
 ```
 sudo -i
-echo "options mt76_usb disable_usb_sg=1" > /etc/modprobe.d/mt76_usb.conf
+echo "options mt76_usb disable_usb_sg=1" >> /etc/modprobe.d/mt76_usb.conf
 exit
 sudo reboot
 ```
