@@ -6,6 +6,8 @@
 
 ### 7612u :rocket:
 
+### 2022-03-16
+
 ### Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
 
 USB WiFi adapters based on the mt7612u chipset have been supported
@@ -149,6 +151,11 @@ sudo reboot
 Known Issue #2. When running in 5 GHz AP mode, some users have reported
 the need to use the following parameter to disable Scatter-Gather.
 
+Edit: 2002-03-16 It appears this issue is specific to computers that use
+the VL805 for USB3 support. The RasPi4B is likely the most popular
+system that uses the VL805. A [patch](https://github.com/raspberrypi/linux/commit/a538fd26f82b101cb6fb963042f3242768e628d4)
+was recently merged that hopefully takes care of this issue.
+
 The mt7612u driver currently supports one module parameter -
 disable_usb_sg
 
@@ -209,7 +216,6 @@ Wishlist for the MT76 drivers:
 
 1. AP mode DFS support
 2. LED on by default (keep the ability to turn it off)
-3. Remove Scatter-Gather support (or at least make it off by default)
 
 -----
 ```
