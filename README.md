@@ -68,7 +68,7 @@ It works well.
 
 ### Known Issues
 
-Known Issue #1. If your mt7612u based adapter is built with an LED, the
+Known Issue 1. If your mt7612u based adapter is built with an LED, the
 LED does not come on automatically when the system is turned on. In
 looking at the source code, it appears this behavior is intentional and
 I understand that because one of the first things I do is disable the
@@ -148,7 +148,7 @@ sudo reboot
 
 -----
 
-Known Issue #2. When running in 5 GHz AP mode, some users have reported
+Known Issue 2. When running in 5 GHz AP mode, some users have reported
 the need to use the following parameter to disable Scatter-Gather.
 
 Edit: 2002-03-16 It appears this issue is specific to computers that use
@@ -173,7 +173,7 @@ on the 5Ghz band. Symtoms include dramatically reduced throughput or
 crashing if using two adapters. If you experience either of these
 problems, try disable_usb_sg=1.
 
-Method #1:
+Method 1:
 
 Note: This is the quick way to set the paramter:
 
@@ -186,7 +186,7 @@ exit
 sudo reboot
 ```
 
-Method #2:
+Method 2:
 
 Open a terminal (Ctrl + Alt + t)
 
@@ -204,7 +204,7 @@ Save the file: Ctrl + Alt + o, Enter, Ctrl + Alt + x
 
 -----
 
-Known Issue #3. DFS channels are currently not supported in 5 GHz AP
+Known Issue 3. DFS channels are currently not supported in 5 GHz AP
 mode. The following PR shows a proposed fix. I have not tested it at
 this point:
 
