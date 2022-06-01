@@ -6,7 +6,7 @@
 
 ### 7612u :rocket:
 
-### 2022-03-16
+### 2022-06-01
 
 ### Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
 
@@ -72,9 +72,8 @@ Known Issue 1. If your mt7612u based adapter is built with an LED, the
 LED does not come on automatically when the system is turned on. In
 looking at the source code, it appears this behavior is intentional and
 I understand that because one of the first things I do is disable the
-LED, if possible, when I install a new adapter. Should we submit an
-issue or pull request to change this behavior? What should the behavior
-be?
+LED, if possible, when I install a new adapter. There is a way to turn
+the LED on if you so desire.
 
 To turn on the LED, please follow instructions below: (does not work
 with Secure Mode)
@@ -110,8 +109,8 @@ Step 5: Run:
 exit
 ```
 
-The above can be automated. The following is an one way to do it with
-Raspberry Pi OS:
+The above can be automated. The following is one way to do it with
+Raspberry Pi OS and Ubuntu:
 
 This method uses `/etc/rc.local`
 
@@ -212,7 +211,7 @@ https://github.com/openwrt/mt76/pull/428
 
 -----
 
-Wishlist for the MT76 drivers:
+Wishlist for the MT7612u driver:
 
 1. AP mode DFS support
 2. LED on by default (keep the ability to turn it off)
