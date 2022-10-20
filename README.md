@@ -88,19 +88,16 @@ $ sudo -i
 
 Step 3: Run both of the following commands
 
-Note: You may need to change `phy0` to match your system.
-
 ```
-# cd /sys/kernel/debug/ieee80211/phy0/mt76
-# echo 0x770 > regidx
+PHY_PATH=$(ls /sys/kernel/debug/ieee80211/phy*/mt76 -d)
+echo 0x770 > ${PHY_PATH}/regidx
 ```
-
 Step 4: Run one of the following commands
 
 ```
-# echo 0x800000 > regval # Turn LED ON
-# echo 0x820000 > regval # Turn LED OFF
-# echo 0x840000 > regval # Make LED BLINK
+# echo 0x800000 > ${PHY_PATH}/regval # Turn LED ON
+# echo 0x820000 > ${PHY_PATH}/regval # Turn LED OFF
+# echo 0x840000 > ${PHY_PATH}/regval # Make LED BLINK
 ```
 
 Step 5: Run:
