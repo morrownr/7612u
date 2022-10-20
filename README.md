@@ -6,8 +6,6 @@
 
 ### 7612u :rocket:
 
-### 2022-06-01
-
 ### Linux Support for USB WiFi Adapters that are based on the MT7612U chipset.
 
 USB WiFi adapters based on the mt7612u chipset have been supported
@@ -201,8 +199,7 @@ Save the file: Ctrl + Alt + o, Enter, Ctrl + Alt + x
 -----
 
 Known Issue 3. DFS channels are currently not supported in 5 GHz AP
-mode. The following PR shows a proposed fix. I have not tested it at
-this point:
+mode. The following PR shows a proposed fix.
 
 https://github.com/openwrt/mt76/pull/428
 
