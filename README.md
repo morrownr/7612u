@@ -145,7 +145,7 @@ sudo reboot
 Known Issue 2. When running in 5 GHz AP mode, some users have reported
 the need to use the following parameter to disable Scatter-Gather.
 
-Edit: 2002-03-16 It appears this issue is specific to computers that use
+Edit: 2022-03-16 It appears this issue is specific to computers that use
 the VL805 for USB3 support. The RasPi4B is likely the most popular
 system that uses the VL805. A [patch](https://github.com/raspberrypi/linux/commit/a538fd26f82b101cb6fb963042f3242768e628d4)
 was recently merged that hopefully takes care of this issue.
