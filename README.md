@@ -198,7 +198,15 @@ Save the file: Ctrl + Alt + o, Enter, Ctrl + Alt + x
 
 -----
 
-Known Issue 3. DFS channels are currently not supported in 5 GHz AP
+Known Issue 3. Running Kali Linux in VirtualBox with mt7612u based adapters such as the Alfa ACM yield an adapter that cannot be found.
+
+One solution:
+
+https://forums.kali.org/showthread.php?128646-SOLVED-Alfa-AWUS036ACM-amp-Kali-2022-4-on-VB
+
+-----
+
+Known Issue 4. DFS channels are currently not supported in 5 GHz AP
 mode. The following PR shows a proposed fix.
 
 https://github.com/openwrt/mt76/pull/428
