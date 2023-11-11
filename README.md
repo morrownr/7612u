@@ -134,7 +134,7 @@ echo 0x770 > regidx
 echo 0x840000 > regval
 ```
 
-Save the file: Ctrl + Alt + o, Enter, Ctrl + Alt + x
+Save the file: Ctrl + x, y, Enter
 
 ```
 sudo reboot
