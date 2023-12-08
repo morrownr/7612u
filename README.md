@@ -196,6 +196,13 @@ options mt76_usb disable_usb_sg=1
 
 Save the file: Ctrl + Alt + o, Enter, Ctrl + Alt + x
 
+To check setting:
+
+```
+grep [[:alnum:]] /sys/module/mt76_usb/parameters/*
+
+```
+
 -----
 
 Known Issue 3. Running Kali Linux in VirtualBox with mt7612u based adapters such as the Alfa ACM yield an adapter that cannot be found.
