@@ -74,7 +74,7 @@ LED, if possible, when I install a new adapter. There is a way to turn
 the LED on if you so desire.
 
 To turn on the LED, please follow instructions below: (does not work
-with Secure Mode)
+with Secure Boot)
 
 Step 1: Open Terminal (Ctrl + Alt + t)
 
